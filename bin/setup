@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 require 'pathname'
 require 'fileutils'
 include FileUtils
@@ -20,7 +21,6 @@ chdir APP_ROOT do
 
   # Install JavaScript dependencies if using Yarn
   # system('bin/yarn')
-
 
   # puts "\n== Copying sample files =="
   # unless File.exist?('config/database.yml')

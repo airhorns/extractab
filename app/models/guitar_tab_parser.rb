@@ -1,9 +1,10 @@
+# frozen_string_literal: true
 class GuitarTabParser < Parslet::Parser
   def stri(str)
     key_chars = str.split(//)
-    key_chars.
-      collect! { |char| match["#{char.upcase}#{char.downcase}"] }.
-      reduce(:>>)
+    key_chars
+      .collect! { |char| match["#{char.upcase}#{char.downcase}"] }
+      .reduce(:>>)
   end
 
   # Utilities
@@ -14,28 +15,31 @@ class GuitarTabParser < Parslet::Parser
   rule(:line_char) { (eol.absent? >> any) }
 
   # Music
-  rule(:chord_root) { match['A-G'] }
+  rule(:chord_extension) { str("7") | str("9") | str("11") | str("13") }
   rule(:chord) do
-    chord_root.as(:chord_root) >>
-    ( str("#") | str("b") ).maybe.as(:root_modifier) >>
-    str("m").maybe.as(:minor) >>
-    ( str("add").maybe >>
-        (str("maj").maybe | str("min").maybe).as(:extension_modifier) >>
-        ( str("7") | str("9") | str("11") | str("13") ).as(:extension)
+    (match['A-G'] >> (str("#") | str("b")).maybe).as(:chord_root) >>
+    (str("min") | str("maj") | str("m") | str("M")).maybe.as(:major_minor) >>
+    (str("add").maybe >>
+        (str("maj") | str("min") | str("M")).maybe.as(:extension_modifier) >>
+        chord_extension.as(:extension)
     ).maybe >>
-    ( str("sus").maybe.as(:suspended) >> ( str("4") | str("2") ).maybe.as(:suspension) ).maybe >>
-    ( str("sus").maybe.as(:diminished) >> ( str("4") | str("2") ).maybe.as(:diminishee) ).maybe
+    (str("sus") >> (str("4") | str("2")).maybe).maybe
   end
 
   # Sections
-  rule(:fluff) { ( stri("tabbed by") >> line_char.repeat >> eol ) }
+  rule(:fluff) { (stri("tabbed by") >> line_char.repeat >> eol) }
 
   rule(:lyric_line) { str("[").absent? >> line_char.repeat(1) >> eol }
-  rule(:chord_line) { (chord >> space.repeat(1)).repeat(1) >> eol }
+  rule(:chord_line) { (chord >> space.repeat(0)).repeat(1) >> eol }
+  # rule(:chording) do
+  #   # First line can't be empty but other ones can
+  #   ( chord_line.as(:chords) | lyric_line.as(:lyrics) ) >>
+  #   ( empty_line | chord_line.as(:chords) | lyric_line.as(:lyrics) ).repeat(0)
+  # end
+
   rule(:chording) do
     # First line can't be empty but other ones can
-    ( chord_line.as(:chords) | lyric_line.as(:lyrics) ) >>
-    ( empty_line | chord_line.as(:chords) | lyric_line.as(:lyrics) ).repeat(0)
+    chord_line.as(:chords).repeat(1)
   end
 
   rule(:tab_staff_line) { str('-').repeat(1) >> eol }
@@ -43,7 +47,7 @@ class GuitarTabParser < Parslet::Parser
 
   rule(:unrecognized_lines) { (str("[").absent? >> line_char.repeat(1) >> eol).repeat(1) }
 
-   # Root
+  # Root
   rule(:section_header) do
     space? >>
     str('[') >> (str(']').absent? >> any).repeat(1).as(:header_name) >> str(']') >>
@@ -54,13 +58,13 @@ class GuitarTabParser < Parslet::Parser
   rule(:section_contents) do
     fluff.as(:fluff_lines) |
     chording.as(:chord_lines) |
-    tab_staff.as(:tab_lines) |
-    unrecognized_lines.as(:unrecognized_lines)
+    tab_staff.as(:tab_lines) # |
+    # unrecognized_lines.as(:unrecognized_lines)
   end
 
   rule(:section) do
-    ( empty_line.repeat(0) >> section_header.as(:header) >> empty_line.repeat(0) >> section_contents.maybe.as(:contents) >> empty_line.repeat(0) ) |
-    ( empty_line.repeat(0) >> section_contents.maybe.as(:contents) >> empty_line.repeat(1) )
+    (empty_line.repeat(0) >> section_header.as(:header) >> empty_line.repeat(0) >> section_contents.maybe.as(:contents) >> empty_line.repeat(0)) |
+    (empty_line.repeat(0) >> section_contents.maybe.as(:contents) >> empty_line.repeat(1))
   end
 
   rule(:tab) { section.as(:section).repeat(1) }
