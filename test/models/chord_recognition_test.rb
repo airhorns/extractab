@@ -7,47 +7,61 @@ class ChordRecognitionTest < ActiveSupport::TestCase
     @transform = ChordTransform.new
   end
 
-  test "it parses major chords with no modifiers" do
+  test "it parses major triad chords with no modifiers" do
     assert_equal Music::UnboundChord.for(root: 'C', type: :major), parse_chord("C")
+    assert_equal Music::UnboundChord.for(root: 'Gb', type: :major), parse_chord("Gb")
+    assert_equal Music::UnboundChord.for(root: 'F#', type: :major), parse_chord("F#")
   end
 
-  test "it parses major chords" do
-    parse_chord "Cm"
-    parse_chord "Cmin"
-    parse_chord "Cmaj"
-    parse_chord "CM"
-    parse_chord "C#"
-    parse_chord "C#m"
-    parse_chord "C#min"
-    parse_chord "C#maj"
-    parse_chord "Ab"
-    parse_chord "Abm"
-    parse_chord "Abmin"
-    parse_chord "Abmaj"
+  test "it parses major triad chords with modifiers indicating majorness" do
+    assert_equal Music::UnboundChord.for(root: 'C', type: :major), parse_chord("CM")
+    assert_equal Music::UnboundChord.for(root: 'C', type: :major), parse_chord("Cmaj")
+    assert_equal Music::UnboundChord.for(root: 'Gb', type: :major), parse_chord("GbM")
+    assert_equal Music::UnboundChord.for(root: 'Gb', type: :major), parse_chord("Gbmaj")
+    assert_equal Music::UnboundChord.for(root: 'F#', type: :major), parse_chord("F#M")
+    assert_equal Music::UnboundChord.for(root: 'F#', type: :major), parse_chord("F#maj")
   end
 
-  test "it parses extension chords" do
-    parse_chord "C7"
-    parse_chord "Cm7"
-    parse_chord "Cmin7"
-    parse_chord "Cmaj7"
-    parse_chord "CM7"
-    parse_chord "C#7"
-    parse_chord "C#m7"
-    parse_chord "C#min7"
-    parse_chord "C#maj7"
-    parse_chord "Ab7"
-    parse_chord "Abm7"
-    parse_chord "Abmin7"
-    parse_chord "Abmaj7"
+  test "it parses minor triad chords" do
+    assert_equal Music::UnboundChord.for(root: 'C', type: :minor), parse_chord("Cm")
+    assert_equal Music::UnboundChord.for(root: 'Gb', type: :minor), parse_chord("Gbm")
+    assert_equal Music::UnboundChord.for(root: 'F#', type: :minor), parse_chord("F#m")
+
+    assert_equal Music::UnboundChord.for(root: 'C', type: :minor), parse_chord("Cmin")
+    assert_equal Music::UnboundChord.for(root: 'Gb', type: :minor), parse_chord("Gbmin")
+    assert_equal Music::UnboundChord.for(root: 'F#', type: :minor), parse_chord("F#min")
+  end
+
+  test "it parses major and minor seventh extension chords expressed in the standard way" do
+    assert_equal Music::UnboundChord.for(root: 'C', type: :major_seventh), parse_chord("Cmaj7")
+    assert_equal Music::UnboundChord.for(root: 'Gb', type: :major_seventh), parse_chord("Gbmaj7")
+    assert_equal Music::UnboundChord.for(root: 'F#', type: :major_seventh), parse_chord("F#maj7")
+
+    assert_equal Music::UnboundChord.for(root: 'C', type: :minor_seventh), parse_chord("Cm7")
+    assert_equal Music::UnboundChord.for(root: 'Gb', type: :minor_seventh), parse_chord("Gbm7")
+    assert_equal Music::UnboundChord.for(root: 'F#', type: :minor_seventh), parse_chord("F#m7")
+
+    assert_equal Music::UnboundChord.for(root: 'C', type: :minor_seventh), parse_chord("Cmin7")
+    assert_equal Music::UnboundChord.for(root: 'Gb', type: :minor_seventh), parse_chord("Gbmin7")
+    assert_equal Music::UnboundChord.for(root: 'F#', type: :minor_seventh), parse_chord("F#min7")
+  end
+
+  test "it parses dominant seventh chords where the triad is implied major and the seventh is implied minor" do
+    assert_equal Music::UnboundChord.for(root: 'C', type: :dominant_seventh), parse_chord("C7")
+    assert_equal Music::UnboundChord.for(root: 'Gb', type: :dominant_seventh), parse_chord("Gb7")
+    assert_equal Music::UnboundChord.for(root: 'F#', type: :dominant_seventh), parse_chord("F#7")
+  end
+
+  test "it parses major seventh extension chords expressed with the add keyword" do
+    assert_equal Music::UnboundChord.for(root: 'C', type: :major_seventh), parse_chord("Cadd7")
+    assert_equal Music::UnboundChord.for(root: 'Gb', type: :major_seventh), parse_chord("Gbadd7")
+    assert_equal Music::UnboundChord.for(root: 'F#', type: :major_seventh), parse_chord("F#add7")
   end
 
   test "it parses suspended chords" do
     parse_chord "Cmsus"
     parse_chord "C#msus4"
-    parse_chord "Ab13sus4"
-    parse_chord "C#msus2"
-    parse_chord "Ab13sus2"
+    parse_chord "Absus4"
   end
 
   private

@@ -18,11 +18,11 @@ class GuitarTabParser < Parslet::Parser
   rule(:chord_extension) { str("7") | str("9") | str("11") | str("13") }
   rule(:chord) do
     (match['A-G'] >> (str("#") | str("b")).maybe).as(:chord_root) >>
-    (str("min") | str("maj") | str("m") | str("M")).maybe.as(:major_minor) >>
-    (str("add").maybe >>
-        (str("maj") | str("min") | str("M")).maybe.as(:extension_modifier) >>
+    (str("add").maybe.as(:extension_separator) >>
+        (str("maj") | str("min") | str("M") | str("m")).maybe.as(:extension_modifier) >>
         chord_extension.as(:extension)
     ).maybe >>
+    (str("min") | str("maj") | str("m") | str("M")).maybe.as(:major_minor) >>
     (str("sus") >> (str("4") | str("2")).maybe).maybe
   end
 
