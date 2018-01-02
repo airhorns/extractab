@@ -58,6 +58,32 @@ class ChordRecognitionTest < ActiveSupport::TestCase
     assert_equal Music::UnboundChord.for(root: 'F#', type: :major_seventh), parse_chord("F#add7")
   end
 
+  test "it parses major minor seventh chords expressed with an extension modifier keyword" do
+    assert_equal Music::UnboundChord.for(root: 'C', type: :minor_major_seventh), parse_chord("Cmajmin7")
+    assert_equal Music::UnboundChord.for(root: 'Gb', type: :minor_major_seventh), parse_chord("Gbmajmin7")
+    assert_equal Music::UnboundChord.for(root: 'F#', type: :minor_major_seventh), parse_chord("F#majmin7")
+  end
+
+  test "it parses major sixth extension chords expressed in the standard way" do
+    assert_equal Music::UnboundChord.for(root: 'C', type: :major_sixth), parse_chord("Cmaj6")
+    assert_equal Music::UnboundChord.for(root: 'Gb', type: :major_sixth), parse_chord("Gbmaj6")
+    assert_equal Music::UnboundChord.for(root: 'F#', type: :major_sixth), parse_chord("F#maj6")
+
+    assert_equal Music::UnboundChord.for(root: 'C', type: :major_sixth), parse_chord("C6")
+    assert_equal Music::UnboundChord.for(root: 'Gb', type: :major_sixth), parse_chord("Gb6")
+    assert_equal Music::UnboundChord.for(root: 'F#', type: :major_sixth), parse_chord("F#6")
+  end
+
+  test "it parses minor sixth extension chords expressed in the standard way" do
+    assert_equal Music::UnboundChord.for(root: 'C', type: :minor_sixth), parse_chord("Cmin6")
+    assert_equal Music::UnboundChord.for(root: 'Gb', type: :minor_sixth), parse_chord("Gbmin6")
+    assert_equal Music::UnboundChord.for(root: 'F#', type: :minor_sixth), parse_chord("F#min6")
+
+    assert_equal Music::UnboundChord.for(root: 'C', type: :minor_sixth), parse_chord("Cm6")
+    assert_equal Music::UnboundChord.for(root: 'Gb', type: :minor_sixth), parse_chord("Gbm6")
+    assert_equal Music::UnboundChord.for(root: 'F#', type: :minor_sixth), parse_chord("F#m6")
+  end
+
   test "it parses suspended chords" do
     parse_chord "Cmsus"
     parse_chord "C#msus4"

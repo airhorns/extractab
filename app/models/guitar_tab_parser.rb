@@ -15,39 +15,60 @@ class GuitarTabParser < Parslet::Parser
   rule(:line_char) { (eol.absent? >> any) }
 
   # Music
-  rule(:chord_extension) { str("7") | str("9") | str("11") | str("13") }
+  rule(:chord_extension) { str("6") | str("7") | str("9") | str("11") | str("13") }
   rule(:chord) do
     (match['A-G'] >> (str("#") | str("b")).maybe).as(:chord_root) >>
+    (str("min") | str("maj") | str("m") | str("M")).maybe.as(:major_minor) >>
     (str("add").maybe.as(:extension_separator) >>
         (str("maj") | str("min") | str("M") | str("m")).maybe.as(:extension_modifier) >>
         chord_extension.as(:extension)
     ).maybe >>
-    (str("min") | str("maj") | str("m") | str("M")).maybe.as(:major_minor) >>
     (str("sus") >> (str("4") | str("2")).maybe).maybe
   end
 
   # Sections
   rule(:fluff) { (stri("tabbed by") >> line_char.repeat >> eol) }
 
-  rule(:lyric_line) { str("[").absent? >> line_char.repeat(1) >> eol }
-  rule(:chord_line) { (chord >> space.repeat(0)).repeat(1) >> eol }
-  # rule(:chording) do
-  #   # First line can't be empty but other ones can
-  #   ( chord_line.as(:chords) | lyric_line.as(:lyrics) ) >>
-  #   ( empty_line | chord_line.as(:chords) | lyric_line.as(:lyrics) ).repeat(0)
-  # end
+  # Chord definition section, like
+  # A6    xx767x
+  # Amaj7    5x665x
+  # C#m7    9-11-9-9-9-9
+  rule(:chord_fretting) do
+    (match['0-9x'] | ( match['0-9'].repeat(1,2) >> str('-') )).as(:fret).repeat(4,8)
+  end
+  rule(:chord_definition_lines) do
+    ( space? >> chord.as(:chord) >> space? >> chord_fretting >> eol ).repeat(1)
+  end
 
+
+  # Lyrics section with chord signals on other lines, like
+  # C    Em  Am         F     C   G
+  # Wise men say, only fools rush in
+  #    F  G    Am    F          C    G   C
+  # But I can't help falling in love with you
+
+  rule(:lyric_line) { section_header_signal.absent? >> line_char.repeat(1) >> eol }
+  rule(:chord_line) { (chord >> space.repeat(0)).repeat(1) >> eol }
   rule(:chording) do
     # First line can't be empty but other ones can
-    chord_line.as(:chords).repeat(1)
+    ( chord_line.as(:chords) | lyric_line.as(:lyrics) ) >>
+    ( empty_line | chord_line.as(:chords) | lyric_line.as(:lyrics) ).repeat(0)
   end
 
   rule(:tab_staff_line) { str('-').repeat(1) >> eol }
   rule(:tab_staff) { tab_staff_line.repeat(1, 8) }
 
-  rule(:unrecognized_lines) { (str("[").absent? >> line_char.repeat(1) >> eol).repeat(1) }
+  # Match any characters on lines that aren't empty
+  rule(:unrecognized_lines) do
+    (
+      section_header_signal.absent? >>
+      empty_line.absent? >>
+      line_char.repeat(1).as(:unrecognized) >> eol
+    ).repeat(1)
+  end
 
   # Root
+  rule(:section_header_signal) { space? >> str('[') }
   rule(:section_header) do
     space? >>
     str('[') >> (str(']').absent? >> any).repeat(1).as(:header_name) >> str(']') >>
@@ -57,20 +78,35 @@ class GuitarTabParser < Parslet::Parser
 
   rule(:section_contents) do
     fluff.as(:fluff_lines) |
+    fluff.as(:chord_definition_lines) |
     chording.as(:chord_lines) |
-    tab_staff.as(:tab_lines) # |
-    # unrecognized_lines.as(:unrecognized_lines)
+    tab_staff.as(:tab_lines)
   end
 
   rule(:section) do
-    (empty_line.repeat(0) >> section_header.as(:header) >> empty_line.repeat(0) >> section_contents.maybe.as(:contents) >> empty_line.repeat(0)) |
-    (empty_line.repeat(0) >> section_contents.maybe.as(:contents) >> empty_line.repeat(1))
+    # Sections with a header don't need blank lines to delimit them
+    ( empty_line.repeat(0) >>
+      section_header.as(:header) >>
+      empty_line.repeat(0) >>
+      section_contents.maybe.as(:contents) >>
+      empty_line.repeat(0)
+    ) |
+    # Sections without a header need a blank line at the end
+    ( empty_line.repeat(0) >>
+      section_contents.maybe.as(:contents) >>
+      empty_line.repeat(1)
+    ) |
+    # Unrecognized sections don't need delimination
+    ( empty_line.repeat(0) >>
+      unrecognized_lines.as(:contents) >>
+      empty_line.repeat(0)
+    )
   end
 
   rule(:tab) { section.as(:section).repeat(1) }
   root(:tab)
 
   def parse(text)
-    super("#{text}\n")
+    super("#{text}\n\n")
   end
 end

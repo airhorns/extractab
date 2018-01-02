@@ -21,7 +21,36 @@ class ChordTransform < Parslet::Transform
 
 
   def self.chord_type_for_modifiers(major_minor, extension=nil, extension_separator=nil, extension_modifier=nil)
-    triad = case major_minor
+    third = triad(major_minor)
+    return third if extension.nil?
+
+    if !extension_separator.nil?
+      if extension_separator == 'add'
+        case extension
+        when '7'
+          return :major_seventh
+        when '6'
+          return :major_add_6
+        else
+          raise "Don't support adding extension=#{extension.inspect}"
+        end
+      else
+        raise "Don't support extension words other than add right now, got extension_separator=#{extension_separator.inspect}"
+      end
+    end
+
+    case extension
+    when '7'
+      seventh(major_minor, third, extension_modifier)
+    when '6'
+      sixth(third, extension_modifier)
+    else
+      raise "Couldn't parse chord with extension_modifier=#{extension_modifier.inspect}, extension=#{extension}"
+    end
+  end
+
+  def self.triad(major_minor)
+    case major_minor
     when 'm', 'min'
       :minor
     when nil, 'maj', 'M'
@@ -29,30 +58,42 @@ class ChordTransform < Parslet::Transform
     else
       raise "Couldn't parse chord with major_minor=#{major_minor.inspect}"
     end
-    return triad if extension.nil?
+  end
 
-    raise "Don't support extensions other than the seventh right now, got extension=#{extension.inspect}" unless extension == '7'
-    if !extension_separator.nil?
-      if extension_separator == 'add'
-        return :major_seventh
-      else
-        raise "Don't support extension words other than add right now, got extension_separator=#{extension_separator.inspect}"
-      end
-    end
-
+  def self.sixth(third, extension_modifier)
     case extension_modifier
     when nil
-      if triad == :major
-        :dominant_seventh
+      if third == :major
+        :major_sixth
+      else
+        :minor_sixth
+      end
+    else
+      raise "Couldn't parse sixth chord with extension_modifier=#{extension_modifier.inspect}"
+    end
+
+  end
+
+  def self.seventh(major_minor, third, extension_modifier)
+    case extension_modifier
+    when nil
+      if third == :major
+        if major_minor.nil?
+          :dominant_seventh
+        else
+          :major_seventh
+        end
       else
         :minor_seventh
       end
-    when 'M', 'maj'
-      :major_seventh
     when 'm', 'min'
-      :minor_seventh
+      if third == :major
+        :minor_major_seventh
+      else
+        :minor_seventh
+      end
     else
-      raise "Couldn't parse chord with extension_modifier=#{extension_modifier.inspect}, extension=#{extension}"
+      raise "Couldn't parse seventh chord with extension_modifier=#{extension_modifier.inspect}"
     end
   end
 end

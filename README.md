@@ -1,24 +1,12 @@
-# README
+# Extractab
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+App for friggen' around with guitar tabs
 
-Things you may want to cover:
+### User Stories
 
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+ - Paste in a guitar lyrics/chords text, get visual piano chord diagrams and individual note breakdowns for each chord
+ - Paste in a guitar tab (actual tab with fret numbers on strings), get a musical staff back
+ - Paste in a guitar lyrics/chords with guitar chord voicings and get back visual piano chords in same inversions / octaves
+ - Paste in a guitar tab with a capo and get absolute chords to play on the piano
+ - Paste in a guitar tab and transpose it to make it easier on piano
+ - Paste in an ultimate guitar URL and get all the above stuff in one click
