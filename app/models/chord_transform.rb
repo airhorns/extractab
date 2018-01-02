@@ -1,8 +1,26 @@
 # frozen_string_literal: true
 class ChordTransform < Parslet::Transform
   rule(chord_root: simple(:chord_root), major_minor: simple(:major_minor)) do
-    root_note = Music::UnboundNote.symbolic(chord_root.to_s)
-    Music::UnboundChord.for(root: root_note, type: ChordTransform.chord_type_for_modifiers(major_minor))
+    ChordTransform.chord(
+      chord_root: chord_root,
+      major_minor: major_minor,
+      extension: nil,
+      extension_separator: nil,
+      extension_modifier: nil,
+      substitute_root: nil
+    )
+  end
+
+  rule(chord_root: simple(:chord_root), major_minor: simple(:major_minor), substitute_root: simple(:substitute_root)
+) do
+    ChordTransform.chord(
+      chord_root: chord_root,
+      major_minor: major_minor,
+      extension: nil,
+      extension_separator: nil,
+      extension_modifier: nil,
+      substitute_root: substitute_root
+    )
   end
 
   rule(
@@ -12,10 +30,47 @@ class ChordTransform < Parslet::Transform
     extension_separator: simple(:extension_separator),
     extension_modifier: simple(:extension_modifier)
   ) do
+    ChordTransform.chord(
+      chord_root: chord_root,
+      major_minor: major_minor,
+      extension: extension,
+      extension_separator: extension_separator,
+      extension_modifier: extension_modifier,
+      substitute_root: nil
+    )
+  end
+
+  rule(
+    chord_root: simple(:chord_root),
+    major_minor: simple(:major_minor),
+    extension: simple(:extension),
+    extension_separator: simple(:extension_separator),
+    extension_modifier: simple(:extension_modifier),
+    substitute_root: simple(:substitute_root)
+  ) do
+    ChordTransform.chord(
+      chord_root: chord_root,
+      major_minor: major_minor,
+      extension: extension,
+      extension_separator: extension_separator,
+      extension_modifier: extension_modifier,
+      substitute_root: substitute_root
+    )
+  end
+
+  def self.chord(
+    chord_root:,
+    major_minor:,
+    extension:,
+    extension_separator:,
+    extension_modifier:,
+    substitute_root:)
     root_note = Music::UnboundNote.symbolic(chord_root.to_s)
+    substitute_root = Music::UnboundNote.symbolic(substitute_root.to_s) if substitute_root
     Music::UnboundChord.for(
       root: root_note,
-      type: ChordTransform.chord_type_for_modifiers(major_minor, extension, extension_separator, extension_modifier)
+      type: ChordTransform.chord_type_for_modifiers(major_minor, extension, extension_separator, extension_modifier),
+      substitute_root: substitute_root
     )
   end
 

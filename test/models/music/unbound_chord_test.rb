@@ -31,12 +31,24 @@ module Music
       @c_over_g = UnboundChord.for(root: 'C', type: :major, substitute_root: 'G')
       assert_equal @c, @c_over_g.root
       assert_equal [Intervals::MAJOR_THIRD, Interval.new(-5)], @c_over_g.intervals
+
+      @a_over_e = UnboundChord.for(root: 'A', type: :major, substitute_root: 'E')
+      assert_equal UnboundNote.symbolic('A'), @a_over_e.root
+      assert_equal [Intervals::MAJOR_THIRD, Interval.new(-5)], @a_over_e.intervals
     end
 
     test "chords created with substitute roots not included in the chord reflect an interval to that root" do
       @c_over_a = UnboundChord.for(root: 'C', type: :major, substitute_root: 'A')
       assert_equal @c, @c_over_a.root
       assert_equal [Intervals::MAJOR_THIRD, Intervals::PERFECT_FIFTH, Interval.new(-3)], @c_over_a.intervals
+
+      @c_sharp_over_a = UnboundChord.for(root: 'C#', type: :major, substitute_root: 'A')
+      assert_equal UnboundNote.symbolic('C#'), @c_sharp_over_a.root
+      assert_equal [Intervals::MAJOR_THIRD, Intervals::PERFECT_FIFTH, Interval.new(-4)], @c_sharp_over_a.intervals
+
+      @nonsense = UnboundChord.for(root: 'Gb', type: :dominant_seventh, substitute_root: 'D')
+      assert_equal UnboundNote.symbolic('Gb'), @nonsense.root
+      assert_equal [Intervals::MAJOR_THIRD, Intervals::PERFECT_FIFTH, Intervals::MINOR_SEVENTH, Interval.new(-4)], @nonsense.intervals
     end
   end
 end

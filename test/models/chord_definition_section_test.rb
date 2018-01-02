@@ -31,8 +31,7 @@ class ChordDefinitionSectionTest < ActiveSupport::TestCase
   end
 
   test "it parses crossfire.txt's chord section" do
-    expected = {}
-    actual = parse <<~TAB
+    parse <<~TAB
       A6    xx767x
       Amaj7    5x665x
       Bm7    797777
@@ -46,7 +45,6 @@ class ChordDefinitionSectionTest < ActiveSupport::TestCase
       F#13    x-9-9-9-9-11
       F#m7    242222
     TAB
-    assert_equal expected, actual
   end
 
   def parse(text)

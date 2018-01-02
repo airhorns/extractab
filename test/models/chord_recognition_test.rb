@@ -91,6 +91,18 @@ class ChordRecognitionTest < ActiveSupport::TestCase
     assert_equal Music::UnboundChord.for(root: 'F#', type: :major, substitute_root: 'A#'), parse_chord("F#/A#")
   end
 
+  test "it parses extension chords with substitute roots" do
+    assert_equal Music::UnboundChord.for(root: 'C', type: :major_seventh, substitute_root: 'G'), parse_chord("Cmaj7/G")
+    assert_equal Music::UnboundChord.for(root: 'Gb', type: :minor_seventh, substitute_root: 'C'), parse_chord("Gbm7/C")
+    assert_equal Music::UnboundChord.for(root: 'F#', type: :minor_seventh,  substitute_root: 'C#'), parse_chord("F#min7/C#")
+    assert_equal Music::UnboundChord.for(root: 'Db', type: :dominant_seventh, substitute_root: 'Bb'), parse_chord("Db7/Bb")
+    assert_equal Music::UnboundChord.for(root: 'Eb', type: :major_seventh, substitute_root: 'Db'), parse_chord("Ebadd7/Db")
+
+    assert_equal Music::UnboundChord.for(root: 'C', type: :major_sixth, substitute_root: 'G'), parse_chord("Cmaj6/G")
+    assert_equal Music::UnboundChord.for(root: 'Gb', type: :minor_sixth, substitute_root: 'C'), parse_chord("Gbm6/C")
+    assert_equal Music::UnboundChord.for(root: 'F#', type: :minor_sixth, substitute_root: 'C#'), parse_chord("F#min6/C#")
+  end
+
   test "it parses suspended chords" do
     parse_chord "Cmsus"
     parse_chord "C#msus4"

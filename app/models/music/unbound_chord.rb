@@ -14,13 +14,13 @@ module Music
       minor_seventh: [Intervals::MINOR_THIRD, Intervals::PERFECT_FIFTH, Intervals::MINOR_SEVENTH],
       diminished_seventh: [Intervals::MINOR_THIRD, Intervals::DIMINISHED_FIFTH, Intervals::DIMINISHED_SEVENTH],
       augmented_seventh: [Intervals::MAJOR_THIRD, Intervals::AUGMENTED_FIFTH, Intervals::MINOR_SEVENTH],
-      dominant_seventh: [Intervals::MAJOR_THIRD, Intervals::AUGMENTED_FIFTH, Intervals::MINOR_SEVENTH],
+      dominant_seventh: [Intervals::MAJOR_THIRD, Intervals::PERFECT_FIFTH, Intervals::MINOR_SEVENTH],
       minor_major_seventh: [Intervals::MINOR_THIRD, Intervals::PERFECT_FIFTH, Intervals::MAJOR_SEVENTH],
       half_diminished_seventh: [Intervals::MINOR_THIRD, Intervals::DIMINISHED_FIFTH, Intervals::MINOR_SEVENTH]
     }.each { |_, v| v.freeze }.freeze
 
     class << self
-      def for(root:, type:, substitute_root:nil)
+      def for(root:, type:, substitute_root: nil)
         raise UnknownChordTypeException, "No chord type of #{type} known" unless CHORD_INTERVALS.include?(type)
         root = Music::UnboundNote.symbolic(root)
         intervals = CHORD_INTERVALS[type]
@@ -29,7 +29,7 @@ module Music
           substitute_root = Music::UnboundNote.symbolic(substitute_root)
           intervals = intervals.dup
 
-          positive_interval = Music::Interval.from(root, substitute_root)
+          positive_interval = Music::Interval.from(root, substitute_root).positive_inversion
           negative_interval = positive_interval.invert
           intervals.delete(positive_interval)
           intervals << negative_interval
@@ -43,6 +43,7 @@ module Music
 
     def initialize(root, intervals)
       raise "Root note of a chord must be a Note class" unless root.respond_to?(:note?) && root.note?
+      raise "Can't have duplicate notes in a chord, got: #{intervals.inspect} " unless intervals.uniq.size == intervals.size
       @root = root
       @intervals = intervals.map(&:to_interval)
     end

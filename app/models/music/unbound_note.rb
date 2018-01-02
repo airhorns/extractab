@@ -37,7 +37,7 @@ module Music
 
     def initialize(normalized_symbol)
       @symbol = normalized_symbol
-      @semitones_above_c = NOTES_TO_SEMITONES[@symbol]
+      @semitones_above_c = NOTES_TO_SEMITONES.fetch(@symbol)
     end
 
     include Comparable
@@ -57,14 +57,15 @@ module Music
     alias_method :eql?, :==
 
     def apply_interval(interval)
-      semitones = (NOTES_TO_SEMITONES[@letter] + interval.semitones) % 12
-      symbol = if @letter.include? 'b'
-        SEMITONES_TO_FLAT_NOTES[semitones]
+      positive_semitones = (semitones_above_c + interval.semitones) % 12  # use modulo operator to get positive result for lookup table
+      semitones = (semitones_above_c + interval.semitones).remainder(12)  # use #remainder that preserves sign to allow for notes below c
+      new_symbol = if symbol.include? 'b'
+        SEMITONES_TO_FLAT_NOTES[positive_semitones]
       else
-        SEMITONES_TO_SHARP_NOTES[semitones]
+        SEMITONES_TO_SHARP_NOTES[positive_semitones]
       end
 
-      self.class.new(symbol)
+      self.class.new(new_symbol)
     end
 
     def note?

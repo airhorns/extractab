@@ -17,14 +17,33 @@ module Music
       self
     end
 
-    def eql?(other)
+    def ==(other)
       if other.class == self.class
         semitones == other.semitones
       end
     end
+    alias_method :eql?, :==
+
+    def hash
+      semitones.hash
+    end
 
     def invert
-      self.class.new( -12 + semitones )
+      inverted = if semitones >= 0
+        (semitones - 12).remainder(12)
+      else
+        (semitones + 12).remainder(12)
+      end
+
+      self.class.new(inverted)
+    end
+
+    def positive_inversion
+      if semitones < 0
+        invert
+      else
+        self
+      end
     end
 
     include Comparable
@@ -38,7 +57,7 @@ module Music
 
     def +(other)
       raise "Can't add an Interval to #{other.class}" unless other.respond_to?(:semitones)
-      self.class.new(self.semitones + other.semitones % 12)
+      self.class.new((semitones + other.semitones) % 12)
     end
   end
 end
