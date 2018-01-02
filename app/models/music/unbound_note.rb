@@ -14,18 +14,22 @@ module Music
       'Gb' => 6,
       'G' => 7,
       'G#' => 8,
-      'Ab' => 9,
-      'A' => 10,
-      'A#' => 11,
-      'Bb' => 11,
-      'B' => 12
+      'Ab' => 8,
+      'A' => 9,
+      'A#' => 10,
+      'Bb' => 10,
+      'B' => 11
     }
     SEMITONES_TO_FLAT_NOTES = NOTES_TO_SEMITONES.reject { |k, _v| k.include? '#' }.invert
     SEMITONES_TO_SHARP_NOTES = NOTES_TO_SEMITONES.reject { |k, _v| k.include? 'b' }.invert
 
     class << self
-      def symbolic(string)
-        new(string.to_s)
+      def symbolic(string_or_note)
+        if string_or_note.respond_to?(:note?) && string_or_note.note?
+          string_or_note
+        else
+          new(string_or_note.to_s)
+        end
       end
     end
 
@@ -39,7 +43,7 @@ module Music
     include Comparable
     def <=>(other)
       if other.class == self.class
-        self.semitones_above_c <=> other.semitones_above_c
+        semitones_above_c <=> other.semitones_above_c
       else
         -1
       end
@@ -47,10 +51,10 @@ module Music
 
     def ==(other)
       if other.class == self.class
-        self.semitones_above_c == other.semitones_above_c
+        semitones_above_c == other.semitones_above_c
       end
     end
-    alias :eql? :==
+    alias_method :eql?, :==
 
     def apply_interval(interval)
       semitones = (NOTES_TO_SEMITONES[@letter] + interval.semitones) % 12

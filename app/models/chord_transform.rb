@@ -19,12 +19,11 @@ class ChordTransform < Parslet::Transform
     )
   end
 
-
-  def self.chord_type_for_modifiers(major_minor, extension=nil, extension_separator=nil, extension_modifier=nil)
+  def self.chord_type_for_modifiers(major_minor, extension = nil, extension_separator = nil, extension_modifier = nil)
     third = triad(major_minor)
     return third if extension.nil?
 
-    if !extension_separator.nil?
+    unless extension_separator.nil?
       if extension_separator == 'add'
         case extension
         when '7'
@@ -71,7 +70,6 @@ class ChordTransform < Parslet::Transform
     else
       raise "Couldn't parse sixth chord with extension_modifier=#{extension_modifier.inspect}"
     end
-
   end
 
   def self.seventh(major_minor, third, extension_modifier)

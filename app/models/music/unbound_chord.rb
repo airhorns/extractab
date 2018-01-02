@@ -17,13 +17,25 @@ module Music
       dominant_seventh: [Intervals::MAJOR_THIRD, Intervals::AUGMENTED_FIFTH, Intervals::MINOR_SEVENTH],
       minor_major_seventh: [Intervals::MINOR_THIRD, Intervals::PERFECT_FIFTH, Intervals::MAJOR_SEVENTH],
       half_diminished_seventh: [Intervals::MINOR_THIRD, Intervals::DIMINISHED_FIFTH, Intervals::MINOR_SEVENTH]
-    }
+    }.each { |_, v| v.freeze }.freeze
 
     class << self
-      def for(root:, type:)
+      def for(root:, type:, substitute_root:nil)
         raise UnknownChordTypeException, "No chord type of #{type} known" unless CHORD_INTERVALS.include?(type)
-        root = Music::UnboundNote.symbolic(root) unless root.respond_to?(:note?) && root.note?
-        new(root, CHORD_INTERVALS[type])
+        root = Music::UnboundNote.symbolic(root)
+        intervals = CHORD_INTERVALS[type]
+
+        if substitute_root
+          substitute_root = Music::UnboundNote.symbolic(substitute_root)
+          intervals = intervals.dup
+
+          positive_interval = Music::Interval.from(root, substitute_root)
+          negative_interval = positive_interval.invert
+          intervals.delete(positive_interval)
+          intervals << negative_interval
+        end
+
+        new(root, intervals)
       end
     end
 
@@ -41,10 +53,10 @@ module Music
 
     def ==(other)
       if other.class == self.class
-        self.root == other.root &&
-          self.intervals.zip(other.intervals).all? { |self_interval, other_interval| self_interval == other_interval }
+        root == other.root &&
+          intervals.zip(other.intervals).all? { |self_interval, other_interval| self_interval == other_interval }
       end
     end
-    alias :eql? :==
+    alias_method :eql?, :==
   end
 end

@@ -15,15 +15,17 @@ class GuitarTabParser < Parslet::Parser
   rule(:line_char) { (eol.absent? >> any) }
 
   # Music
+  rule(:note) { match['A-G'] >> (str("#") | str("b")).maybe }
   rule(:chord_extension) { str("6") | str("7") | str("9") | str("11") | str("13") }
   rule(:chord) do
-    (match['A-G'] >> (str("#") | str("b")).maybe).as(:chord_root) >>
+    note.as(:chord_root) >>
     (str("min") | str("maj") | str("m") | str("M")).maybe.as(:major_minor) >>
     (str("add").maybe.as(:extension_separator) >>
         (str("maj") | str("min") | str("M") | str("m")).maybe.as(:extension_modifier) >>
         chord_extension.as(:extension)
     ).maybe >>
-    (str("sus") >> (str("4") | str("2")).maybe).maybe
+    (str("sus") >> (str("4") | str("2")).maybe).maybe >>
+    (str("/") >> note.as(:substitute_root)).maybe
   end
 
   # Sections
@@ -32,14 +34,20 @@ class GuitarTabParser < Parslet::Parser
   # Chord definition section, like
   # A6    xx767x
   # Amaj7    5x665x
-  # C#m7    9-11-9-9-9-9
   rule(:chord_fretting) do
-    (match['0-9x'] | ( match['0-9'].repeat(1,2) >> str('-') )).as(:fret).repeat(4,8)
-  end
-  rule(:chord_definition_lines) do
-    ( space? >> chord.as(:chord) >> space? >> chord_fretting >> eol ).repeat(1)
+    match['0-9x'].as(:fret).repeat(4, 8) >> eol
   end
 
+  # Or like
+  # C#m7    9-11-9-9-9-x
+  rule(:dashed_chord_fret) { match['0-9'].repeat(1, 2) | str("x") }
+  rule(:dashed_chord_fretting) do
+    (dashed_chord_fret.as(:fret) >> str('-')).repeat(4, 7) >> dashed_chord_fret.as(:fret) >> space? >> eol
+  end
+
+  rule(:chord_definition_lines) do
+    (space? >> chord.as(:chord) >> space? >> (chord_fretting | dashed_chord_fretting)).repeat(1)
+  end
 
   # Lyrics section with chord signals on other lines, like
   # C    Em  Am         F     C   G
@@ -51,8 +59,8 @@ class GuitarTabParser < Parslet::Parser
   rule(:chord_line) { (chord >> space.repeat(0)).repeat(1) >> eol }
   rule(:chording) do
     # First line can't be empty but other ones can
-    ( chord_line.as(:chords) | lyric_line.as(:lyrics) ) >>
-    ( empty_line | chord_line.as(:chords) | lyric_line.as(:lyrics) ).repeat(0)
+    (chord_line.as(:chords) | lyric_line.as(:lyrics)) >>
+    (empty_line | chord_line.as(:chords) | lyric_line.as(:lyrics)).repeat(0)
   end
 
   rule(:tab_staff_line) { str('-').repeat(1) >> eol }
@@ -85,19 +93,19 @@ class GuitarTabParser < Parslet::Parser
 
   rule(:section) do
     # Sections with a header don't need blank lines to delimit them
-    ( empty_line.repeat(0) >>
+    (empty_line.repeat(0) >>
       section_header.as(:header) >>
       empty_line.repeat(0) >>
       section_contents.maybe.as(:contents) >>
       empty_line.repeat(0)
     ) |
     # Sections without a header need a blank line at the end
-    ( empty_line.repeat(0) >>
+    (empty_line.repeat(0) >>
       section_contents.maybe.as(:contents) >>
       empty_line.repeat(1)
     ) |
     # Unrecognized sections don't need delimination
-    ( empty_line.repeat(0) >>
+    (empty_line.repeat(0) >>
       unrecognized_lines.as(:contents) >>
       empty_line.repeat(0)
     )

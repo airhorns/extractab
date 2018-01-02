@@ -1,5 +1,7 @@
+# frozen_string_literal: true
 module Music
   class ChordFretting
-    def initialize()
+    def initialize
+    end
   end
 end

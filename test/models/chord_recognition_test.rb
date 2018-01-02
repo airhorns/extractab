@@ -84,6 +84,13 @@ class ChordRecognitionTest < ActiveSupport::TestCase
     assert_equal Music::UnboundChord.for(root: 'F#', type: :minor_sixth), parse_chord("F#m6")
   end
 
+  test "it parses major triad chords with substitute roots" do
+    assert_equal Music::UnboundChord.for(root: 'C', type: :major, substitute_root: 'G'), parse_chord("C/G")
+    assert_equal Music::UnboundChord.for(root: 'Gb', type: :major, substitute_root: 'C'), parse_chord("Gb/C")
+    assert_equal Music::UnboundChord.for(root: 'Gb', type: :major, substitute_root: 'Bb'), parse_chord("Gb/Bb")
+    assert_equal Music::UnboundChord.for(root: 'F#', type: :major, substitute_root: 'A#'), parse_chord("F#/A#")
+  end
+
   test "it parses suspended chords" do
     parse_chord "Cmsus"
     parse_chord "C#msus4"
