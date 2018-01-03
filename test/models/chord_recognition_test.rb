@@ -166,7 +166,7 @@ class ChordRecognitionTest < ActiveSupport::TestCase
   test "it parses extension chords with substitute roots" do
     assert_equal Music::UnboundChord.for(root: 'C', type: :major_seventh, substitute_root: 'G'), parse_chord("Cmaj7/G")
     assert_equal Music::UnboundChord.for(root: 'Gb', type: :minor_seventh, substitute_root: 'C'), parse_chord("Gbm7/C")
-    assert_equal Music::UnboundChord.for(root: 'F#', type: :minor_seventh,  substitute_root: 'C#'), parse_chord("F#min7/C#")
+    assert_equal Music::UnboundChord.for(root: 'F#', type: :minor_seventh, substitute_root: 'C#'), parse_chord("F#min7/C#")
     assert_equal Music::UnboundChord.for(root: 'Db', type: :dominant_seventh, substitute_root: 'Bb'), parse_chord("Db7/Bb")
     assert_equal Music::UnboundChord.for(root: 'Eb', type: :major_seventh, substitute_root: 'Db'), parse_chord("Ebadd7/Db")
 

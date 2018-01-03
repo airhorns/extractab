@@ -26,7 +26,7 @@ module Music
       major_thirteenth: [Intervals::MAJOR_THIRD, Intervals::PERFECT_FIFTH, Intervals::MAJOR_SEVENTH, Intervals::OCTAVE + Intervals::MAJOR_SIXTH],
       minor_thirteenth: [Intervals::MINOR_THIRD, Intervals::PERFECT_FIFTH, Intervals::MINOR_SEVENTH, Intervals::OCTAVE + Intervals::MAJOR_SIXTH],
       thirteenth: [Intervals::MAJOR_THIRD, Intervals::PERFECT_FIFTH, Intervals::MINOR_SEVENTH, Intervals::OCTAVE + Intervals::MAJOR_SIXTH]
-    }.each { |_, v| v.freeze }.freeze
+    }.each_value(&:freeze).freeze
 
     class << self
       def for(root:, type:, substitute_root: nil)

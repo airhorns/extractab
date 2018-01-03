@@ -57,8 +57,7 @@ module Music
     alias_method :eql?, :==
 
     def apply_interval(interval)
-      positive_semitones = (semitones_above_c + interval.semitones) % 12  # use modulo operator to get positive result for lookup table
-      semitones = (semitones_above_c + interval.semitones).remainder(12)  # use #remainder that preserves sign to allow for notes below c
+      positive_semitones = (semitones_above_c + interval.semitones) % 12 # use modulo operator to get positive result for lookup table
       new_symbol = if symbol.include? 'b'
         SEMITONES_TO_FLAT_NOTES[positive_semitones]
       else
