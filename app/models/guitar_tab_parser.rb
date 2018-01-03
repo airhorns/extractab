@@ -19,7 +19,7 @@ class GuitarTabParser < Parslet::Parser
   rule(:chord_extension) { str("6") | str("7") | str("9") | str("11") | str("13") }
   rule(:chord) do
     note.as(:chord_root) >>
-    (str("min") | str("maj") | str("m") | str("M")).maybe.as(:major_minor) >>
+    (str("min") | str("maj") | str("m") | str("M") | str("-")).maybe.as(:major_minor) >>
     (str("add").maybe.as(:extension_separator) >>
         (str("maj") | str("min") | str("M") | str("m")).maybe.as(:extension_modifier) >>
         chord_extension.as(:extension)
@@ -46,7 +46,7 @@ class GuitarTabParser < Parslet::Parser
   end
 
   rule(:chord_definition_lines) do
-    (space? >> chord.as(:chord) >> space? >> (chord_fretting | dashed_chord_fretting)).repeat(1)
+    (space? >> chord.as(:chord) >> space? >> (chord_fretting | dashed_chord_fretting).as(:frets)).repeat(1)
   end
 
   # Lyrics section with chord signals on other lines, like

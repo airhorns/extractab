@@ -23,5 +23,7 @@ module Music
 
     MINOR_SEVENTH = Interval.new(10)
     MAJOR_SEVENTH = Interval.new(11)
+
+    OCTAVE = Interval.new(12)
   end
 end

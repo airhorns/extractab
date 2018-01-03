@@ -16,7 +16,16 @@ module Music
       augmented_seventh: [Intervals::MAJOR_THIRD, Intervals::AUGMENTED_FIFTH, Intervals::MINOR_SEVENTH],
       dominant_seventh: [Intervals::MAJOR_THIRD, Intervals::PERFECT_FIFTH, Intervals::MINOR_SEVENTH],
       minor_major_seventh: [Intervals::MINOR_THIRD, Intervals::PERFECT_FIFTH, Intervals::MAJOR_SEVENTH],
-      half_diminished_seventh: [Intervals::MINOR_THIRD, Intervals::DIMINISHED_FIFTH, Intervals::MINOR_SEVENTH]
+      half_diminished_seventh: [Intervals::MINOR_THIRD, Intervals::DIMINISHED_FIFTH, Intervals::MINOR_SEVENTH],
+      major_ninth: [Intervals::MAJOR_THIRD, Intervals::PERFECT_FIFTH, Intervals::MAJOR_SEVENTH, Intervals::OCTAVE + Intervals::MAJOR_SECOND],
+      minor_ninth: [Intervals::MINOR_THIRD, Intervals::PERFECT_FIFTH, Intervals::MINOR_SEVENTH, Intervals::OCTAVE + Intervals::MAJOR_SECOND],
+      ninth: [Intervals::MAJOR_THIRD, Intervals::PERFECT_FIFTH, Intervals::MINOR_SEVENTH, Intervals::OCTAVE + Intervals::MAJOR_SECOND],
+      major_eleventh: [Intervals::MAJOR_THIRD, Intervals::PERFECT_FIFTH, Intervals::MAJOR_SEVENTH, Intervals::OCTAVE + Intervals::PERFECT_FOURTH],
+      minor_eleventh: [Intervals::MINOR_THIRD, Intervals::PERFECT_FIFTH, Intervals::MINOR_SEVENTH, Intervals::OCTAVE + Intervals::PERFECT_FOURTH],
+      eleventh: [Intervals::MAJOR_THIRD, Intervals::PERFECT_FIFTH, Intervals::MINOR_SEVENTH, Intervals::OCTAVE + Intervals::PERFECT_FOURTH],
+      major_thirteenth: [Intervals::MAJOR_THIRD, Intervals::PERFECT_FIFTH, Intervals::MAJOR_SEVENTH, Intervals::OCTAVE + Intervals::MAJOR_SIXTH],
+      minor_thirteenth: [Intervals::MINOR_THIRD, Intervals::PERFECT_FIFTH, Intervals::MINOR_SEVENTH, Intervals::OCTAVE + Intervals::MAJOR_SIXTH],
+      thirteenth: [Intervals::MAJOR_THIRD, Intervals::PERFECT_FIFTH, Intervals::MINOR_SEVENTH, Intervals::OCTAVE + Intervals::MAJOR_SIXTH]
     }.each { |_, v| v.freeze }.freeze
 
     class << self
@@ -50,6 +59,10 @@ module Music
 
     def notes
       @intervals.map { |interval| root.apply_interval(interval) }.unshift(@root)
+    end
+
+    def notes_string
+      notes.map(&:symbol).join(' ')
     end
 
     def ==(other)

@@ -18,6 +18,23 @@ module Music
       assert_equal [Intervals::MAJOR_THIRD, Intervals::PERFECT_FIFTH], @c_major.intervals
     end
 
+    test "spot checked chords should have the right notes" do
+      assert_equal "C E G", @c_major.notes_string
+      assert_equal "C D# G", @c_minor.notes_string
+      assert_equal "C E G B", @c_major_7.notes_string
+      assert_equal "C D# G A#", UnboundChord.for(root: 'C', type: :minor_seventh).notes_string
+      assert_equal "C E G A#", UnboundChord.for(root: 'C', type: :dominant_seventh).notes_string
+      assert_equal "C E G B D", UnboundChord.for(root: 'C', type: :major_ninth).notes_string
+      assert_equal "C D# G A# D", UnboundChord.for(root: 'C', type: :minor_ninth).notes_string
+      assert_equal "C E G A# D", UnboundChord.for(root: 'C', type: :ninth).notes_string
+      assert_equal "C E G B F", UnboundChord.for(root: 'C', type: :major_eleventh).notes_string
+      assert_equal "C D# G A# F", UnboundChord.for(root: 'C', type: :minor_eleventh).notes_string
+      assert_equal "C E G A# F", UnboundChord.for(root: 'C', type: :eleventh).notes_string
+      assert_equal "C E G B A", UnboundChord.for(root: 'C', type: :major_thirteenth).notes_string
+      assert_equal "C D# G A# A", UnboundChord.for(root: 'C', type: :minor_thirteenth).notes_string
+      assert_equal "C E G A# A", UnboundChord.for(root: 'C', type: :thirteenth).notes_string
+    end
+
     test "different chord instances should be equal if they have the same root and the same intervals" do
       refute_equal @c_major, @c_minor
       refute_equal @c_major, @c_major_seventh

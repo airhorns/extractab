@@ -30,6 +30,10 @@ class ChordRecognitionTest < ActiveSupport::TestCase
     assert_equal Music::UnboundChord.for(root: 'C', type: :minor), parse_chord("Cmin")
     assert_equal Music::UnboundChord.for(root: 'Gb', type: :minor), parse_chord("Gbmin")
     assert_equal Music::UnboundChord.for(root: 'F#', type: :minor), parse_chord("F#min")
+
+    assert_equal Music::UnboundChord.for(root: 'C', type: :minor), parse_chord("C-")
+    assert_equal Music::UnboundChord.for(root: 'Gb', type: :minor), parse_chord("Gb-")
+    assert_equal Music::UnboundChord.for(root: 'F#', type: :minor), parse_chord("F#-")
   end
 
   test "it parses major and minor seventh extension chords expressed in the standard way" do
@@ -44,6 +48,10 @@ class ChordRecognitionTest < ActiveSupport::TestCase
     assert_equal Music::UnboundChord.for(root: 'C', type: :minor_seventh), parse_chord("Cmin7")
     assert_equal Music::UnboundChord.for(root: 'Gb', type: :minor_seventh), parse_chord("Gbmin7")
     assert_equal Music::UnboundChord.for(root: 'F#', type: :minor_seventh), parse_chord("F#min7")
+
+    assert_equal Music::UnboundChord.for(root: 'C', type: :minor_seventh), parse_chord("C-7")
+    assert_equal Music::UnboundChord.for(root: 'Gb', type: :minor_seventh), parse_chord("Gb-7")
+    assert_equal Music::UnboundChord.for(root: 'F#', type: :minor_seventh), parse_chord("F#-7")
   end
 
   test "it parses dominant seventh chords where the triad is implied major and the seventh is implied minor" do
@@ -74,7 +82,7 @@ class ChordRecognitionTest < ActiveSupport::TestCase
     assert_equal Music::UnboundChord.for(root: 'F#', type: :major_sixth), parse_chord("F#6")
   end
 
-  test "it parses minor sixth extension chords expressed in the standard way" do
+  test "it parses minor sixth extension chords" do
     assert_equal Music::UnboundChord.for(root: 'C', type: :minor_sixth), parse_chord("Cmin6")
     assert_equal Music::UnboundChord.for(root: 'Gb', type: :minor_sixth), parse_chord("Gbmin6")
     assert_equal Music::UnboundChord.for(root: 'F#', type: :minor_sixth), parse_chord("F#min6")
@@ -82,6 +90,70 @@ class ChordRecognitionTest < ActiveSupport::TestCase
     assert_equal Music::UnboundChord.for(root: 'C', type: :minor_sixth), parse_chord("Cm6")
     assert_equal Music::UnboundChord.for(root: 'Gb', type: :minor_sixth), parse_chord("Gbm6")
     assert_equal Music::UnboundChord.for(root: 'F#', type: :minor_sixth), parse_chord("F#m6")
+
+    assert_equal Music::UnboundChord.for(root: 'C', type: :minor_sixth), parse_chord("C-6")
+    assert_equal Music::UnboundChord.for(root: 'Gb', type: :minor_sixth), parse_chord("Gb-6")
+    assert_equal Music::UnboundChord.for(root: 'F#', type: :minor_sixth), parse_chord("F#-6")
+  end
+
+  test "it parses major and minor ninth extension chords" do
+    assert_equal Music::UnboundChord.for(root: 'C', type: :major_ninth), parse_chord("Cmaj9")
+    assert_equal Music::UnboundChord.for(root: 'Gb', type: :major_ninth), parse_chord("Gbmaj9")
+    assert_equal Music::UnboundChord.for(root: 'F#', type: :major_ninth), parse_chord("F#maj9")
+
+    assert_equal Music::UnboundChord.for(root: 'C', type: :minor_ninth), parse_chord("Cm9")
+    assert_equal Music::UnboundChord.for(root: 'Gb', type: :minor_ninth), parse_chord("Gbm9")
+    assert_equal Music::UnboundChord.for(root: 'F#', type: :minor_ninth), parse_chord("F#m9")
+
+    assert_equal Music::UnboundChord.for(root: 'C', type: :minor_ninth), parse_chord("Cmin9")
+    assert_equal Music::UnboundChord.for(root: 'Gb', type: :minor_ninth), parse_chord("Gbmin9")
+    assert_equal Music::UnboundChord.for(root: 'F#', type: :minor_ninth), parse_chord("F#min9")
+
+    assert_equal Music::UnboundChord.for(root: 'C', type: :minor_ninth), parse_chord("C-9")
+    assert_equal Music::UnboundChord.for(root: 'Gb', type: :minor_ninth), parse_chord("Gb-9")
+    assert_equal Music::UnboundChord.for(root: 'F#', type: :minor_ninth), parse_chord("F#-9")
+  end
+
+  test "it parses ninth chords where the triad is implied major and the seventh is implied minor" do
+    assert_equal Music::UnboundChord.for(root: 'C', type: :ninth), parse_chord("C9")
+    assert_equal Music::UnboundChord.for(root: 'Gb', type: :ninth), parse_chord("Gb9")
+    assert_equal Music::UnboundChord.for(root: 'F#', type: :ninth), parse_chord("F#9")
+  end
+
+  test "it parses major ninth extension chords expressed with the add keyword" do
+    assert_equal Music::UnboundChord.for(root: 'C', type: :major_ninth), parse_chord("Cadd9")
+    assert_equal Music::UnboundChord.for(root: 'Gb', type: :major_ninth), parse_chord("Gbadd9")
+    assert_equal Music::UnboundChord.for(root: 'F#', type: :major_ninth), parse_chord("F#add9")
+  end
+
+  test "it parses major and minor eleventh extension chords" do
+    assert_equal Music::UnboundChord.for(root: 'C', type: :major_eleventh), parse_chord("Cmaj11")
+    assert_equal Music::UnboundChord.for(root: 'Gb', type: :major_eleventh), parse_chord("Gbmaj11")
+    assert_equal Music::UnboundChord.for(root: 'F#', type: :major_eleventh), parse_chord("F#maj11")
+
+    assert_equal Music::UnboundChord.for(root: 'C', type: :minor_eleventh), parse_chord("Cm11")
+    assert_equal Music::UnboundChord.for(root: 'Gb', type: :minor_eleventh), parse_chord("Gbm11")
+    assert_equal Music::UnboundChord.for(root: 'F#', type: :minor_eleventh), parse_chord("F#m11")
+
+    assert_equal Music::UnboundChord.for(root: 'C', type: :minor_eleventh), parse_chord("Cmin11")
+    assert_equal Music::UnboundChord.for(root: 'Gb', type: :minor_eleventh), parse_chord("Gbmin11")
+    assert_equal Music::UnboundChord.for(root: 'F#', type: :minor_eleventh), parse_chord("F#min11")
+
+    assert_equal Music::UnboundChord.for(root: 'C', type: :minor_eleventh), parse_chord("C-11")
+    assert_equal Music::UnboundChord.for(root: 'Gb', type: :minor_eleventh), parse_chord("Gb-11")
+    assert_equal Music::UnboundChord.for(root: 'F#', type: :minor_eleventh), parse_chord("F#-11")
+  end
+
+  test "it parses eleventh chords where the triad is implied major and the seventh is implied minor" do
+    assert_equal Music::UnboundChord.for(root: 'C', type: :eleventh), parse_chord("C11")
+    assert_equal Music::UnboundChord.for(root: 'Gb', type: :eleventh), parse_chord("Gb11")
+    assert_equal Music::UnboundChord.for(root: 'F#', type: :eleventh), parse_chord("F#11")
+  end
+
+  test "it parses major eleventh extension chords expressed with the add keyword" do
+    assert_equal Music::UnboundChord.for(root: 'C', type: :major_eleventh), parse_chord("Cadd11")
+    assert_equal Music::UnboundChord.for(root: 'Gb', type: :major_eleventh), parse_chord("Gbadd11")
+    assert_equal Music::UnboundChord.for(root: 'F#', type: :major_eleventh), parse_chord("F#add11")
   end
 
   test "it parses major triad chords with substitute roots" do

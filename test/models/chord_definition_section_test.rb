@@ -4,7 +4,8 @@ require 'test_helper'
 class ChordDefinitionSectionTest < ActiveSupport::TestCase
   setup do
     @parser = GuitarTabParser.new
-    @transform = ChordDefinitionTransform.new
+    @chord_transform = ChordTransform.new
+    @definition_transform = ChordDefinitionTransform.new
   end
 
   test "it recognizes chords with 6 string single digit frets" do
@@ -49,7 +50,8 @@ class ChordDefinitionSectionTest < ActiveSupport::TestCase
 
   def parse(text)
     parsed = @parser.chord_definition_lines.parse(text)
-    @transform.apply(parsed)
+    chorded = @chord_transform.apply(parsed)
+    @definition_transform.apply(chorded)
   rescue Parslet::ParseFailed => error
     puts error.parse_failure_cause.ascii_tree
     puts "While parsing <<~TAB"

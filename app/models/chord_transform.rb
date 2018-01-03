@@ -85,6 +85,12 @@ class ChordTransform < Parslet::Transform
           return :major_seventh
         when '6'
           return :major_add_6
+        when '9'
+          return :major_ninth
+        when '11'
+          return :major_eleventh
+        when '13'
+          return :major_thirteenth
         else
           raise "Don't support adding extension=#{extension.inspect}"
         end
@@ -98,6 +104,8 @@ class ChordTransform < Parslet::Transform
       seventh(major_minor, third, extension_modifier)
     when '6'
       sixth(third, extension_modifier)
+    when '9', '11', '13'
+      high_extension(major_minor, third, extension, extension_modifier)
     else
       raise "Couldn't parse chord with extension_modifier=#{extension_modifier.inspect}, extension=#{extension}"
     end
@@ -105,7 +113,7 @@ class ChordTransform < Parslet::Transform
 
   def self.triad(major_minor)
     case major_minor
-    when 'm', 'min'
+    when 'm', 'min', '-'
       :minor
     when nil, 'maj', 'M'
       :major
@@ -147,6 +155,29 @@ class ChordTransform < Parslet::Transform
       end
     else
       raise "Couldn't parse seventh chord with extension_modifier=#{extension_modifier.inspect}"
+    end
+  end
+
+  def self.high_extension(major_minor, third, extension, extension_modifier)
+    modifier = case extension_modifier
+    when nil
+      prefix = if third == :major
+        if major_minor.nil?
+          nil
+        else
+          :major_
+        end
+      else
+        :minor_
+      end
+      base = case extension
+      when '9' then :ninth
+      when '11' then :eleventh
+      when '13' then :thirteenth
+      end
+      "#{prefix}#{base}".to_sym
+    else
+      raise "Couldn't parse extended #{extension} chord with extension_modifier=#{extension_modifier.inspect}"
     end
   end
 end
