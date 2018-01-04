@@ -4,7 +4,8 @@ module Music
     attr_reader :strings
 
     def initialize(strings:)
-      raise "Guitar tuning must be bound to real notes" unless strings.all? { |string| string.is_a?(Note) }
+      raise "Guitar tuning must be bound to real notes" unless strings.all? { |string| string.is_a?(BoundNote) }
+      @strings = strings
     end
 
     STANDARD = new(strings: [

@@ -54,7 +54,7 @@ module Music
       raise "Root note of a chord must be a Note class" unless root.respond_to?(:note?) && root.note?
       raise "Can't have duplicate notes in a chord, got: #{intervals.inspect} " unless intervals.uniq.size == intervals.size
       @root = root
-      @intervals = intervals.map(&:to_interval)
+      @intervals = intervals.sort
     end
 
     def notes

@@ -6,7 +6,7 @@ module Music
     class << self
       def from(from_note, to_note)
         if from_note.bound? && to_note.bound?
-          new(to_note.semitones_above_a4 - from_note.semitones_above_a4)
+          new(to_note.semitones_above_c4 - from_note.semitones_above_c4)
         elsif !from_note.bound? && !to_note.bound?
           new(to_note.semitones_above_c - from_note.semitones_above_c)
         else
@@ -16,11 +16,15 @@ module Music
     end
 
     def initialize(semitones)
+      raise "Must create an interval with integer semitones" unless semitones.is_a?(Integer)
       @semitones = semitones
     end
 
-    def to_interval
-      self
+    include Comparable
+    def <=>(other)
+      if other.class == self.class
+        self.semitones <=> other.semitones
+      end
     end
 
     def ==(other)
@@ -63,7 +67,7 @@ module Music
 
     def +(other)
       raise "Can't add an Interval to #{other.class}" unless other.respond_to?(:semitones)
-      self.class.new((semitones + other.semitones) % 12)
+      self.class.new( semitones + other.semitones )
     end
   end
 end

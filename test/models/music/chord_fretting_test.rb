@@ -5,7 +5,7 @@ module Music
   class ChordFrettingTest < ActiveSupport::TestCase
     setup do
       @c_major = Music::UnboundChord.for(root: 'C', type: :major)
-      @c4 = Music::Note.symbolic('C4')
+      @c4 = Music::BoundNote.symbolic('C4')
       @tuning = Music::GuitarTuning::STANDARD
     end
 

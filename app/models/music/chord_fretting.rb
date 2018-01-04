@@ -16,7 +16,12 @@ module Music
         raise MismatchedStringsException, "Can't bind fretting #{inspect} because it has #{frets.size} and the tuning has #{tuning.strings.size} strings"
       end
 
-      notes = tuning.strings.zip(intervals).map { |open_string, interval| open_string.apply_interval(interval) }.sort!
+      notes = tuning.strings.zip(intervals).map! do |open_string, interval|
+        if interval
+          open_string.apply_interval(interval)
+        end
+      end.compact!.sort!
+
       root = notes.shift
       chord_intervals = notes.map { |note| Interval.from(root, note) }
 
@@ -24,7 +29,7 @@ module Music
     end
 
     def intervals
-      @frets.map { |semitones| Interval.new(semitones) }
+      @frets.map { |semitones| Interval.new(semitones) unless semitones.nil? }
     end
   end
 end

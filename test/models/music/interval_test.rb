@@ -40,5 +40,9 @@ module Music
       assert_equal Interval.new(5), Interval.new(-7).positive_inversion
       assert_equal Interval.new(11), Interval.new(11).positive_inversion
     end
+
+    test "intervals should sort from lowest to highest" do
+      assert_equal [Intervals::MAJOR_SECOND, Intervals::MAJOR_THIRD, Intervals::PERFECT_FIFTH, Intervals::MINOR_SIXTH], [Intervals::MINOR_SIXTH, Intervals::MAJOR_THIRD, Intervals::MAJOR_SECOND, Intervals::PERFECT_FIFTH].sort
+    end
   end
 end

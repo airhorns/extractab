@@ -47,9 +47,9 @@ module Music
     def apply_interval(interval)
       new_octave, new_letter_index = (octave * 12 + semitones_above_c + interval.semitones).divmod(12)
       new_symbol = if symbol.letter.include? 'b'
-        UnboundNote::SEMITONES_TO_FLAT_NOTES[new_letter_index]
+        UnboundNote::SEMITONES_TO_FLAT_NOTES.fetch(new_letter_index)
       else
-        UnboundNote::SEMITONES_TO_SHARP_NOTES[new_letter_index]
+        UnboundNote::SEMITONES_TO_SHARP_NOTES.fetch(new_letter_index)
       end
 
       symbol = NoteSymbol.new(new_symbol, new_octave)
@@ -74,7 +74,11 @@ module Music
     end
 
     def semitones_above_c
-      UnboundNote::NOTES_TO_SEMITONES[@symbol.letter]
+      UnboundNote::NOTES_TO_SEMITONES.fetch(@symbol.letter)
+    end
+
+    def semitones_above_c4
+      (octave - 4) * 12 + semitones_above_c
     end
 
     def octave
