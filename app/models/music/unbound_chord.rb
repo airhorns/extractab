@@ -1,5 +1,14 @@
 # frozen_string_literal: true
+
 module Music
+  # Represents a chord as a root plus a variable number of intervals (positive or negative). The chord isn't
+  # bound to a particular octave or guitar tuning or anything, it's just floating in space relative to the root.
+  # This is useful for representing chords in the abstract before dictating exactly how and where to play them on
+  # the neck of the guitar or the piano to make that "binding" step of deciding where along the neck or the piano
+  # the chord should actually sit.
+  # The intervals themselves are unbound and always sorted lowest to highest. Inversions can however be represented
+  # using some negative intervals and some positive intervals. the notes that would be above the root in the standard
+  # voicing of the chord can be given using the inverse (negative) interval such that they are now below the root.
   class UnboundChord
     class UnknownChordTypeException < RuntimeError; end
     CHORD_INTERVALS = {

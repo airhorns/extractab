@@ -1,0 +1,11 @@
+
+<%= form_tag("/debug/parse_tree", method: "post") do %>
+  <%= label_tag(:tab, "Paste tab:") %>
+  <%= text_field_tag(:tab) %>
+  <%= submit_tag("Parse") %>
+<% end %>
+
+
+<% if @output %>
+  <%= puts @output %>
+<% end %>

@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 module Music
+  # Small data structure to manage Scientific Pitch Notation (like C4, A4, Bb3 or what have you)
+  # and break it into the constituent parts: the unbound note (C), and the octave (4).
+  # String like in that it implements #to_str.
   class NoteSymbol
     def self.parse(string)
       match = string.match(/^([A-Ga-g][#b]?)([0-8]?)$/)

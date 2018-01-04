@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 module Music
+  # Grab bag of methods that knows how to convert notes between their physical representation as an oscillation
+  # at a particular frequency and a symbolic repsentation in Scientific Pitch Notation, which is just a fancy way
+  # of saying something like C4 (middle C), A4 (the A above middle C), or Bb3.
   module FrequencyConverter
     def self.symbol_for_frequency(frequency)
       # h = 12 log(P / C) / log 2 if C is the frequency of middle C, but we use A = 440hz for accuracy, which is 9 semitones away

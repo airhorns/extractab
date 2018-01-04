@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
 module Music
+  # Represents a specific fingering of a chord on a guitar neck with fingers on specific frets.
+  # In guitar tabs, we're often given non-standard (interesting!) ways to play chords that are equivalent to
+  # the standard (sometimes boring!) chords that match the original artist's sound. This represents which
+  # frets to press on which strings. The actual BoundChord that knows exactly which notes are being played
+  # in which octaves can be computed with the #bind_at_tuning method, which needs a GuitarTuning to know
+  # what the open string notes are.
   class ChordFretting
     class MismatchedStringsException < RenderException; end
 

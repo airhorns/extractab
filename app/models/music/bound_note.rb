@@ -1,5 +1,9 @@
 # frozen_string_literal: true
+
 module Music
+  # Represents a note on the piano at a specific frequency (and in a specific octave). Can be thought of as a specific
+  # fret on a guitar or a specific key on a piano. Useful for representing actual music that might be printed out
+  # as sheet music or a guitar tab or what have you.
   class BoundNote
     def self.symbolic(string_or_note)
       if string_or_note.respond_to?(:note?) && string_or_note.note?

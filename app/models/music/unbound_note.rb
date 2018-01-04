@@ -1,5 +1,10 @@
 # frozen_string_literal: true
+
 module Music
+  # Represents a note on the piano. The note is unbound because it's not set at any particular frequency or in
+  # any particular octave. It's just floating, so an Unbound C note corresponds to all the C keys on a piano
+  # or all the frets on any string of a guitar that would play a C note. This is useful for representing chords
+  # and scales and whatnot in the abstract before grounding them somewhere exactly on a staff.
   class UnboundNote
     NOTES_TO_SEMITONES = {
       'C' => 0,

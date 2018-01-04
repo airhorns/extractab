@@ -1,4 +1,8 @@
 # frozen_string_literal: true
+
+# Represents an interval in music theory. Not limited to 12 semitones. See the Music::Intervals namespace for
+# a bunch of named constants for the main intervals. Positive represents up the piano and negative represents down.
+# Applies to both UnboundNotes and BoundNotes.
 module Music
   class Interval
     attr_reader :semitones
