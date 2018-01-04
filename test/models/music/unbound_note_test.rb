@@ -8,7 +8,13 @@ module Music
       @g = UnboundNote.symbolic('G')
       @g_flat = UnboundNote.symbolic('Gb')
       @g_sharp = UnboundNote.symbolic('G#')
+      @a_flat = UnboundNote.symbolic('Ab')
+      @b_flat = UnboundNote.symbolic('Bb')
+      @a_sharp = UnboundNote.symbolic('A#')
+      @other_c = UnboundNote.symbolic('C')
     end
+
+    include CommonNoteTests
 
     test "notes should report their symbol and semitones above c" do
       assert_equal 'C', @c.symbol
@@ -22,32 +28,9 @@ module Music
       assert_equal 8, @g_sharp.semitones_above_c
     end
 
-    test "different note instances should be equal if they are the same number of semitones above c" do
-      refute_equal @c, @g
-      refute_equal @g, @g_flat
-      refute_equal @g, @g_sharp
-
-      other_c = UnboundNote.symbolic('C')
-      assert_equal other_c, @c
-    end
-
-    test "different note instances should be equal if they are the same number of semitones above c even if they have different symbols" do
-      c_sharp = UnboundNote.symbolic('C#')
-      d_flat = UnboundNote.symbolic('Db')
-      refute_equal c_sharp.symbol, d_flat.symbol
-      assert_equal c_sharp, d_flat
-    end
-
-    test "applying an interval returns a new note that many semitones away from the original" do
-      assert_equal @g, @c.apply_interval(Intervals::PERFECT_FIFTH)
-    end
-
-    test "applying an interval to a sharp symbol returns a new note with a sharp symbol if necessary" do
-      assert_equal UnboundNote.symbolic('Bb'), @g_flat.apply_interval(Intervals::MAJOR_THIRD)
-    end
-
-    test "applying an interval to a flat symbol returns a new note with a flat symbol if necessary" do
-      assert_equal UnboundNote.symbolic('A#'), @g_sharp.apply_interval(Intervals::MAJOR_SECOND)
+    test "can be created from bound notes" do
+      bound_note = BoundNote.symbolic('A#4')
+      assert_equal UnboundNote.symbolic('A#'), UnboundNote.new(bound_note.symbol_without_octave)
     end
   end
 end

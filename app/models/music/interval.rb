@@ -5,7 +5,13 @@ module Music
 
     class << self
       def from(from_note, to_note)
-        new(to_note.semitones_above_c - from_note.semitones_above_c)
+        if from_note.bound? && to_note.bound?
+          new(to_note.semitones_above_a4 - from_note.semitones_above_a4)
+        elsif !from_note.bound? && !to_note.bound?
+          new(to_note.semitones_above_c - from_note.semitones_above_c)
+        else
+          raise "Can't compute interval from #{from_note.inspect} to #{to_note.inspect} because they both aren't bound or unbound"
+        end
       end
     end
 

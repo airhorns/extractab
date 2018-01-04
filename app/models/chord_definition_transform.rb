@@ -11,6 +11,6 @@ class ChordDefinitionTransform < Parslet::Transform
   end
 
   rule(chord: simple(:chord), frets: sequence(:frets)) do
-    Music::ChordFretting.new(chord: chord, frets: frets)
+    Music::ChordFretting.new(labeled_chord: chord, frets: frets)
   end
 end

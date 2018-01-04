@@ -26,7 +26,11 @@ module Music
     class << self
       def symbolic(string_or_note)
         if string_or_note.respond_to?(:note?) && string_or_note.note?
-          string_or_note
+          if string_or_note.bound?
+            new(string_or_note.symbol_without_octave)
+          else
+            string_or_note
+          end
         else
           new(string_or_note.to_s)
         end
@@ -56,6 +60,10 @@ module Music
     end
     alias_method :eql?, :==
 
+    def hash
+      @symbol.hash
+    end
+
     def apply_interval(interval)
       positive_semitones = (semitones_above_c + interval.semitones) % 12 # use modulo operator to get positive result for lookup table
       new_symbol = if symbol.include? 'b'
@@ -69,6 +77,10 @@ module Music
 
     def note?
       true
+    end
+
+    def bound?
+      false
     end
   end
 end
