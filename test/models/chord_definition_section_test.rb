@@ -9,7 +9,16 @@ class ChordDefinitionSectionTest < ActiveSupport::TestCase
   end
 
   test "it recognizes chords with 6 string single digit frets" do
-    expected = [{ chord: { chord_root: "A", major_minor: nil, extension_separator: nil, extension_modifier: nil, extension: "6" } }, { fret: "x" }, { fret: "x" }, { fret: "7" }, { fret: "6" }, { fret: "7" }, { fret: "x" }, { chord: { chord_root: "A", major_minor: "maj", extension_separator: nil, extension_modifier: nil, extension: "7" } }, { fret: "5" }, { fret: "x" }, { fret: "6" }, { fret: "6" }, { fret: "5" }, { fret: "x" }]
+    expected = [
+      Music::ChordFretting.new(
+        labeled_chord: Music::UnboundChord.for(root: 'A', type: :major_sixth),
+        frets: [nil, nil, 7, 6, 7, nil]
+      ),
+      Music::ChordFretting.new(
+        labeled_chord: Music::UnboundChord.for(root: 'A', type: :major_seventh),
+        frets: [5, nil, 6, 6, 5, nil]
+      ),
+    ]
 
     actual = parse <<~TAB
       A6      xx767x
@@ -20,7 +29,20 @@ class ChordDefinitionSectionTest < ActiveSupport::TestCase
   end
 
   test "it recognizes chords with 6 string dashed multidigit digit frets" do
-    expected = [{ chord: { chord_root: "C#", major_minor: "m", extension_separator: nil, extension_modifier: nil, extension: "7" } }, { fret: "9" }, { fret: "11" }, { fret: "9" }, { fret: "9" }, { fret: "9" }, { fret: "9" }, { chord: { chord_root: "F#", major_minor: nil, extension_separator: nil, extension_modifier: nil, extension: "7" } }, { fret: "x" }, { fret: "9" }, { fret: "9" }, { fret: "9" }, { fret: "9" }, { fret: "11" }, { chord: { chord_root: "F#", major_minor: nil, extension_separator: nil, extension_modifier: nil, extension: "7" } }, { fret: "x" }, { fret: "9" }, { fret: "9" }, { fret: "9" }, { fret: "9" }, { fret: "x" }]
+    expected = [
+      Music::ChordFretting.new(
+        labeled_chord: Music::UnboundChord.for(root: 'C#', type: :minor_seventh),
+        frets: [9, 11, 9, 9, 9, 9]
+      ),
+      Music::ChordFretting.new(
+        labeled_chord: Music::UnboundChord.for(root: 'F#', type: :dominant_seventh),
+        frets: [nil, 9, 9, 9, 9, 11]
+      ),
+      Music::ChordFretting.new(
+        labeled_chord: Music::UnboundChord.for(root: 'F#', type: :dominant_seventh),
+        frets: [nil, 9, 9, 9, 9, nil]
+      )
+    ]
 
     actual = parse <<~TAB
       C#m7   9-11-9-9-9-9

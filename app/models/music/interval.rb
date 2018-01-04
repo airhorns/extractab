@@ -23,7 +23,7 @@ module Music
     include Comparable
     def <=>(other)
       if other.class == self.class
-        self.semitones <=> other.semitones
+        semitones <=> other.semitones
       end
     end
 
@@ -56,18 +56,9 @@ module Music
       end
     end
 
-    include Comparable
-    def <=>(other)
-      if other.class == self.class
-        semitones <=> other.semitones
-      else
-        -1
-      end
-    end
-
     def +(other)
       raise "Can't add an Interval to #{other.class}" unless other.respond_to?(:semitones)
-      self.class.new( semitones + other.semitones )
+      self.class.new(semitones + other.semitones)
     end
   end
 end

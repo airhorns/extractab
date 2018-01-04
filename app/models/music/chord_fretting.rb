@@ -11,6 +11,13 @@ module Music
       @frets = frets
     end
 
+    def ==(other)
+      if self.class == other.class
+        labeled_chord == other.labeled_chord && frets == other.frets
+      end
+    end
+    alias_method :eql?, :==
+
     def bind_at_tuning(tuning)
       unless tuning.strings.size == frets.size
         raise MismatchedStringsException, "Can't bind fretting #{inspect} because it has #{frets.size} and the tuning has #{tuning.strings.size} strings"

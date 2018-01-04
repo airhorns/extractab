@@ -11,6 +11,5 @@ module Music
     def notes_string
       notes.map(&:symbol).join(' ')
     end
-
   end
 end
