@@ -73,6 +73,10 @@ module Music
       true
     end
 
+    def unbind
+      UnboundNote.new(symbol_without_octave)
+    end
+
     def semitones_above_c
       UnboundNote::NOTES_TO_SEMITONES.fetch(@symbol.letter)
     end
@@ -84,7 +88,5 @@ module Music
     def octave
       @symbol.octave
     end
-
-    A4 = new(440, 'A4')
   end
 end

@@ -5,6 +5,7 @@ module Music
   class UnboundChordTest < ActiveSupport::TestCase
     setup do
       @c = UnboundNote.symbolic('C')
+      @g = UnboundNote.symbolic('G')
       @c_major = UnboundChord.for(root: 'C', type: :major)
       @c_minor = UnboundChord.for(root: 'C', type: :minor)
       @c_major_7 = UnboundChord.for(root: 'C', type: :major_seventh)
@@ -72,6 +73,46 @@ module Music
       @left = UnboundChord.new(@c, [Intervals::MAJOR_THIRD, Intervals::PERFECT_FIFTH])
       @right = UnboundChord.new(@c, [Intervals::PERFECT_FIFTH, Intervals::MAJOR_THIRD])
       assert_equal @left, @right
+
+      @left = UnboundChord.new(@c, [])
+      @right = UnboundChord.new(@c, [])
+      assert_equal @left, @right
+    end
+
+    test "equivalent? returns true for chords with intervals given in a different order" do
+      @left = UnboundChord.new(@c, [Intervals::MAJOR_THIRD, Intervals::PERFECT_FIFTH])
+      @right = UnboundChord.new(@c, [Intervals::PERFECT_FIFTH, Intervals::MAJOR_THIRD])
+      assert @left.equivalent?(@right)
+      assert @right.equivalent?(@left)
+    end
+
+    test "equivalent? returns false for chords with different roots but the same intervals" do
+      @left = UnboundChord.new(@c, [Intervals::MAJOR_THIRD, Intervals::PERFECT_FIFTH])
+      @right = UnboundChord.new(@g, [Intervals::MAJOR_THIRD, Intervals::PERFECT_FIFTH])
+      refute @left.equivalent?(@right)
+      refute @right.equivalent?(@left)
+    end
+
+    test "equivalent? returns false for chords with different intervals" do
+      refute @c_major.equivalent?(@c_minor)
+      refute @c_minor.equivalent?(@c_major)
+
+      refute @c_major_7.equivalent?(@c_major)
+      refute @c_major.equivalent?(@c_major_7)
+    end
+
+    test "equivalent? returns true for chords with different roots and intervals that lead to the same notes" do
+      @left = UnboundChord.new(@c, [Intervals::MAJOR_THIRD, Intervals::PERFECT_FIFTH])
+      @right = UnboundChord.new(@g, [Intervals::PERFECT_FOURTH, Intervals::MAJOR_SIXTH])
+      assert @left.equivalent?(@right)
+      assert @right.equivalent?(@left)
+    end
+
+    test "equivalent? returns true for chords with the same roots but where one chord has duplicates" do
+      @left = UnboundChord.new(@c, [Intervals::MAJOR_THIRD, Intervals::PERFECT_FIFTH])
+      @right = UnboundChord.new(@c, [Intervals::MAJOR_THIRD, Intervals::PERFECT_FIFTH, Intervals::OCTAVE + Intervals::MAJOR_THIRD])
+      assert @left.equivalent?(@right)
+      assert @right.equivalent?(@left)
     end
   end
 end

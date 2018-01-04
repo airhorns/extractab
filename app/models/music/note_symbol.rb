@@ -21,6 +21,7 @@ module Music
     def to_s
       @letter + @octave.to_s
     end
+    alias :to_str :to_s
 
     def ==(other)
       if other.class == self.class

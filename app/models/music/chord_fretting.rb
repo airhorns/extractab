@@ -22,10 +22,10 @@ module Music
         end
       end.compact!.sort!
 
-      root = notes.shift
-      chord_intervals = notes.map { |note| Interval.from(root, note) }
+      # root = notes.shift
+      # chord_intervals = notes.map { |note| Interval.from(root, note) }
 
-      BoundChord.new(root: notes.min, intervals: chord_intervals)
+      BoundChord.new(notes)
     end
 
     def intervals

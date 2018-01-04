@@ -72,5 +72,11 @@ module Music
       end
     end
     alias_method :eql?, :==
+
+    # tests if a different bound or unbound chord contains the same notes but in any order, octave, or with repetition
+    def equivalent?(other_chord)
+      other_notes = other_chord.notes.map(&:unbind)
+      notes.uniq.sort == other_notes.uniq.sort
+    end
   end
 end

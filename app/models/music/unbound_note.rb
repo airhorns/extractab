@@ -82,5 +82,9 @@ module Music
     def bound?
       false
     end
+
+    def unbind
+      self
+    end
   end
 end
