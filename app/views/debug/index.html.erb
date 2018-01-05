@@ -1,11 +1,23 @@
+<div class="row">
+  <%= form_tag("/debug/parse_tree", method: "post") do %>
+    <%= label_tag(:tab, "Paste tab:") %>
+    <%= text_area_tag(:tab, @tab, class: 'u-full-width') %>
+    <%= submit_tag("Parse") %>
+  <% end %>
+</div>
 
-<%= form_tag("/debug/parse_tree", method: "post") do %>
-  <%= label_tag(:tab, "Paste tab:") %>
-  <%= text_field_tag(:tab) %>
-  <%= submit_tag("Parse") %>
+<% if @exception %>
+  <div class="row">
+    <h5>Exception</h5>
+    <code class="u-full-width"><%= @output %></code>
+  </div>
 <% end %>
 
-
 <% if @output %>
-  <%= puts @output %>
+  <div class="row">
+    <h5>Parse Tree</h5>
+    <div class="parse-debug">
+      <%= format_parse_tree(@output, @tab) %>
+    </div>
+  </div>
 <% end %>

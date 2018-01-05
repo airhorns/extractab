@@ -8,7 +8,7 @@ class GuitarTabParser < Parslet::Parser
   end
 
   # Utilities
-  rule(:eol) { str("\n") }
+  rule(:eol) { str("\r").maybe >> str("\n") }
   rule(:space) { match["\t "] }
   rule(:space?) { space.repeat }
   rule(:empty_line) { space? >> eol }
@@ -54,17 +54,38 @@ class GuitarTabParser < Parslet::Parser
   # Wise men say, only fools rush in
   #    F  G    Am    F          C    G   C
   # But I can't help falling in love with you
-
+  rule(:repetition_indicator) do
+    match["\\[("].maybe >> space? >>
+    stri("x") >> space? >>
+    match["0-9"].repeat(1,3) >> space? >>
+    match[")\\]"].maybe >> space?
+  end
   rule(:lyric_line) { section_header_signal.absent? >> line_char.repeat(1) >> eol }
-  rule(:chord_line) { (chord >> space.repeat(0)).repeat(1) >> eol }
+  rule(:chord_line) { (space? >> chord.as(:chord) >> space?).repeat(1) >> repetition_indicator.maybe >> eol }
   rule(:chording) do
     # First line can't be empty but other ones can
-    (chord_line.as(:chords) | lyric_line.as(:lyrics)) >>
-    (empty_line | chord_line.as(:chords) | lyric_line.as(:lyrics)).repeat(0)
+    (chord_line.as(:chord_line) | lyric_line.as(:lyric_line)) >>
+    (empty_line | chord_line.as(:chord_line) | lyric_line.as(:lyric_line)).repeat(0)
   end
 
-  rule(:tab_staff_line) { str('-').repeat(1) >> eol }
-  rule(:tab_staff) { tab_staff_line.repeat(1, 8) }
+  # Tab section with lines along time with hits as fret numbers along a series of strings, like
+  # E|------|----7--7----------7-7-------|-----7--7----------4-------|
+  # B|------|----7--7----------7-7-------|-----7--7----------5-------|
+  # G|------|----7--7----------7-7-------|-----7--7----------4-------|
+  # D|------|----7--7----------7-7-------|-----7--7----------6-------|
+  # A|------|---9------------9-----------|---9-------5/7-4-4-4-------|
+  # E|-5/6/-|-7--------5/6/7--------5/6/-|-7---------------4-4--5/6/-|
+  rule(:tab_separator) { str('|') }
+  rule(:tab_tuning) { match['a-gA-G'] }
+  rule(:tab_hit) { match["0-9"].repeat(1,2) >> ( str('/') >> match["0-9"].repeat(1,2) >> str('/').maybe ).repeat }
+  rule(:tab_rest) { str('|') | str('-') }
+  rule(:tab_staff_line) do
+    space? >>
+    tab_tuning.as(:tuning) >> tab_separator >>
+    (tab_hit | tab_rest).as(:tab_action) >>
+    space? >> eol
+  end
+  rule(:tab_lines) { tab_staff_line.repeat(1, 8) }
 
   # Match any characters on lines that aren't empty
   rule(:unrecognized_lines) do
@@ -86,9 +107,9 @@ class GuitarTabParser < Parslet::Parser
 
   rule(:section_contents) do
     fluff.as(:fluff_lines) |
-    fluff.as(:chord_definition_lines) |
-    chording.as(:chord_lines) |
-    tab_staff.as(:tab_lines)
+    chord_definition_lines.as(:chord_definition_lines) |
+    tab_lines.as(:tab_lines) |
+    chording.as(:song_lines)
   end
 
   rule(:section) do

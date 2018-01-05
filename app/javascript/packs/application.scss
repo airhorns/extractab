@@ -1,0 +1,37 @@
+@import '~skeleton-css/css/normalize';
+@import '~skeleton-css/css/skeleton';
+
+.parse-debug {
+  span.slice {
+    display: inline-block;
+    border: 1px dashed #CCC;
+    padding: 1px;
+    margin: 1px;
+
+    & > span.slice {
+      border-color: orange;
+      & > span.slice {
+        border-color: blue;
+        & > span.slice {
+          border-color: purple;
+          & > span.slice {
+            border-color: red;
+            & > span.slice {
+              border-color: blue;
+            }
+          }
+        }
+      }
+    }
+
+    br {
+      display: inline-block;
+      float: clear;
+    }
+  }
+
+  span.slice-label {
+    font-size: 8px;
+    float: left;
+  }
+}
