@@ -76,8 +76,7 @@ module Music
 
     def ==(other)
       if other.class == self.class
-        root == other.root &&
-          intervals.zip(other.intervals).all? { |self_interval, other_interval| self_interval == other_interval }
+        root == other.root && intervals == other.intervals
       end
     end
     alias_method :eql?, :==

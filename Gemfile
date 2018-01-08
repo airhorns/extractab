@@ -33,6 +33,7 @@ group :development, :test do
   gem 'capybara', '~> 2.13'
   gem 'selenium-webdriver'
   gem 'rubocop'
+  gem 'minitest', '~> 5.10.0'
 end
 
 group :development do

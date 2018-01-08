@@ -1,9 +1,9 @@
+# frozen_string_literal: true
 module DebugHelper
   class DebugSlice
     attr_reader :string, :start_position, :end_position
 
     def initialize(string, start_position, end_position)
-      byebug if string.include?('DebugSlice')
       @string = string
       @start_position = start_position
       @end_position = end_position
@@ -39,13 +39,12 @@ module DebugHelper
     when Hash
       slices = tree.map do |key, value|
         value = transform_parse_tree(value, full_input)
-        unless value.nil?
-          str = "<span class=\"slice\">
-            <span class=\"slice-label\">#{format_raw_string key.to_s}</span>
-            #{value.string}
-          </span>"
-          DebugSlice.new(str, value.start_position, value.end_position)
-        end
+        next if value.nil?
+        str = "<span class=\"slice\">
+          <span class=\"slice-label\">#{format_raw_string key.to_s}</span>
+          #{value.string}
+        </span>"
+        DebugSlice.new(str, value.start_position, value.end_position)
       end.compact.sort
       fill_in_missing_segments(slices, full_input)
     when Array
@@ -65,22 +64,21 @@ module DebugHelper
   end
 
   def fill_in_missing_segments(slices, full_input)
-    if slices.size > 0
+    unless slices.empty?
       cursor = slices.first.start_position
-      strings = slices.inject([]) do |acc, slice|
+      strings = slices.each_with_object([]) do |slice, acc|
         if slice.start_position > cursor
           between_slices = full_input.slice(cursor, slice.start_position - cursor)
           acc << "<span class=\"slice unparsed\">#{format_raw_string between_slices}</span>"
         end
         acc << slice.string
         cursor = slice.end_position
-        acc
       end
       DebugSlice.new(strings.join("\n"), slices.first.start_position, slices.last.end_position)
     end
   end
 
   def format_raw_string(string)
-    CGI::escapeHTML(string.to_s).gsub("\n", "<br/>")
+    CGI.escapeHTML(string.to_s).gsub("\n", "<br/>")
   end
 end

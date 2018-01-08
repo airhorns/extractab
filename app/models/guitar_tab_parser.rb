@@ -28,8 +28,7 @@ class GuitarTabParser < Parslet::Parser
     (str("/") >> note.as(:substitute_root)).maybe
   end
 
-  # Sections
-  rule(:fluff) { (stri("tabbed by") >> line_char.repeat >> eol) }
+  ##### Sections
 
   # Chord definition section, like
   # A6    xx767x
@@ -57,16 +56,12 @@ class GuitarTabParser < Parslet::Parser
   rule(:repetition_indicator) do
     match["\\[("].maybe >> space? >>
     stri("x") >> space? >>
-    match["0-9"].repeat(1,3) >> space? >>
+    match["0-9"].repeat(1, 3) >> space? >>
     match[")\\]"].maybe >> space?
   end
-  rule(:lyric_line) { section_header_signal.absent? >> line_char.repeat(1) >> eol }
+  rule(:lyric_line) { section_header_signal.absent? >> tab_staff_line.absent? >> line_char.repeat(1) >> eol }
   rule(:chord_line) { (space? >> chord.as(:chord) >> space?).repeat(1) >> repetition_indicator.maybe >> eol }
-  rule(:chording) do
-    # First line can't be empty but other ones can
-    (chord_line.as(:chord_line) | lyric_line.as(:lyric_line)) >>
-    (empty_line | chord_line.as(:chord_line) | lyric_line.as(:lyric_line)).repeat(0)
-  end
+  rule(:chording) { ( chord_line.as(:chord_line) | lyric_line.as(:lyric_line) ).repeat(1) }
 
   # Tab section with lines along time with hits as fret numbers along a series of strings, like
   # E|------|----7--7----------7-7-------|-----7--7----------4-------|
@@ -75,17 +70,25 @@ class GuitarTabParser < Parslet::Parser
   # D|------|----7--7----------7-7-------|-----7--7----------6-------|
   # A|------|---9------------9-----------|---9-------5/7-4-4-4-------|
   # E|-5/6/-|-7--------5/6/7--------5/6/-|-7---------------4-4--5/6/-|
-  rule(:tab_separator) { str('|') }
-  rule(:tab_tuning) { match['a-gA-G'] }
-  rule(:tab_hit) { match["0-9"].repeat(1,2) >> ( str('/') >> match["0-9"].repeat(1,2) >> str('/').maybe ).repeat }
-  rule(:tab_rest) { str('|') | str('-') }
+  rule(:tab_bar_separator) { str('|') }
+  rule(:tab_string_tuning) { match['a-gA-G'] }
+  rule(:tab_linkage) { str('/') | stri('h') | stri('p') | stri('b') | str('^') }
+  rule(:tab_hit) do
+    (match["0-9"].repeat(1, 2).as(:fret) >> tab_linkage.as(:linkage).maybe).repeat(1)
+  end
+
+  rule(:tab_rest) { tab_bar_separator | str('-') | str(' ') }
   rule(:tab_staff_line) do
-    space? >>
-    tab_tuning.as(:tuning) >> tab_separator >>
-    (tab_hit | tab_rest).as(:tab_action).repeat(4) >>
+    space?.as(:tab_staff_space_prefix) >>
+    tab_string_tuning.as(:string_tuning) >>
+    tab_bar_separator.as(:tab_staff_bar_separator) >>
+    (tab_hit.as(:hit) | tab_rest.as(:rest)).repeat(4).as(:tab_actions) >>
     space? >> eol
   end
-  rule(:tab_lines) { tab_staff_line.repeat(1, 8) }
+
+  rule(:tab_lines) do
+    tab_staff_line.repeat(4, 8).as(:tab_strings)
+  end
 
   # Match any characters on lines that aren't empty
   rule(:unrecognized_lines) do
@@ -105,34 +108,56 @@ class GuitarTabParser < Parslet::Parser
     eol
   end
 
-  rule(:section_contents) do
-    fluff.as(:fluff_lines) |
+  rule(:self_delimited_section_contents) do
     chord_definition_lines.as(:chord_definition_lines) |
-    tab_lines.as(:tab_lines) |
-    chording.as(:song_lines)
+    tab_lines.as(:tab_lines)
   end
 
-  rule(:section) do
+  # For sections who's content is clear that it will parse up to the end of the section without needing
+  # any extra whitespace to delimit it. Guitar tabs and chord definitions have specific representations
+  # that are rarely matched by freeform content, so we don't need a delimiter or anything to recognize
+  # them and just use the section definition themselves to match.
+  rule(:content_delimited_section) do
+    empty_line.repeat(0) >>
+    ( section_header.as(:header) >> empty_line.repeat(0) ).maybe >>
+    self_delimited_section_contents.as(:contents) >>
+    empty_line.repeat(0)
+  end
+
+  # For sections that match pretty much any content (like lyrics or fluff), we use newlines to delimit
+  # the sections somewhat arbitrarily. This is at least to give some structure to the noise.
+  rule(:line_delimited_section) do
     # Sections with a header don't need blank lines to delimit them
     (empty_line.repeat(0) >>
       section_header.as(:header) >>
       empty_line.repeat(0) >>
-      section_contents.maybe.as(:contents) >>
+      chording.as(:contents) >>
       empty_line.repeat(0)
     ) |
-    # Sections without a header need a blank line at the end
+    # Sections without a header need a trailing blank line to delimit them
     (empty_line.repeat(0) >>
-      section_contents.maybe.as(:contents) >>
+      chording.as(:contents) >>
       empty_line.repeat(1)
-    ) |
-    # Unrecognized sections don't need delimination
-    (empty_line.repeat(0) >>
-      unrecognized_lines.as(:contents) >>
-      empty_line.repeat(0)
     )
   end
 
-  rule(:tab) { section.as(:section).repeat(1) }
+  # The catchall section which is attempted to match last and should match anything
+  rule(:unrecognized_section) do
+    # Unrecognized sections don't need delimination.
+    empty_line.repeat(0) >>
+    # Match a header with optional lines underneath
+    (
+      section_header.as(:header) >>
+      empty_line.repeat(0) >>
+      unrecognized_lines.maybe.as(:contents)
+    ) | (
+    # Or non-optional lines that aren't headers
+      unrecognized_lines.as(:contents)
+    ) >>
+    empty_line.repeat(0)
+  end
+
+  rule(:tab) { (content_delimited_section | line_delimited_section | unrecognized_section).as(:section).repeat(1) }
   root(:tab)
 
   def parse(text)

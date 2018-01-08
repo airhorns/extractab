@@ -38,7 +38,7 @@ module Music
 
     test "different chord instances should be equal if they have the same root and the same intervals" do
       refute_equal @c_major, @c_minor
-      refute_equal @c_major, @c_major_seventh
+      refute_equal @c_major, @c_major_7
       refute_equal @c_major, @g_major
 
       other_c_major = UnboundChord.for(root: 'C', type: :major)

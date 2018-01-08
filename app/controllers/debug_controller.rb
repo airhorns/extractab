@@ -1,5 +1,5 @@
+# frozen_string_literal: true
 class DebugController < ApplicationController
-
   def index
     @tab = nil
   end

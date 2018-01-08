@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'test_helper'
 
-class ChordRecognitionTest < ActiveSupport::TestCase
+class ChordParserTest < ActiveSupport::TestCase
   setup do
     @parser = GuitarTabParser.new
     @transform = ChordTransform.new
