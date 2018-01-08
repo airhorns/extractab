@@ -82,7 +82,7 @@ class GuitarTabParser < Parslet::Parser
   rule(:tab_staff_line) do
     space? >>
     tab_tuning.as(:tuning) >> tab_separator >>
-    (tab_hit | tab_rest).as(:tab_action) >>
+    (tab_hit | tab_rest).as(:tab_action).repeat(4) >>
     space? >> eol
   end
   rule(:tab_lines) { tab_staff_line.repeat(1, 8) }

@@ -2,6 +2,18 @@
 
 App for friggen' around with guitar tabs
 
+### Developing
+
+To setup, run `bundle install`.
+
+To run the application, run `bin/rails server`. Nothing else really needed!
+
+To run the tests, run `bin/rails test`.
+
+#### Assets
+
+This app uses (webpacker)[https://github.com/rails/webpacker] as a handy way to build assets using modern tools. If things are slow or you want live-reload, run `bin/webpack-dev-server`
+
 ### User Stories
 
  - Paste in a guitar lyrics/chords text, get visual piano chord diagrams and individual note breakdowns for each chord
