@@ -6,8 +6,8 @@ class TabStaffTransform < Parslet::Transform
   end
 
   rule(hit: subtree(:hit)) do
-    start_position = hit[0][:fret].line_and_column[1] - 1 # column is 1 indexed for whatever reason, subtract one to make it match the other 0 indexed length calculations
-    frets = hit.map { |component| component[:fret].to_i }
+    start_position = hit[0][:tab_fret].line_and_column[1] - 1 # column is 1 indexed for whatever reason, subtract one to make it match the other 0 indexed length calculations
+    frets = hit.map { |component| component[:tab_fret].to_i }
     linkages = hit.map { |component| TabStaffTransform.linkage_token_to_linkage(component[:linkage]) }.compact
     Music::TabHit.new(start_position, frets, linkages)
   end
@@ -23,7 +23,7 @@ class TabStaffTransform < Parslet::Transform
   end
 
   rule(tab_strings: sequence(:tab_strings)) do
-    Music::TabStaff.new(tab_strings)
+    Music::TabStaff.new(tab_strings.reverse)
   end
 
   def self.linkage_token_to_linkage(token)

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ChordDefinitionTransform < Parslet::Transform
-  rule(fret: simple(:fret_number)) do
+  rule(chord_fret: simple(:fret_number)) do
     case fret_number
     when nil, 'x', 'X'
       nil

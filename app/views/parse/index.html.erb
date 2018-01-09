@@ -1,0 +1,21 @@
+<div class="row">
+  <%= form_tag("/parse_tab", method: "post") do %>
+    <%= label_tag(:tab, "Paste tab:") %>
+    <%= text_area_tag(:tab, @tab, class: 'u-full-width') %>
+    <%= submit_tag("Parse") %>
+  <% end %>
+</div>
+
+<% if @exception %>
+  <div class="row">
+    <h5>Exception</h5>
+    <code class="u-full-width"><%= @output %></code>
+  </div>
+<% end %>
+
+<% if @tree %>
+  <h4>Result</h4>
+  <div class="row">
+    <%= @tree.inspect %>
+  </div>
+<% end %>

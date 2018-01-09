@@ -34,14 +34,14 @@ class GuitarTabParser < Parslet::Parser
   # A6    xx767x
   # Amaj7    5x665x
   rule(:chord_fretting) do
-    match['0-9x'].as(:fret).repeat(4, 8) >> eol
+    match['0-9x'].as(:chord_fret).repeat(4, 8) >> eol
   end
 
   # Or like
   # C#m7    9-11-9-9-9-x
   rule(:dashed_chord_fret) { match['0-9'].repeat(1, 2) | str("x") }
   rule(:dashed_chord_fretting) do
-    (dashed_chord_fret.as(:fret) >> str('-')).repeat(4, 7) >> dashed_chord_fret.as(:fret) >> space? >> eol
+    (dashed_chord_fret.as(:chord_fret) >> str('-')).repeat(4, 7) >> dashed_chord_fret.as(:chord_fret) >> space? >> eol
   end
 
   rule(:chord_definition_lines) do
@@ -61,7 +61,7 @@ class GuitarTabParser < Parslet::Parser
   end
   rule(:lyric_line) { section_header_signal.absent? >> tab_staff_line.absent? >> line_char.repeat(1) >> eol }
   rule(:chord_line) { (space? >> chord.as(:chord) >> space?).repeat(1) >> repetition_indicator.maybe >> eol }
-  rule(:chording) { ( chord_line.as(:chord_line) | lyric_line.as(:lyric_line) ).repeat(1) }
+  rule(:chording) { (chord_line.as(:chord_line) | lyric_line.as(:lyric_line)).repeat(1) }
 
   # Tab section with lines along time with hits as fret numbers along a series of strings, like
   # E|------|----7--7----------7-7-------|-----7--7----------4-------|
@@ -74,7 +74,7 @@ class GuitarTabParser < Parslet::Parser
   rule(:tab_string_tuning) { match['a-gA-G'] }
   rule(:tab_linkage) { str('/') | stri('h') | stri('p') | stri('b') | str('^') }
   rule(:tab_hit) do
-    (match["0-9"].repeat(1, 2).as(:fret) >> tab_linkage.as(:linkage).maybe).repeat(1)
+    (match["0-9"].repeat(1, 2).as(:tab_fret) >> tab_linkage.as(:linkage).maybe).repeat(1)
   end
 
   rule(:tab_rest) { tab_bar_separator | str('-') | str(' ') }
@@ -95,7 +95,7 @@ class GuitarTabParser < Parslet::Parser
     (
       section_header_signal.absent? >>
       empty_line.absent? >>
-      line_char.repeat(1).as(:unrecognized) >> eol
+      line_char.repeat(1).as(:unrecognized_content) >> eol
     ).repeat(1)
   end
 
@@ -103,14 +103,14 @@ class GuitarTabParser < Parslet::Parser
   rule(:section_header_signal) { space? >> str('[') }
   rule(:section_header) do
     space? >>
-    str('[') >> (str(']').absent? >> any).repeat(1).as(:header_name) >> str(']') >>
-    line_char.repeat(0).as(:header_fluff) >>
+    str('[') >> (str(']').absent? >> any).repeat(1).as(:title) >> str(']') >>
+    line_char.repeat(0).as(:fluff) >>
     eol
   end
 
   rule(:self_delimited_section_contents) do
-    chord_definition_lines.as(:chord_definition_lines) |
-    tab_lines.as(:tab_lines)
+    chord_definition_lines.as(:chord_definition) |
+    tab_lines.as(:tab)
   end
 
   # For sections who's content is clear that it will parse up to the end of the section without needing
@@ -119,7 +119,7 @@ class GuitarTabParser < Parslet::Parser
   # them and just use the section definition themselves to match.
   rule(:content_delimited_section) do
     empty_line.repeat(0) >>
-    ( section_header.as(:header) >> empty_line.repeat(0) ).maybe >>
+    (section_header.as(:header) >> empty_line.repeat(0)).maybe >>
     self_delimited_section_contents.as(:contents) >>
     empty_line.repeat(0)
   end
@@ -150,10 +150,9 @@ class GuitarTabParser < Parslet::Parser
       section_header.as(:header) >>
       empty_line.repeat(0) >>
       unrecognized_lines.maybe.as(:contents)
-    ) | (
+    ) |
     # Or non-optional lines that aren't headers
-      unrecognized_lines.as(:contents)
-    ) >>
+    unrecognized_lines.as(:contents) >>
     empty_line.repeat(0)
   end
 
