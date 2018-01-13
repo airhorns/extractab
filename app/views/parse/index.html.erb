@@ -15,7 +15,23 @@
 
 <% if @tree %>
   <h4>Result</h4>
-  <div class="row">
-    <%= @tree.inspect %>
+  <div class="result row">
+  <% @tree.sections.each do |section| %>
+    <% if section.header %>
+    <h4><%= section.header.title %><span class="header-fluff"><%= section.header.fluff %></h4>
+    <% end %>
+    <%=
+    case section.contents
+    when Music::TabStaff, Tab::UnrecognizedContent
+      render partial: partial_for_content_type(section.contents), object: section.contents
+    when Array
+      section.contents.map do |content|
+        render partial: partial_for_content_type(content), object: content
+      end.join("\n").html_safe
+    else
+      raise "Unknown section contents type #{section.contents.class}"
+    end
+    %>
+  <% end %>
   </div>
 <% end %>

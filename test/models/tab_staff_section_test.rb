@@ -66,7 +66,7 @@ class TabStaffSectionTest < ActiveSupport::TestCase
   end
 
   test "it parses crossfire dot txt tab" do
-    parse <<~TAB
+    staff = parse <<~TAB
       E|------|----7--7----------7-7-------|-----7--7----------4-------|
       B|------|----7--7----------7-7-------|-----7--7----------5-------|
       G|------|----7--7----------7-7-------|-----7--7----------4-------|
@@ -74,6 +74,26 @@ class TabStaffSectionTest < ActiveSupport::TestCase
       A|------|---9------------9-----------|---9-------5/7-4-4-4-------|
       E|-5/6/-|-7--------5/6/7--------5/6/-|-7---------------4-4--5/6/-|
     TAB
+
+    tuning = Music::GuitarTuning::STANDARD
+    staff.strings.reverse.each_with_index do |string, index|
+      root = tuning.strings.reverse[index]
+      spool = []
+      string.hits.each do |hit|
+        next unless hit.start_position > 45 && hit.start_position < 60
+        hit.frets.each_with_index do |fret, hit_index|
+          spool[hit.start_position + hit_index] = root.apply_interval(Music::Interval.new(fret))
+        end
+      end
+      tokens = spool.map do |item|
+        if item.nil?
+          "   "
+        else
+          item.symbol.to_s.ljust(3)
+        end
+      end
+      puts tokens.join('')
+    end
   end
 
   test "it parses stairway to heaven tabs" do

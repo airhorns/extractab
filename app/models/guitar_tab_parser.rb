@@ -156,7 +156,7 @@ class GuitarTabParser < Parslet::Parser
     empty_line.repeat(0)
   end
 
-  rule(:tab) { (content_delimited_section | line_delimited_section | unrecognized_section).as(:section).repeat(1) }
+  rule(:tab) { (content_delimited_section | line_delimited_section | unrecognized_section).as(:section).repeat(1).as(:sections) }
   root(:tab)
 
   def parse(text)

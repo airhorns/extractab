@@ -8,12 +8,24 @@ class TabSectionsTransform < Parslet::Transform
     chord_definition
   end
 
+  rule(chord: simple(:chord)) do
+    chord
+  end
+
+  rule(lyric_line: simple(:lyrics)) do
+    Tab::LyricLine.new(lyrics)
+  end
+
+  rule(chord_line: sequence(:chords)) do
+    Tab::ChordLine.new(chords)
+  end
+
   rule(unrecognized_content: simple(:content)) do
     Tab::UnrecognizedContent.new(content)
   end
 
-  rule(header: { title: simple(:title), fluff: simple(:fluff) }) do
-    Tab::Header.new(title, fluff)
+  rule(title: simple(:title), fluff: sequence(:fluff)) do
+    Tab::Header.new(title, fluff.join(''))
   end
 
   rule(section: { header: subtree(:header), contents: subtree(:contents) }) do
@@ -22,5 +34,9 @@ class TabSectionsTransform < Parslet::Transform
 
   rule(section: { contents: subtree(:contents) }) do
     Tab::Section.new(nil, contents)
+  end
+
+  rule(sections: sequence(:sections)) do
+    Tab::Tab.new(sections)
   end
 end
