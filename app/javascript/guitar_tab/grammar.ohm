@@ -1,0 +1,137 @@
+GuitarTab {
+  root = ( contentDelimitedSection | lineDelimitedSection | unrecognizedSection ) +
+
+  // For sections who's content is clear that it will parse up to the end of the section without needing
+  // any extra whitespace to delimit it. Guitar tabs and chord definitions have specific representations
+  // that are rarely matched by freeform content, so we don't need a delimiter or anything to recognize
+  // them and just use the section definition themselves to match.
+  contentDelimitedSection =
+    emptyLine *
+    (
+	    sectionHeader
+    	emptyLine *
+    ) ?
+    selfDelimitedSectionContents
+    emptyLine *
+
+  // For sections that match pretty much any content (like lyrics or fluff), we use newlines to delimit
+  // the sections somewhat arbitrarily. This is at least to give some structure to the noise.
+  // Sections with a header don't need blank lines to delimit them, but sections with a header need a
+  // trailing blank line to delimit them.
+  lineDelimitedSection =
+    (
+    	emptyLine *
+      sectionHeader
+      emptyLine *
+    	chording
+      emptyLine *
+    ) --header
+    |
+    (
+      emptyLine *
+      chording
+      emptyLine +
+    ) --headerless
+
+  // The catchall section which is attempted to match last and should match anything
+  // Unrecognized sections don't need delimination.
+  unrecognizedSection =
+    emptyLine *
+    (
+      sectionHeader
+      emptyLine *
+      unrecognizedLines ?
+    ) --header
+    |
+    (
+    unrecognizedLines
+    emptyLine *
+    ) --headerless
+
+  sectionHeaderSignal = spaceMaybe "["
+  sectionHeader =
+  	sectionHeaderSignal
+    (~"]" lineChar) +
+    "]"
+    lineChar *
+    eol
+
+  selfDelimitedSectionContents = chordDefinitionLines | tabLines
+
+  // Match any characters on lines that aren't empty
+  unrecognizedLines =
+    (
+      ~sectionHeaderSignal
+      ~emptyLine
+      lineChar + eol
+    ) +
+
+
+  // Chord definition section, like
+  // A6    xx767x
+  // Amaj7    5x665x
+  chordFretting = (digit | "x")+
+
+  // Or like
+  // C#m7    9-11-9-9-9-x
+  dashedChordFret =  ( digit digit? ) --digits
+                     | "x"            --null
+  dashedChordFretting = (dashedChordFret "-") + dashedChordFret
+
+  chordDefinitionLines = ( spaceMaybe chord spaceMaybe (chordFretting | dashedChordFretting) spaceMaybe eol ) +
+
+  // Chords & lyrics section with chord signals on other lines, like
+  // C    Em  Am         F     C   G
+  // Wise men say, only fools rush in
+  //    F  G    Am    F          C    G   C
+  // But I can't help falling in love with you
+  repetitionIndicator = ( "[" | "(" | "\\" ) ? spaceMaybe
+                        ("x" | "X") spaceMaybe
+                        digit digit? spaceMaybe
+                        ( "]" | ")" | "\\" ) ? spaceMaybe
+
+  lyricLine = (~sectionHeaderSignal) (~tabStaffLine) lineChar+ eol
+  chordLine = (spaceMaybe chord spaceMaybe)+ repetitionIndicator? eol
+  chording = (chordLine | lyricLine)+
+
+
+  // Tab section with lines along time with hits as fret numbers along a series of strings, like
+  // E|------|----7--7----------7-7-------|-----7--7----------4-------|
+  // B|------|----7--7----------7-7-------|-----7--7----------5-------|
+  // G|------|----7--7----------7-7-------|-----7--7----------4-------|
+  // D|------|----7--7----------7-7-------|-----7--7----------6-------|
+  // A|------|---9------------9-----------|---9-------5/7-4-4-4-------|
+  // E|-5/6/-|-7--------5/6/7--------5/6/-|-7---------------4-4--5/6/-|
+
+  tabBarSeparator = "|"
+  tabStringTuning = "a".."g" | "A".."G"
+  tabLinkage = "/" | "h" | "H" | "p" | "P" | "b" | "B" | "^"
+  tabHit = ( digit digit? tabLinkage? ) +
+  tabRest = tabBarSeparator | "-" | " "
+  tabStaffLine =
+    spaceMaybe
+    tabStringTuning
+    tabBarSeparator
+    (tabHit | tabRest)+
+    spaceMaybe
+    eol
+
+  tabLines = tabStaffLine+
+
+  // Musical notation
+  note = ("a".."g" | "A".."G") ("#" | "B") ?
+  chordExtension = "6" | "7" | "9" | "11" | "13"
+  chord = note
+  		("min" | "maj" | "m" | "M" | "-") ?
+      ("add" ("maj" | "min" | "m") ? chordExtension) ?
+      ("sus" ("4" | "2")? )?
+      ("/" note) ?
+
+
+  // Utilities
+  eol = "\r" ? "\n"
+  spaceMaybe = lineSpace *
+  emptyLine = lineSpace * eol
+  lineSpace = " " | "\t"
+  lineChar = ~eol any
+}
