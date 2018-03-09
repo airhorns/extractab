@@ -54,7 +54,7 @@ class ChordDefinitionSectionTest < ActiveSupport::TestCase
   end
 
   test "it parses crossfire.txt's chord section" do
-    parse <<~TAB
+    actual = parse <<~TAB
       A6    xx767x
       Amaj7    5x665x
       Bm7    797777
@@ -67,7 +67,15 @@ class ChordDefinitionSectionTest < ActiveSupport::TestCase
       F#9    x99999
       F#13    x-9-9-9-9-11
       F#m7    242222
+      C       x32010
     TAB
+
+    tuning = Music::GuitarTuning::STANDARD
+    actual.each do |definition|
+      chord = definition.bind_at_tuning(tuning)
+
+      puts "#{definition.labeled_chord.root.symbol}: #{chord.notes_string}"
+    end
   end
 
   def parse(text)

@@ -1,15 +1,28 @@
 {
   "name": "extractab",
   "private": true,
+  "scripts": {
+    "test": "NODE_ENV=test karma start"
+  },
   "dependencies": {
-    "@rails/webpacker": "^3.2.0",
+    "@rails/webpacker": "^3.3.0",
+    "@types/jasmine": "^2.8.6",
+    "@types/react": "^16.0.34",
+    "@types/react-dom": "^16.0.3",
     "babel-preset-react": "^6.24.1",
-    "prop-types": "^15.6.0",
+    "prop-types": "^15.6.1",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
-    "skeleton-css": "^2.0.4"
+    "skeleton-css": "^2.0.4",
+    "ts-loader": "^3.2.0",
+    "typescript": "^2.6.2"
   },
   "devDependencies": {
+    "jasmine-core": "^3.1.0",
+    "karma": "^2.0.0",
+    "karma-chrome-launcher": "^2.2.0",
+    "karma-jasmine": "^1.1.1",
+    "karma-webpack": "^2.0.13",
     "webpack-dev-server": "^2.9.7"
   }
 }

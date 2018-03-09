@@ -25,15 +25,15 @@ module Music
     alias_method :eql?, :==
 
     def bind_at_tuning(tuning)
-      unless tuning.strings.size == frets.size
-        raise MismatchedStringsException, "Can't bind fretting #{inspect} because it has #{frets.size} and the tuning has #{tuning.strings.size} strings"
-      end
+      # unless tuning.strings.size == frets.size
+      #   raise MismatchedStringsException, "Can't bind fretting #{inspect} because it has #{frets.size} and the tuning has #{tuning.strings.size} strings"
+      # end
 
       notes = tuning.strings.zip(intervals).map! do |open_string, interval|
         if interval
           open_string.apply_interval(interval)
         end
-      end.compact!.sort!
+      end.compact.sort!
 
       # root = notes.shift
       # chord_intervals = notes.map { |note| Interval.from(root, note) }
