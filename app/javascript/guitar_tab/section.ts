@@ -1,5 +1,5 @@
 export default class Section {
-  sourceString: string;
-  startIndex: number;
-  endIndex: number;
-};
+  public sourceString: string;
+  public startIndex: number;
+  public endIndex: number;
+}

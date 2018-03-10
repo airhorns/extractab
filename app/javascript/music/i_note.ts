@@ -1,8 +1,8 @@
-import { Interval } from './interval';
+import { Interval } from "./interval";
 
 export interface INote {
+  semitonesAboveC: number;
   bound(): boolean;
   unbind(): INote;
-  semitonesAboveC: number;
   applyInterval(interval: Interval): INote;
 }
