@@ -10,12 +10,12 @@ export class FrequencyConverter {
     // which is 9 semitones away from C
     const semitonesAboveA4 = 12 * Math.log(frequency / 440) / Math.log(2);
     const semitonesAboveC4 = Math.round(semitonesAboveA4 + 9);
-    const octavesAboveMiddleC = 4 + Math.round(semitonesAboveC4 / 12);
+    const octavesAboveC0 = 4 + Math.floor(semitonesAboveC4 / 12);
     const semitonesAboveC = semitonesAboveC4 % 12;
 
     const letter = SemitonesToSharpNotes[semitonesAboveC];
     if (!letter) { throw new Error("Incorrect internal calculation"); }
-    return new NoteSymbol(letter, octavesAboveMiddleC);
+    return new NoteSymbol(letter, octavesAboveC0);
   }
 
   public static frequencyForSymbol(symbol: NoteSymbol) {

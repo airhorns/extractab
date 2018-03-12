@@ -5,7 +5,7 @@ import { FrequencyConverter } from "./frequency_converter";
 import { INote } from "./i_note";
 import { Interval } from "./interval";
 import { NoteSymbol } from "./note_symbol";
-import { UnboundNote, SemitonesToFlatNotes, SemitonesToSharpNotes } from "./unbound_note";
+import { UnboundNote, NotesToSemitones, SemitonesToFlatNotes, SemitonesToSharpNotes } from "./unbound_note";
 
 export class BoundNote implements INote {
   public static fromString(noteString: string) {
@@ -19,19 +19,17 @@ export class BoundNote implements INote {
   public symbolWithoutOctave: string;
   public semitonesAboveC: number;
   public semitonesAboveC4: number;
-  public frequency: number;
 
-  constructor(frequency, symbol?: NoteSymbol) {
-    this.frequency = frequency;
+  constructor(public frequency: number, symbol?: NoteSymbol) {
     if (!symbol) {
       this.symbol = FrequencyConverter.symbolForFrequency(frequency);
     } else {
       this.symbol = symbol;
     }
-    this.symbolWithoutOctave = symbol.letter;
-    this.octave = symbol.octave;
-    this.semitonesAboveC = 10; // WRONG
-    this.semitonesAboveC4 = 100; //
+    this.symbolWithoutOctave = this.symbol.letter;
+    this.octave = this.symbol.octave;
+    this.semitonesAboveC = NotesToSemitones[this.symbol.letter];
+    this.semitonesAboveC4 = (this.octave - 4) * 12 + this.semitonesAboveC;
   }
 
   public bound() {
@@ -53,5 +51,9 @@ export class BoundNote implements INote {
     const symbol = new NoteSymbol(newSymbol, newOctave);
     const frequency = FrequencyConverter.frequencyForSymbol(symbol);
     return new BoundNote(frequency, symbol);
+  }
+
+  public equivalent(note: BoundNote) {
+    return note.frequency === this.frequency;
   }
 }

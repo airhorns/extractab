@@ -8,11 +8,11 @@ module Music
       # h = 12 log(P / C) / log 2 if C is the frequency of middle C, but we use A = 440hz for accuracy, which is 9 semitones away
       semitones_above_a4 = 12 * Math.log(frequency / 440.0) / Math.log(2)
       semitones_above_c4 = (semitones_above_a4 + 9).round
-      octaves_above_middle_c = 4 + (semitones_above_c4 / 12) # use integer division to get floor of division by 12
+      octaves_above_c0 = 4 + (semitones_above_c4 / 12) # use integer division to get floor of division by 12
       semitones_above_c = semitones_above_c4 % 12
 
       letter = UnboundNote::SEMITONES_TO_SHARP_NOTES.fetch(semitones_above_c)
-      NoteSymbol.new(letter, octaves_above_middle_c)
+      NoteSymbol.new(letter, octaves_above_c0)
     end
 
     def self.frequency_for_symbol(symbol)

@@ -5,7 +5,7 @@
 import { INote } from "./i_note";
 import { Interval } from "./interval";
 
-export const NotesToSemitones = {
+export const NotesToSemitones: { [s: string]: number } = {
   "C": 0,
   "C#": 1,
   "Db": 1,
@@ -28,33 +28,36 @@ export const NotesToSemitones = {
 export const SemitonesToFlatNotes = Object.keys(NotesToSemitones).reduce((agg, note) => {
   if (!note.includes("#")) { agg[NotesToSemitones[note]] = note; }
   return agg;
-}, {});
+}, {} as { [s: number]: string });
 
 export const SemitonesToSharpNotes = Object.keys(NotesToSemitones).reduce((agg, note) => {
   if (!note.includes("b")) { agg[NotesToSemitones[note]] = note; }
   return agg;
-}, {});
+}, {} as { [s: number]: string });
 
 export class UnboundNote implements INote {
   public static fromString(noteString: string) {
     return new UnboundNote(noteString);
   }
 
-  public symbol: string;
   public semitonesAboveC: number;
 
-  constructor(normalizedSymbol) {
-    this.symbol = normalizedSymbol;
-    this.semitonesAboveC = NotesToSemitones[normalizedSymbol];
+  constructor(public symbol: string) {
+    this.semitonesAboveC = NotesToSemitones[symbol];
   }
 
   public bound() { return true; }
   public unbind() { return this; }
 
   public applyInterval(interval: Interval) {
-    const positiveSemitones = (this.semitonesAboveC + interval.semitones) % 12;
+    let positiveSemitones = (this.semitonesAboveC + interval.semitones) % 12;
+    if ( positiveSemitones < 0 ) { positiveSemitones += 12; }
     const newSymbol = this.symbol.includes("b") ? SemitonesToFlatNotes[positiveSemitones] : SemitonesToSharpNotes[positiveSemitones];
 
     return new UnboundNote(newSymbol);
+  }
+
+  public equivalent(note: UnboundNote) {
+    return note.semitonesAboveC === this.semitonesAboveC;
   }
 }

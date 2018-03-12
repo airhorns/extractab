@@ -1,10 +1,6 @@
 export default class ParseResult {
   public succeeded: boolean;
-  public matchResult;
-  public tabAST;
-  constructor(matchResult, tabAST) {
-    this.matchResult = matchResult;
+  constructor(public matchResult: any, public tabAST: any) {
     this.succeeded = matchResult.succeeded();
-    this.tabAST = tabAST;
   }
 }
