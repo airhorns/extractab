@@ -6,10 +6,8 @@
   },
   "dependencies": {
     "@rails/webpacker": "^3.3.0",
-    "@types/jasmine": "^2.8.6",
-    "@types/react": "^16.0.34",
-    "@types/react-dom": "^16.0.3",
     "babel-preset-react": "^6.24.1",
+    "lodash": "^4.17.5",
     "ohm-js": "^0.14.0",
     "prop-types": "^15.6.1",
     "react": "^16.2.0",
@@ -25,6 +23,10 @@
     "karma-jasmine": "^1.1.1",
     "karma-webpack": "^2.0.13",
     "tslint": "^5.9.1",
-    "webpack-dev-server": "^3.1.0"
+    "webpack-dev-server": "^3.1.0",
+    "@types/jasmine": "^2.8.6",
+    "@types/lodash.uniq": "^4.5.3",
+    "@types/react": "^16.0.34",
+    "@types/react-dom": "^16.0.3"
   }
 }

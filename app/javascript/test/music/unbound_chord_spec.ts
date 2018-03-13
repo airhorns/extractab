@@ -63,61 +63,74 @@ describe("UnboundChord", () => {
     expect(UnboundNote.fromString("A")).toEqual(aOverE.root);
     expect(aOverE.intervals).toEqual([new Interval(-5), Intervals.MajorThird]);
   });
+
+  it("should still be equal to other chords regardless of the order the intervals are given at construction time", () => {
+    let left = new UnboundChord(c, [Intervals.MajorThird, Intervals.PerfectFifth]);
+    let right = new UnboundChord(c, [Intervals.PerfectFifth, Intervals.MajorThird]);
+    expect(left).toEqual(right);
+
+    left = new UnboundChord(c, []);
+    right = new UnboundChord(c, []);
+    expect(left).toEqual(right);
+  });
+
+  it("should be equivalent to other chords with the same intervals, regardless of constructor order", () => {
+    expect(cMajor.equivalent(cMajor)).toEqual(true);
+    expect(UnboundChord.forName(c, ChordNames.Major).equivalent(cMajor)).toEqual(true);
+
+    let left = new UnboundChord(c, [Intervals.MajorThird, Intervals.PerfectFifth]);
+    let right = new UnboundChord(c, [Intervals.PerfectFifth, Intervals.MajorThird]);
+    expect(left.equivalent(right)).toEqual(true);
+    expect(right.equivalent(left)).toEqual(true);
+
+    left = new UnboundChord(c, []);
+    right = new UnboundChord(c, []);
+    expect(left.equivalent(right)).toEqual(true);
+    expect(right.equivalent(left)).toEqual(true);
+  });
+
+  it("should not be equivalent to other chords with different roots but the same intervals", () => {
+    const left = new UnboundChord(c, [Intervals.MajorThird, Intervals.PerfectFifth]);
+    const right = new UnboundChord(g, [Intervals.MajorThird, Intervals.PerfectFifth]);
+    expect(left.equivalent(right)).toEqual(false);
+    expect(right.equivalent(left)).toEqual(false);
+  });
+
+  it("should not be equivalent to other chords with the same root but different intervals", () => {
+    expect(cMajor.equivalent(cMinor)).toEqual(false);
+    expect(cMinor.equivalent(cMajor)).toEqual(false);
+
+    expect(cMajor.equivalent(cMajor7)).toEqual(false);
+    expect(cMajor7.equivalent(cMajor)).toEqual(false);
+  });
+
+  it("equivalent should return true for chords with different roots and intervals that compute to the same notes", () => {
+    const left = new UnboundChord(c, [Intervals.MajorThird, Intervals.PerfectFifth]);
+    const right = new UnboundChord(g, [Intervals.PerfectFourth, Intervals.MajorSixth]);
+
+    expect(left.equivalent(right)).toEqual(true);
+    expect(right.equivalent(left)).toEqual(true);
+  });
+
+  it("equivalent should return true for chords with the same notes even if some are duplicated", () => {
+    const left = new UnboundChord(c, [Intervals.MajorThird, Intervals.PerfectFifth]);
+    const right = new UnboundChord(c, [Intervals.MajorThird, Intervals.PerfectFifth, Intervals.Octave.add(Intervals.MajorThird)]);
+
+    expect(left.equivalent(right)).toEqual(true);
+    expect(right.equivalent(left)).toEqual(true);
+  });
+
+  it("equivalent should return true for chords that have the same notes with equivalent but not identical roots", () => {
+    const left = new UnboundChord(UnboundNote.fromString("Gb"), [Intervals.MajorThird, Intervals.PerfectFifth]);
+    const right = new UnboundChord(UnboundNote.fromString("F#"), [Intervals.MajorThird, Intervals.PerfectFifth]);
+
+    expect(left.root).not.toEqual(right.root);
+    expect(left.root.equivalent(right.root)).toEqual(true);
+    expect(left.equivalent(right)).toEqual(true);
+    expect(right.equivalent(left)).toEqual(true);
+  });
 });
 /*
-
-    test "chords created with substitute roots not included in the chord reflect an interval to that root" do
-      @c_over_a = UnboundChord.for(root: 'C', type: :major, substitute_root: 'A')
-      assert_equal @c, @c_over_a.root
-      assert_equal [Interval.new(-3), Intervals::MAJOR_THIRD, Intervals::PERFECT_FIFTH], @c_over_a.intervals
-
-      @c_sharp_over_a = UnboundChord.for(root: 'C#', type: :major, substitute_root: 'A')
-      assert_equal UnboundNote.symbolic('C#'), @c_sharp_over_a.root
-      assert_equal [Interval.new(-4), Intervals::MAJOR_THIRD, Intervals::PERFECT_FIFTH], @c_sharp_over_a.intervals
-
-      @nonsense = UnboundChord.for(root: 'Gb', type: :dominant_seventh, substitute_root: 'D')
-      assert_equal UnboundNote.symbolic('Gb'), @nonsense.root
-      assert_equal [Interval.new(-4), Intervals::MAJOR_THIRD, Intervals::PERFECT_FIFTH, Intervals::MINOR_SEVENTH], @nonsense.intervals
-    end
-
-    test "chords created with intervals in different orders should still be equal if the intervals are the same" do
-      @left = UnboundChord.new(@c, [Intervals::MAJOR_THIRD, Intervals::PERFECT_FIFTH])
-      @right = UnboundChord.new(@c, [Intervals::PERFECT_FIFTH, Intervals::MAJOR_THIRD])
-      assert_equal @left, @right
-
-      @left = UnboundChord.new(@c, [])
-      @right = UnboundChord.new(@c, [])
-      assert_equal @left, @right
-    end
-
-    test "equivalent? returns true for chords with intervals given in a different order" do
-      @left = UnboundChord.new(@c, [Intervals::MAJOR_THIRD, Intervals::PERFECT_FIFTH])
-      @right = UnboundChord.new(@c, [Intervals::PERFECT_FIFTH, Intervals::MAJOR_THIRD])
-      assert @left.equivalent?(@right)
-      assert @right.equivalent?(@left)
-    end
-
-    test "equivalent? returns false for chords with different roots but the same intervals" do
-      @left = UnboundChord.new(@c, [Intervals::MAJOR_THIRD, Intervals::PERFECT_FIFTH])
-      @right = UnboundChord.new(@g, [Intervals::MAJOR_THIRD, Intervals::PERFECT_FIFTH])
-      refute @left.equivalent?(@right)
-      refute @right.equivalent?(@left)
-    end
-
-    test "equivalent? returns false for chords with different intervals" do
-      refute @c_major.equivalent?(@c_minor)
-      refute @c_minor.equivalent?(@c_major)
-
-      refute @c_major_7.equivalent?(@c_major)
-      refute @c_major.equivalent?(@c_major_7)
-    end
-
-    test "equivalent? returns true for chords with different roots and intervals that lead to the same notes" do
-      @left = UnboundChord.new(@c, [Intervals::MAJOR_THIRD, Intervals::PERFECT_FIFTH])
-      @right = UnboundChord.new(@g, [Intervals::PERFECT_FOURTH, Intervals::MAJOR_SIXTH])
-      assert @left.equivalent?(@right)
-      assert @right.equivalent?(@left)
-    end
 
     test "equivalent? returns true for chords with the same roots but where one chord has duplicates" do
       @left = UnboundChord.new(@c, [Intervals::MAJOR_THIRD, Intervals::PERFECT_FIFTH])

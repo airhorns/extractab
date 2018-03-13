@@ -2,6 +2,7 @@ import { UnboundNote } from "./unbound_note";
 import { Interval, ChordNames, ChordIntervals } from "./interval";
 import { INote } from "./i_note";
 import { IChord } from "./i_chord";
+import * as _ from "lodash";
 
 // Represents a chord as a root plus a variable number of intervals (positive or negative). The chord isn't
 // bound to a particular octave or guitar tuning or anything, it's just floating in space relative to the root.
@@ -47,9 +48,16 @@ export class UnboundChord implements IChord<UnboundNote> {
   }
 
   public equivalent(other: IChord<any>): boolean {
-    const otherNotes = other.notes().map((note) => note.unbind()).sort(UnboundNote.sorter);
-    const notes = this.notes().map((note) => note.unbind());
+    // Get a unique'd, sorted list of notes for comparison
+    const normalize = (noteArray: INote[]) => _.uniqWith(noteArray.map((note) => note.unbind()), (a, b) => a.equivalent(b)).sort(UnboundNote.sorter);
+    const otherNotes = normalize(other.notes());
+    const notes = normalize(this.notes());
 
-    return false;
+    return _.every(_.zip(notes, otherNotes), (pair) => {
+      const [a, b] = pair;
+      if (a !== undefined && b !== undefined) {
+        return a.equivalent(b);
+      }
+    });
   }
 }

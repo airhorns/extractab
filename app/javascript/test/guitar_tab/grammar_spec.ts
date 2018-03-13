@@ -26,7 +26,7 @@ describe("Grammar", () => {
     expectParses(`[Input][Verse][Chorus]\n\n`);
   });
 
-  it("parses multiple empty sections with different headers", () => {
+  it("parses multiple simple sections with different headers", () => {
     expectParses(`
 [Intro]
 Em Bb Cm
