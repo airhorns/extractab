@@ -1,8 +1,9 @@
-import { UnboundNote, UnboundChord, ChordNames, Intervals } from "../../music";
+import { UnboundNote, UnboundChord, ChordNames, Interval, Intervals } from "../../music";
 
 describe("UnboundChord", () => {
   const c = UnboundNote.fromString("C");
   const g = UnboundNote.fromString("G");
+  const a = UnboundNote.fromString("A");
   const cMajor = UnboundChord.forName(c, ChordNames.Major);
   const cMinor = UnboundChord.forName(c, ChordNames.Minor);
   const cMajor7 = UnboundChord.forName(c, ChordNames.MajorSeventh);
@@ -32,44 +33,38 @@ describe("UnboundChord", () => {
     expect("C E G A# A").toEqual(UnboundChord.forName(c, ChordNames.Thirteenth).notesString());
   });
 
+  it("different chord instance should be equal if they have hte same root and the same intervals", () => {
+    expect(cMajor).toEqual(cMajor);
+    expect(cMajor).toEqual(UnboundChord.forName(c, ChordNames.Major));
+    expect(cMajor).not.toEqual(gMajor);
+    expect(cMajor).not.toEqual(cMajor7);
+  });
+
+  it("should reflect a new, negative interval to the substitute root if created with a substitute root not already included in the chord", () => {
+    const cOverA = UnboundChord.forName(c, ChordNames.Major, a);
+    expect(cOverA.root).toEqual(c);
+    expect(cOverA.intervals).toEqual([new Interval(-3), Intervals.MajorThird, Intervals.PerfectFifth]);
+
+    const cSharpOverA = UnboundChord.forName(UnboundNote.fromString("C#"), ChordNames.Major, a);
+    expect(cSharpOverA.root).toEqual(UnboundNote.fromString("C#"));
+    expect(cSharpOverA.intervals).toEqual([new Interval(-4), Intervals.MajorThird, Intervals.PerfectFifth]);
+
+    const nonsense = UnboundChord.forName(UnboundNote.fromString("Gb"), ChordNames.DominantSeventh, UnboundNote.fromString("D"));
+    expect(nonsense.root).toEqual(UnboundNote.fromString("Gb"));
+    expect(nonsense.intervals).toEqual([new Interval(-4), Intervals.MajorThird, Intervals.PerfectFifth, Intervals.MinorSeventh]);
+  });
+
+  it("should reflect a replacement, negative interval to the substitute root if created with a substitute root already included in the chord", () => {
+    const cOverG = UnboundChord.forName(c, ChordNames.Major, g);
+    expect(c).toEqual(cOverG.root);
+    expect(cOverG.intervals).toEqual([new Interval(-5), Intervals.MajorThird]);
+
+    const aOverE = UnboundChord.forName(a, ChordNames.Major, UnboundNote.fromString("E"));
+    expect(UnboundNote.fromString("A")).toEqual(aOverE.root);
+    expect(aOverE.intervals).toEqual([new Interval(-5), Intervals.MajorThird]);
+  });
 });
 /*
-
-    test "spot checked chords should have the right notes" do
-      assert_equal "C E G", @c_major.notes_string
-      assert_equal "C D# G", @c_minor.notes_string
-      assert_equal "C E G B", @c_major_7.notes_string
-      assert_equal "C D# G A#", UnboundChord.for(root: 'C', type: :minor_seventh).notes_string
-      assert_equal "C E G A#", UnboundChord.for(root: 'C', type: :dominant_seventh).notes_string
-      assert_equal "C E G B D", UnboundChord.for(root: 'C', type: :major_ninth).notes_string
-      assert_equal "C D# G A# D", UnboundChord.for(root: 'C', type: :minor_ninth).notes_string
-      assert_equal "C E G A# D", UnboundChord.for(root: 'C', type: :ninth).notes_string
-      assert_equal "C E G B F", UnboundChord.for(root: 'C', type: :major_eleventh).notes_string
-      assert_equal "C D# G A# F", UnboundChord.for(root: 'C', type: :minor_eleventh).notes_string
-      assert_equal "C E G A# F", UnboundChord.for(root: 'C', type: :eleventh).notes_string
-      assert_equal "C E G B A", UnboundChord.for(root: 'C', type: :major_thirteenth).notes_string
-      assert_equal "C D# G A# A", UnboundChord.for(root: 'C', type: :minor_thirteenth).notes_string
-      assert_equal "C E G A# A", UnboundChord.for(root: 'C', type: :thirteenth).notes_string
-    end
-
-    test "different chord instances should be equal if they have the same root and the same intervals" do
-      refute_equal @c_major, @c_minor
-      refute_equal @c_major, @c_major_7
-      refute_equal @c_major, @g_major
-
-      other_c_major = UnboundChord.for(root: 'C', type: :major)
-      assert_equal other_c_major, @c_major
-    end
-
-    test "chords created with substitute roots included in the chord reflect an interval to that root" do
-      @c_over_g = UnboundChord.for(root: 'C', type: :major, substitute_root: 'G')
-      assert_equal @c, @c_over_g.root
-      assert_equal [Interval.new(-5), Intervals::MAJOR_THIRD], @c_over_g.intervals
-
-      @a_over_e = UnboundChord.for(root: 'A', type: :major, substitute_root: 'E')
-      assert_equal UnboundNote.symbolic('A'), @a_over_e.root
-      assert_equal [Interval.new(-5), Intervals::MAJOR_THIRD], @a_over_e.intervals
-    end
 
     test "chords created with substitute roots not included in the chord reflect an interval to that root" do
       @c_over_a = UnboundChord.for(root: 'C', type: :major, substitute_root: 'A')

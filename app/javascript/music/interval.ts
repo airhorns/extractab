@@ -7,12 +7,14 @@ import { UnboundNote } from "./unbound_note";
 
 export class Interval {
   public static fromUnboundNotes(from: UnboundNote, to: UnboundNote) {
-    return new Interval(from.semitonesAboveC - to.semitonesAboveC);
+    return new Interval(to.semitonesAboveC - from.semitonesAboveC);
   }
 
   public static fromBoundNotes(from: BoundNote, to: BoundNote) {
-    return new Interval(from.semitonesAboveC4 - to.semitonesAboveC4);
+    return new Interval(to.semitonesAboveC4 - from.semitonesAboveC4);
   }
+
+  public static sorter = (a: Interval, b: Interval) => a.semitones - b.semitones;
 
   public semitones: number;
   constructor(semitones: number) {

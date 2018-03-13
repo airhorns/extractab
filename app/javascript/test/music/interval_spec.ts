@@ -36,4 +36,11 @@ describe("Interval", () => {
     expect(new Interval(5)).toEqual(new Interval(-7).positiveInversion());
     expect(new Interval(11)).toEqual(new Interval(11).positiveInversion());
   });
+
+  it("should sort intervals from lowest to highest using the sorter", () => {
+    const sorted = Object.freeze([new Interval(-2), new Interval(4), new Interval(10), new Interval(100)]);
+    expect(sorted.slice(0).sort(Interval.sorter)).toEqual(sorted);
+    expect(sorted.slice(0).reverse().sort(Interval.sorter)).toEqual(sorted);
+    expect([new Interval(-2), new Interval(100), new Interval(10), new Interval(4)].sort(Interval.sorter)).toEqual(sorted);
+  });
 });

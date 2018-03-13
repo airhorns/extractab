@@ -16,15 +16,13 @@ export class UnboundChord implements IChord<UnboundNote> {
     let intervals = ChordIntervals[name];
 
     if (substituteRoot) {
-      const newIntervals = intervals.slice(0);
       // Chord intervals are usually positive, but in order to get the substitute root as the lowest not, we get a
       // *downwards* interval from the root to the substitute root to add to the list of intervals. The "real"
       // root of the chord is still stored as the root so that information is preserved for naming and whatnot, but when
       // the notes of the chord are computed the substitute root will be the lowest note.
-      const positiveToSubstituteRoot = Interval.fromUnboundNotes(root, substituteRoot);
+      const positiveToSubstituteRoot = Interval.fromUnboundNotes(root, substituteRoot).positiveInversion();
       const negativeToSubstituteRoot = positiveToSubstituteRoot.invert();
-      const index = newIntervals.findIndex((interval) => interval.isEqual(positiveToSubstituteRoot));
-      if (index >= 0) { newIntervals.splice(index, 1); }
+      const newIntervals = intervals.filter((interval) => !interval.isEqual(positiveToSubstituteRoot));
       newIntervals.push(negativeToSubstituteRoot);
       intervals = Object.freeze(newIntervals);
     }
@@ -35,7 +33,7 @@ export class UnboundChord implements IChord<UnboundNote> {
   public intervals: ReadonlyArray<Interval>;
 
   constructor(public root: UnboundNote, intervals: Interval[] | ReadonlyArray<Interval>) {
-    this.intervals = Object.freeze(intervals as Interval[]);
+    this.intervals = Object.freeze(intervals.slice(0).sort(Interval.sorter));
   }
 
   public notes(): UnboundNote[] {
