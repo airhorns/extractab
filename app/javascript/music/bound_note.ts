@@ -14,6 +14,8 @@ export class BoundNote implements INote {
     return new BoundNote(frequency, symbol);
   }
 
+  public static sorter = (a: BoundNote, b: BoundNote) => a.frequency - b.frequency;
+
   public symbol: NoteSymbol;
   public octave: number;
   public symbolWithoutOctave: string;

@@ -13,7 +13,7 @@ describe("UnboundNote", () => {
     otherC: UnboundNote.fromString("C"),
   };
 
-  CommonNoteExamples(notes);
+  CommonNoteExamples(notes, UnboundNote);
 
   it("notes should report their symbol and semitones above c", () => {
     expect("C").toEqual(notes.c.symbol);

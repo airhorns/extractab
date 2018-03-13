@@ -1,6 +1,6 @@
-import { Intervals, INote } from "../../music";
+import { Intervals, INote, INoteClass } from "../../music";
 
-export const CommonNoteExamples = (notes: { [s: string]: INote}) => {
+export const CommonNoteExamples = (notes: { [s: string]: INote}, klass: INoteClass) => {
   describe("Common note behaviour", () => {
     it("different note instances should be equal if they are the same number of semitones above c", () => {
       expect(notes.c).not.toEqual(notes.g);
@@ -32,6 +32,14 @@ export const CommonNoteExamples = (notes: { [s: string]: INote}) => {
 
     it("applying an interval to a flat symbol returns a new note with a flat symbol if necessary", () => {
       expect(notes.aSharp).toEqual(notes.gSharp.applyInterval(Intervals.MajorSecond));
+    });
+
+    it("can sort notes from lowest to highest with the sorter", () => {
+      const sorted = Object.freeze([notes.c, notes.gFlat, notes.g, notes.gSharp]);
+      expect(sorted.slice(0).sort(klass.sorter)).toEqual(sorted);
+      expect(sorted.slice(0).reverse().sort(klass.sorter)).toEqual(sorted);
+      expect([notes.g, notes.c, notes.gSharp, notes.gFlat].sort(klass.sorter)).toEqual(sorted);
+      expect(sorted.slice(0).reverse()).not.toEqual(sorted);
     });
   });
 };

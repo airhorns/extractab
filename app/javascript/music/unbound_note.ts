@@ -40,6 +40,8 @@ export class UnboundNote implements INote {
     return new UnboundNote(noteString);
   }
 
+  public static sorter = (a: UnboundNote, b: UnboundNote) => a.semitonesAboveC - b.semitonesAboveC;
+
   public semitonesAboveC: number;
 
   constructor(public symbol: string) {

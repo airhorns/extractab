@@ -13,7 +13,7 @@ describe("BoundNote", () => {
     otherC: BoundNote.fromString("C4"),
   };
 
-  CommonNoteExamples(notes);
+  CommonNoteExamples(notes, BoundNote);
 
   it("notes should report their symbol and semitones above c", () => {
     expect(notes.c.symbol.toString()).toEqual("C4");
