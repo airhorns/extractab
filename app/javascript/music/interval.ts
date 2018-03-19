@@ -86,6 +86,17 @@ export const enum ChordNames {
   Thirteenth = "Thirteenth",
 }
 
+export const enum ThirdNames {
+  Minor = "Minor",
+  Major = "Major",
+}
+
+export const enum SeventhNames {
+  Minor = "Minor",
+  Major = "Major",
+  Dominant = "Dominant",
+}
+
 export const ChordIntervals: { [key in ChordNames]: ReadonlyArray<Interval> } = Object.freeze({
   Minor: Object.freeze([Intervals.MinorThird, Intervals.PerfectFifth]),
   Major: Object.freeze([Intervals.MajorThird, Intervals.PerfectFifth]),

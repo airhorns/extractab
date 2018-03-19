@@ -1,4 +1,4 @@
-export default {
+const Fixtures: { [name: string]: string } = {
   crossfire: `
 [Main riff]
 E|------|----7--7----------7-7-------|-----7--7----------4-------|
@@ -1660,5 +1660,6 @@ We wish you a Merry Christmas...and a Hap-py..New..Year.
 
 A tradional carol from Kraziekhat.
 `,
-
 };
+
+export default Fixtures;

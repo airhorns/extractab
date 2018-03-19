@@ -46,9 +46,7 @@ Em Bb Cm
 Em A Cm`);
   });
 
-  it("parses real world fixtures", () => {
-    for (const fixture of Object.values(Fixtures)) {
-      expectParses(fixture);
-    }
+  Object.entries(Fixtures).forEach(([name, fixture]) => {
+    it(`parses real world fixture ${name}`, () => expectParses(fixture));
   });
 });

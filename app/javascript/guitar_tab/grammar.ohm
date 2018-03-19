@@ -78,7 +78,8 @@ GuitarTab {
                      | "x"            --null
   dashedChordFretting = (dashedChordFret "-") + dashedChordFret
 
-  chordDefinitionLines = ( spaceMaybe chord spaceMaybe (chordFretting | dashedChordFretting) spaceMaybe eol ) +
+  chordDefinitionLine = spaceMaybe chord spaceMaybe (dashedChordFretting | chordFretting) spaceMaybe eol
+  chordDefinitionLines = chordDefinitionLine chordDefinitionLine +
 
   // Chords & lyrics section with chord signals on other lines, like
   // C    Em  Am         F     C   G
@@ -119,12 +120,12 @@ GuitarTab {
   tabLines = tabStaffLine+
 
   // Musical notation
-  note = ("a".."g" | "A".."G") ("#" | "B") ?
+  note = ("a".."g" | "A".."G") ("#" | "b") ?
   chordExtension = "6" | "7" | "9" | "11" | "13"
   chord = note
   		("min" | "maj" | "m" | "M" | "-") ?
-      ("add" ("maj" | "min" | "m") ? chordExtension) ?
-      ("sus" ("4" | "2")? )?
+      ("add" ? chordExtension ) ?
+      ("sus" ("4" | "2") ? )?
       ("/" note) ?
 
 
