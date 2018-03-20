@@ -1,34 +1,72 @@
-.debug_sections {
-  font-family: monospace;
+@import "~bulma/sass/utilities/mixins";
+
+html, body {
+  min-height: 100vh;
+}
+
+#app_container {
+  min-height: 100vh;
 }
 
 #editor {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  width: 100%;
-
-  .container {
-    display: flex;
-  	flex-direction: column;
-  	align-items: stretch;
-    padding: 1em;
-    flex: 5;
-    padding: 0em;
-  }
-
-  .react-codemirror2 {
-    height: 100%;
-    position: relative;
-    flex: 1;
-  }
-
-  .CodeMirror {
-    position: absolute;
-    height: 100%;
-  }
-
   .widgets {
     display: none;
   }
+
+  .CodeMirror {
+    height: auto;
+  }
+}
+
+.footer {
+  padding: 1rem;
+}
+
+@include desktop {
+  body {
+    height: 100vh;
+  }
+
+  #app_container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .nav {
+    flex-shrink: 0;
+  }
+
+  .footer {
+    padding: 1rem;
+    flex-shrink: 0;
+  }
+
+  #editor {
+    flex: 1 1 auto;
+    position: relative;
+
+    .editor-container {
+      position: absolute;
+      height: 100%;
+      width: 100%;
+    }
+
+    .container {
+      height: 100%;
+    }
+
+    .react-codemirror2 {
+      height: 100%;
+    }
+
+    .CodeMirror {
+      height: 100%;
+      // overflow: auto;
+    }
+  }
+}
+
+.debug_sections {
+  font-family: monospace;
 }

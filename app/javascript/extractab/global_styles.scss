@@ -44,17 +44,3 @@ $variable-columns: false;
 html, body {
   min-height: 100vh;
 }
-
-#app_container {
-  display: flex;
-  min-height: 100vh;
-  flex-direction: column;
-}
-
-#editor {
-  flex: 1;
-}
-
-.footer {
-  padding: 1rem;
-}

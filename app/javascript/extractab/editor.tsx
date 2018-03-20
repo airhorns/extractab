@@ -50,20 +50,22 @@ export class Editor extends React.Component<IEditorProps, IEditorState> {
     const sections = this.state.sections.map(this.componentForSection);
 
     return <section id="editor">
-      <div className="container">
-        <ControlledCodeMirror
-          value={this.state.value}
-          options={{theme: "elegant"}}
-          autoCursor={true}
-          editorDidMount={(editor) => { this.codeMirrorInstance = editor; }}
-          onBeforeChange={(editor, data, value) => {
-            this.setState({value});
-            this.parseEditorContents();
-          }}
-          onChange={(editor, data, value) => true }
-        />
-        <div className="widgets">
-          {sections}
+      <div className="editor-container">
+        <div className="container">
+          <ControlledCodeMirror
+            value={this.state.value}
+            options={{theme: "elegant"}}
+            autoCursor={true}
+            editorDidMount={(editor) => { this.codeMirrorInstance = editor; }}
+            onBeforeChange={(editor, data, value) => {
+              this.setState({value});
+              this.parseEditorContents();
+            }}
+            onChange={(editor, data, value) => true }
+          />
+          <div className="widgets">
+            {sections}
+          </div>
         </div>
       </div>
     </section>;

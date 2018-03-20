@@ -26,9 +26,9 @@ export class ChordChartWidget extends AbstractSectionWidget<IChordChartWidgetPro
     .value();
 
     return <div ref={this.setWidgetElement}>
-      <ul className="chord_diagrams">
+      {/* <ul className="chord_diagrams">
         {chordDiagrams}
-      </ul>
+      </ul> */}
     </div>;
   }
 }
