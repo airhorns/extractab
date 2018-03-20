@@ -1,7 +1,7 @@
 import * as ohm from "ohm-js";
 import * as _ from "lodash";
 import { TabParseResult } from "./tab_parse_result";
-import { ITabSection } from "./i_tab_section";
+import { TabSection } from "./tab_section";
 import { UnrecognizedSection } from "./unrecognized_section";
 import { ChordSource, LyricLine, ChordChartSection } from "./chord_chart_section";
 import { ChordDefinition } from "./chord_definition";
@@ -19,23 +19,23 @@ export const Semantics: ohm.Semantics = Grammar.createSemantics();
 addChordParsingOperations(Semantics);
 
 Semantics.addOperation("buildTab", {
-  contentDelimitedSection(__, sectionHeader, ___, selfDelimitedSectionContents, ____): ITabSection {
+  contentDelimitedSection(__, sectionHeader, ___, selfDelimitedSectionContents, ____): TabSection {
     return selfDelimitedSectionContents.buildTab();
   },
-  lineDelimitedSection_header(__, sectionHeader, ___, chording, ____): ITabSection {
+  lineDelimitedSection_header(__, sectionHeader, ___, chording, ____): TabSection {
     return chording.buildTab();
   },
-  lineDelimitedSection_headerless(__, chording, ___): ITabSection {
+  lineDelimitedSection_headerless(__, chording, ___): TabSection {
     return chording.buildTab();
   },
-  unrecognizedSection_headerless(lines, __): ITabSection {
+  unrecognizedSection_headerless(lines, __): TabSection {
     return new UnrecognizedSection(lines.source);
   },
-  selfDelimitedSectionContents(node): ITabSection {
+  selfDelimitedSectionContents(node): TabSection {
     // Wrong!
     return node.buildTab();
   },
-  chordDefinitionLines(line, lines): ITabSection {
+  chordDefinitionLines(line, lines): TabSection {
     const definitions = [line.buildTab()].concat(lines.buildTab());
     return new ChordDefinitionSection(lines.source, definitions);
   },
@@ -64,7 +64,7 @@ Semantics.addOperation("buildTab", {
   dashedChordFret_digits(firstDigit, secondDigit): IFret {
     return {fret: parseInt(firstDigit.source.contents + secondDigit.source.contents, 10)};
   },
-  tabStaffLines(lines): ITabSection {
+  tabStaffLines(lines): TabSection {
     const staff = new TabStaff(lines.buildTab());
     return new TabStaffSection(lines.source, staff);
   },
@@ -107,7 +107,7 @@ Semantics.addOperation("buildTab", {
       linkage,
     };
   },
-  chordChart(lines): ITabSection {
+  chordChart(lines): TabSection {
     const chartLines = lines.buildTab();
     return new ChordChartSection(this.source, chartLines);
   },

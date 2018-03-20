@@ -1,6 +1,6 @@
 import { Interval } from "ohm-js";
-import { ITabSection } from "./i_tab_section";
+import { TabSection } from "./tab_section";
 
-export class UnrecognizedSection implements ITabSection {
-  constructor(public source: Interval) {}
+export class UnrecognizedSection extends TabSection {
+  constructor(public source: Interval) { super(); }
 }

@@ -1,9 +1,9 @@
 import * as React from "react";
-import { ITabSection } from "../guitar_tab";
+import { TabSection } from "../guitar_tab";
 import { UnrecognizedWidget } from "./unrecognized_widget";
 
 interface IDebugSectionProps {
-  sections: ITabSection[];
+  sections: TabSection[];
 }
 
 export class DebugSections extends React.Component<IDebugSectionProps, {}> {

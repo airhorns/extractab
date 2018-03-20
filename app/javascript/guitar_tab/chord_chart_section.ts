@@ -1,5 +1,5 @@
 import * as ohm from "ohm-js";
-import { ITabSection } from "./i_tab_section";
+import { TabSection } from "./tab_section";
 import { UnboundChord } from "../music";
 
 export class ChordSource {
@@ -13,7 +13,12 @@ export class LyricLine {
 export type ChordLine = ChordSource[];
 export type ChordChartLine = ChordLine | LyricLine;
 
-export class ChordChartSection implements ITabSection {
+export const isChordLine = (line: ChordChartLine): line is ChordLine => {
+  return (line as LyricLine).lyrics === undefined;
+};
+
+export class ChordChartSection extends TabSection {
   constructor(public source: ohm.Interval, public lines: ChordChartLine[]) {
+    super();
   }
 }

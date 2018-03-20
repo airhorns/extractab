@@ -1,9 +1,9 @@
 import * as ohm from "ohm-js";
-import { ITabSection } from "./i_tab_section";
+import { TabSection } from "./tab_section";
 
 export class TabParseResult {
   public succeeded: boolean;
-  constructor(public matchResult: ohm.MatchResult, public sections: ITabSection[] ) {
+  constructor(public matchResult: ohm.MatchResult, public sections: TabSection[] ) {
     this.succeeded = matchResult.succeeded();
   }
 }

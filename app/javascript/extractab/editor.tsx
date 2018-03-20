@@ -4,7 +4,7 @@ import * as _ from "lodash";
 import { Controlled as ControlledCodeMirror } from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/elegant.css";
-import { TabParser, ITabSection, ChordDefinitionSection, ChordChartSection, TabStaffSection, UnrecognizedSection } from "../guitar_tab";
+import { TabParser, TabSection, ChordDefinitionSection, ChordChartSection, TabStaffSection, UnrecognizedSection } from "../guitar_tab";
 import { UnrecognizedWidget } from "./unrecognized_widget";
 import { ChordChartWidget } from "./chord_chart_widget";
 import { ChordDefinitionWidget } from "./chord_definition_widget";
@@ -18,25 +18,24 @@ interface IEditorProps {
 
 interface IEditorState {
   value: string;
-  sections: ITabSection[];
+  sections: TabSection[];
 }
 
 export class Editor extends React.Component<IEditorProps, IEditorState> {
-  public codeMirrorInstance: any;
+  public codeMirrorInstance: CodeMirror.Editor;
   public parser: TabParser;
 
   constructor(props: IEditorProps) {
     super(props);
-    this.codeMirrorInstance = null;
     this.state = {
       value: props.startValue,
       sections: [],
     };
     this.parser = new TabParser();
-    this.parseContents = _.debounce(this.parseContents, 100);
+    this.parseEditorContents = _.debounce(this.parseEditorContents, 100);
   }
 
-  public parseContents() {
+  public parseEditorContents() {
     const parseResult = this.parser.parse(this.state.value);
     if (parseResult.succeeded) {
       this.setState({sections: parseResult.sections});
@@ -44,7 +43,7 @@ export class Editor extends React.Component<IEditorProps, IEditorState> {
   }
 
   public componentDidMount() {
-    this.parseContents();
+    this.parseEditorContents();
   }
 
   public render() {
@@ -59,7 +58,7 @@ export class Editor extends React.Component<IEditorProps, IEditorState> {
           editorDidMount={(editor) => { this.codeMirrorInstance = editor; }}
           onBeforeChange={(editor, data, value) => {
             this.setState({value});
-            this.parseContents();
+            this.parseEditorContents();
           }}
           onChange={(editor, data, value) => true }
         />
@@ -70,18 +69,18 @@ export class Editor extends React.Component<IEditorProps, IEditorState> {
     </section>;
   }
 
-  public componentForSection(section: ITabSection) {
+  public componentForSection = (section: TabSection) => {
     if (section instanceof TabStaffSection) {
-      return <TabStaffWidget key={section.source.startIdx} section={section}/>;
+      return <TabStaffWidget key={section.source.startIdx} section={section} codemirror={this.codeMirrorInstance}/>;
     }
     if (section instanceof ChordChartSection) {
-      return <ChordChartWidget key={section.source.startIdx} section={section}/>;
+      return <ChordChartWidget key={section.source.startIdx} section={section} codemirror={this.codeMirrorInstance}/>;
     }
     if (section instanceof ChordDefinitionSection) {
-      return <ChordDefinitionWidget key={section.source.startIdx} section={section}/>;
+      return <ChordDefinitionWidget key={section.source.startIdx} section={section} codemirror={this.codeMirrorInstance}/>;
     }
     if (section instanceof UnrecognizedSection) {
-      return <UnrecognizedWidget key={section.source.startIdx} section={section}/>;
+      return <UnrecognizedWidget key={section.source.startIdx} section={section} codemirror={this.codeMirrorInstance}/>;
     }
     throw new Error("Unrecognized tab section type!");
   }
