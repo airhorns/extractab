@@ -2,7 +2,7 @@ import Fixtures from "./fixtures";
 import { Grammar, Semantics, TabStaff, TabString, TabHit, TabLinkage } from "../../guitar_tab";
 
 const parseStaffDefinition = (str: string) => {
-  const matchResult = Grammar.match(str   + "\n", "tabLines");
+  const matchResult = Grammar.match(str   + "\n", "tabStaffLines");
   if (matchResult.succeeded()) {
     return Semantics(matchResult).buildTab();
   } else {

@@ -1,11 +1,14 @@
 import * as React from "react";
 import * as CodeMirror from "codemirror";
 import * as _ from "lodash";
-import {Controlled as ControlledCodeMirror} from "react-codemirror2";
+import { Controlled as ControlledCodeMirror } from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/elegant.css";
-import { TabParser, ITabSection } from "../guitar_tab";
-import { UnrecognizedSectionWidget } from "./unrecognized_section_widget";
+import { TabParser, ITabSection, ChordDefinitionSection, ChordChartSection, TabStaffSection, UnrecognizedSection } from "../guitar_tab";
+import { UnrecognizedWidget } from "./unrecognized_widget";
+import { ChordChartWidget } from "./chord_chart_widget";
+import { ChordDefinitionWidget } from "./chord_definition_widget";
+import { TabStaffWidget } from "./tab_staff_widget";
 import { DebugSections } from "./debug_sections";
 
 interface IEditorProps {
@@ -47,26 +50,39 @@ export class Editor extends React.Component<IEditorProps, IEditorState> {
   public render() {
     const sections = this.state.sections.map(this.componentForSection);
 
-    return <React.Fragment>
-      <ControlledCodeMirror
-        value={this.state.value}
-        options={{theme: "elegant"}}
-        autoCursor={true}
-        editorDidMount={(editor) => { this.codeMirrorInstance = editor; }}
-        onBeforeChange={(editor, data, value) => {
-          this.setState({value});
-          this.parseContents();
-        }}
-        onChange={(editor, data, value) => true }
-      />
-      <div className="widget-container">
-      {sections}
+    return <section id="editor">
+      <div className="container">
+        <ControlledCodeMirror
+          value={this.state.value}
+          options={{theme: "elegant"}}
+          autoCursor={true}
+          editorDidMount={(editor) => { this.codeMirrorInstance = editor; }}
+          onBeforeChange={(editor, data, value) => {
+            this.setState({value});
+            this.parseContents();
+          }}
+          onChange={(editor, data, value) => true }
+        />
+        <div className="widgets">
+          {sections}
+        </div>
       </div>
-      {this.props.debugEnabled && <DebugSections sections={this.state.sections}/>}
-    </React.Fragment>;
+    </section>;
   }
 
   public componentForSection(section: ITabSection) {
-    return <UnrecognizedSectionWidget line={10} key={section.source.startIdx}/>;
+    if (section instanceof TabStaffSection) {
+      return <TabStaffWidget key={section.source.startIdx} section={section}/>;
+    }
+    if (section instanceof ChordChartSection) {
+      return <ChordChartWidget key={section.source.startIdx} section={section}/>;
+    }
+    if (section instanceof ChordDefinitionSection) {
+      return <ChordDefinitionWidget key={section.source.startIdx} section={section}/>;
+    }
+    if (section instanceof UnrecognizedSection) {
+      return <UnrecognizedWidget key={section.source.startIdx} section={section}/>;
+    }
+    throw new Error("Unrecognized tab section type!");
   }
 }

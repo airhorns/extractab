@@ -1,6 +1,6 @@
 import * as React from "react";
 import { ITabSection } from "../guitar_tab";
-import { UnrecognizedSectionWidget } from "./unrecognized_section_widget";
+import { UnrecognizedWidget } from "./unrecognized_widget";
 
 interface IDebugSectionProps {
   sections: ITabSection[];

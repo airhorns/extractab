@@ -1,3 +1,30 @@
 .debug_sections {
   font-family: monospace;
 }
+
+#editor {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+
+  .container {
+    display: flex;
+  	flex-direction: column;
+  	align-items: stretch;
+    padding: 1em;
+    flex: 5;
+    padding: 0em;
+  }
+
+  .react-codemirror2 {
+    height: 100%;
+    position: relative;
+    flex: 1;
+  }
+
+  .CodeMirror {
+    position: absolute;
+    height: 100%;
+  }
+}

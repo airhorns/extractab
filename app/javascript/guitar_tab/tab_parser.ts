@@ -3,7 +3,7 @@ import * as _ from "lodash";
 import { TabParseResult } from "./tab_parse_result";
 import { ITabSection } from "./i_tab_section";
 import { UnrecognizedSection } from "./unrecognized_section";
-import { ChordSection } from "./chord_section";
+import { ChordSource, LyricLine, ChordChartSection } from "./chord_chart_section";
 import { ChordDefinition } from "./chord_definition";
 import { TabLinkage, TabHit } from "./tab_hit";
 import { TabString } from "./tab_string";
@@ -64,10 +64,7 @@ Semantics.addOperation("buildTab", {
   dashedChordFret_digits(firstDigit, secondDigit): IFret {
     return {fret: parseInt(firstDigit.source.contents + secondDigit.source.contents, 10)};
   },
-  chording(lines): ITabSection {
-    return new ChordSection(lines.source);
-  },
-  tabLines(lines): ITabSection {
+  tabStaffLines(lines): ITabSection {
     const staff = new TabStaff(lines.buildTab());
     return new TabStaffSection(lines.source, staff);
   },
@@ -108,6 +105,24 @@ Semantics.addOperation("buildTab", {
     return {
       fret: parseInt(firstDigit.source.contents + secondDigit.source.contents, 10),
       linkage,
+    };
+  },
+  chordChart(lines): ITabSection {
+    const chartLines = lines.buildTab();
+    return new ChordChartSection(this.source, chartLines);
+  },
+  chordChartChordLine(__, chordNodes, ___, repetitionIndicator, ____): ChordSource[] {
+    return chordNodes.children.map((chordNode) => {
+      return {
+        chord: chordNode.buildChord(),
+        source: chordNode.source,
+      };
+    });
+  },
+  chordChartLyricLine(chars, __): LyricLine {
+    return {
+      lyrics: chars.sourceString,
+      source: chars.source,
     };
   },
 });

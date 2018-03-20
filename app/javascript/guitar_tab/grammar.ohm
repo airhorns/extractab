@@ -23,13 +23,13 @@ GuitarTab {
     	emptyLine *
       sectionHeader
       emptyLine *
-    	chording
+    	chordChart
       emptyLine *
     ) --header
     |
     (
       emptyLine *
-      chording
+      chordChart
       emptyLine +
     ) --headerless
 
@@ -56,7 +56,7 @@ GuitarTab {
     lineChar *
     eol
 
-  selfDelimitedSectionContents = chordDefinitionLines | tabLines
+  selfDelimitedSectionContents = chordDefinitionLines | tabStaffLines
 
   // Match any characters on lines that aren't empty
   unrecognizedLines =
@@ -91,9 +91,9 @@ GuitarTab {
                         digit digit? spaceMaybe
                         ( "]" | ")" | "\\" ) ? spaceMaybe
 
-  lyricLine = (~sectionHeaderSignal) (~tabStaffLine) lineChar+ eol
-  chordLine = (spaceMaybe chord spaceMaybe)+ repetitionIndicator? eol
-  chording = (chordLine | lyricLine)+
+  chordChartLyricLine = (~sectionHeaderSignal) (~tabStaffLine) lineChar+ eol
+  chordChartChordLine = (spaceMaybe chord spaceMaybe)+ repetitionIndicator? eol
+  chordChart = (chordChartChordLine | chordChartLyricLine)+
 
 
   // Tab section with lines along time with hits as fret numbers along a series of strings, like
@@ -118,7 +118,7 @@ GuitarTab {
     spaceMaybe
     eol
 
-  tabLines = tabStaffLine+
+  tabStaffLines = tabStaffLine+
 
   // Musical notation
   note = ("a".."g" | "A".."G") ("#" | "b") ?

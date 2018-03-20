@@ -7,3 +7,5 @@ export * from "./tab_hit";
 export * from "./tab_string";
 export * from "./tab_staff";
 export * from "./tab_staff_section";
+export * from "./chord_chart_section";
+export * from "./unrecognized_section";
