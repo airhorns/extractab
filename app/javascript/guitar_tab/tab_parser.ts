@@ -1,11 +1,17 @@
-import TabParseResult from "./tab_parse_result";
+import * as ohm from "ohm-js";
+import * as _ from "lodash";
+import { TabParseResult } from "./tab_parse_result";
 import { ITabSection } from "./i_tab_section";
 import { UnrecognizedSection } from "./unrecognized_section";
 import { ChordSection } from "./chord_section";
-import { IFret, ChordDefinition } from "./chord_definition";
+import { ChordDefinition } from "./chord_definition";
+import { TabLinkage, TabHit } from "./tab_hit";
+import { TabString } from "./tab_string";
+import { TabStaff } from "./tab_staff";
+import { TabStaffSection } from "./tab_staff_section";
+import { IFret } from "./i_fret";
 import { ChordDefinitionSection } from "./chord_definition_section";
 import { addChordParsingOperations } from "./chord_parser";
-import * as ohm from "ohm-js";
 
 export const Grammar: ohm.Grammar = require("./grammar"); // tslint:disable-line
 export const Semantics: ohm.Semantics = Grammar.createSemantics();
@@ -13,16 +19,16 @@ export const Semantics: ohm.Semantics = Grammar.createSemantics();
 addChordParsingOperations(Semantics);
 
 Semantics.addOperation("buildTab", {
-  contentDelimitedSection(_, sectionHeader, __, selfDelimitedSectionContents, ___): ITabSection {
+  contentDelimitedSection(__, sectionHeader, ___, selfDelimitedSectionContents, ____): ITabSection {
     return selfDelimitedSectionContents.buildTab();
   },
-  lineDelimitedSection_header(_, sectionHeader, __, chording, ___): ITabSection {
+  lineDelimitedSection_header(__, sectionHeader, ___, chording, ____): ITabSection {
     return chording.buildTab();
   },
-  lineDelimitedSection_headerless(_, chording, __): ITabSection {
+  lineDelimitedSection_headerless(__, chording, ___): ITabSection {
     return chording.buildTab();
   },
-  unrecognizedSection_headerless(lines, _): ITabSection {
+  unrecognizedSection_headerless(lines, __): ITabSection {
     return new UnrecognizedSection(lines.source);
   },
   selfDelimitedSectionContents(node): ITabSection {
@@ -34,7 +40,7 @@ Semantics.addOperation("buildTab", {
     return new ChordDefinitionSection(lines.source, definitions);
   },
   // chordDefinitionLines = ( spaceMaybe chord spaceMaybe (chordFretting | dashedChordFretting) spaceMaybe eol ) +
-  chordDefinitionLine(_, chordNode, __, fretting, ___, ____): ChordDefinition {
+  chordDefinitionLine(__, chordNode, ___, fretting, ____, _____): ChordDefinition {
     const chord = chordNode.buildChord();
     // Loop over the iteration node for the frets to get an IFret corresponding to the fret
     const frets: IFret[] = fretting.buildTab();
@@ -49,10 +55,10 @@ Semantics.addOperation("buildTab", {
       }
     });
   },
-  dashedChordFretting(frets, _, lastFret): IFret[] {
+  dashedChordFretting(frets, __, lastFret): IFret[] {
     return frets.buildTab().concat([lastFret.buildTab()]);
   },
-  dashedChordFret_null(_): IFret {
+  dashedChordFret_null(__): IFret {
     return null;
   },
   dashedChordFret_digits(firstDigit, secondDigit): IFret {
@@ -62,19 +68,47 @@ Semantics.addOperation("buildTab", {
     return new ChordSection(lines.source);
   },
   tabLines(lines): ITabSection {
-    // WRONG -- should be
-    // return new TabSection(lines.source, lines.buildTab())
-    lines.buildTab();
-    return new UnrecognizedSection(lines.source);
+    const staff = new TabStaff(lines.buildTab());
+    return new TabStaffSection(lines.source, staff);
   },
-  tabStaffLine(_, tabStringTuning, __, hits, ___, ____) {
-    return [tabStringTuning, hits.buildTab()];
+  tabStaffLine(__, tabStringTuning, ___, hits, ____, _____) {
+    return new TabString(tabStringTuning.source.contents, _.compact(hits.buildTab()));
   },
-  tabRest(_) {
-    return {};
+  tabRest(__) {
+    return;
   },
-  tabHit(firstDigit, secondDigit, linkage) {
-    return firstDigit.terminalValue;
+  tabHit(hit, hits): TabHit {
+    // The last three arguments are all IterationNodes for the individual tokens in the a
+    const components = [hit.buildTab()].concat(hits.buildTab());
+    return new TabHit(
+      components.map((component) => ({fret: component.fret})),
+      _.dropRightWhile(components.map((component) => component.linkage), (value) => !value),
+      (ohm as any).util.getLineAndColumn(this.source.sourceString, this.source.startIdx).colNum - 1, // requires any cast because util isn't in the ts.d for ohm
+    );
+  },
+  tabHitComponent(firstDigit, secondDigit, linkageNode) {
+    let linkage: TabLinkage | undefined;
+    switch (linkageNode.source.contents) {
+      case "h":
+      case "H":
+      case "p":
+      case "P":
+      case "^":
+        linkage = TabLinkage.Slur;
+        break;
+      case "/":
+        linkage = TabLinkage.Slide;
+        break;
+      case "b":
+      case "B":
+        linkage = TabLinkage.Bend;
+        break;
+    }
+
+    return {
+      fret: parseInt(firstDigit.source.contents + secondDigit.source.contents, 10),
+      linkage,
+    };
   },
 });
 

@@ -3,3 +3,7 @@ export * from "./tab_parse_result";
 export * from "./i_tab_section";
 export * from "./chord_definition";
 export * from "./chord_definition_section";
+export * from "./tab_hit";
+export * from "./tab_string";
+export * from "./tab_staff";
+export * from "./tab_staff_section";
