@@ -1,9 +1,9 @@
 import * as ohm from "ohm-js";
 import { TabSection } from "./tab_section";
-import { ChordDefinition } from "./chord_definition";
+import { ChordDefinitionSourceMap } from "./chord_definition";
 
 export class ChordDefinitionSection extends TabSection {
-  constructor(public source: ohm.Interval, public definitions: ChordDefinition[]) {
+  constructor(public source: ohm.Interval, public definitionMaps: ChordDefinitionSourceMap[] ) {
     super();
   }
 }

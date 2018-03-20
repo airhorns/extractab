@@ -129,7 +129,7 @@ export const addChordParsingOperations = (Semantics: ohm.Semantics) => {
         }
       }
 
-      return UnboundChord.forName(rootNote, fullChordName, substituteRoot);
+      return UnboundChord.forName(rootNote, fullChordName, substituteRoot, this.source.contents);
     },
   });
 };

@@ -1,14 +1,16 @@
 import * as React from "react";
-import { UnboundChord } from "../music";
+import { ChordDefinition } from "../guitar_tab";
+import { AbstractWidget, IWidgetProps } from "./abstract_widget";
 
-interface IChordDiagramProps {
-  chord: UnboundChord;
+interface IChordDiagramProps extends IWidgetProps {
+  chordDefinition: ChordDefinition;
+  lineNumber: number;
 }
 
-export class ChordDiagram extends React.Component<IChordDiagramProps, {}> {
+export class ChordDiagram extends AbstractWidget<IChordDiagramProps, {}> {
   public render() {
-    return <div>
-      <h3>Chord: {this.props.chord.notesString()}</h3>
-    </div>;
+    return <h3 ref={this.setWidgetElement}>
+      DIAGRAM {this.props.chordDefinition.definedChord.displayLabel()}: {this.props.chordDefinition.definedChord.notesString()}
+    </h3>;
   }
 }

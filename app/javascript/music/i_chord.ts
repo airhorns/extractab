@@ -5,5 +5,6 @@ export interface IChord<T extends INote> {
   root: T;
   intervals: ReadonlyArray<Interval>;
   notes(): T[];
+  displayLabel(): string;
   equivalent(chord: IChord<any>): boolean;
 }

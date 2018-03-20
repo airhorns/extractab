@@ -4,7 +4,7 @@ import { TabParseResult } from "./tab_parse_result";
 import { TabSection } from "./tab_section";
 import { UnrecognizedSection } from "./unrecognized_section";
 import { ChordSource, LyricLine, ChordChartSection } from "./chord_chart_section";
-import { ChordDefinition } from "./chord_definition";
+import { ChordDefinition, ChordDefinitionSourceMap } from "./chord_definition";
 import { TabLinkage, TabHit } from "./tab_hit";
 import { TabString } from "./tab_string";
 import { TabStaff } from "./tab_staff";
@@ -36,15 +36,16 @@ Semantics.addOperation("buildTab", {
     return node.buildTab();
   },
   chordDefinitionLines(line, lines): TabSection {
-    const definitions = [line.buildTab()].concat(lines.buildTab());
-    return new ChordDefinitionSection(lines.source, definitions);
+    const definitionMaps = [line.buildTab()].concat(lines.buildTab());
+    return new ChordDefinitionSection(lines.source, definitionMaps);
   },
   // chordDefinitionLines = ( spaceMaybe chord spaceMaybe (chordFretting | dashedChordFretting) spaceMaybe eol ) +
-  chordDefinitionLine(__, chordNode, ___, fretting, ____, _____): ChordDefinition {
+  chordDefinitionLine(__, chordNode, ___, fretting, ____, _____): ChordDefinitionSourceMap {
     const chord = chordNode.buildChord();
     // Loop over the iteration node for the frets to get an IFret corresponding to the fret
     const frets: IFret[] = fretting.buildTab();
-    return new ChordDefinition(chord, frets);
+    const definition = new ChordDefinition(chord, frets);
+    return new ChordDefinitionSourceMap(this.source, definition);
   },
   chordFretting(frets): IFret[] {
     return frets.children.map((child: ohm.Node) => {

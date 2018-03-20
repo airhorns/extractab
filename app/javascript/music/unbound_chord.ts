@@ -13,7 +13,7 @@ import * as _ from "lodash";
 // using some negative intervals and some positive intervals. the notes that would be above the root in the standard
 // voicing of the chord can be given using the inverse (negative) interval such that they are now below the root.
 export class UnboundChord implements IChord<UnboundNote> {
-  public static forName(root: UnboundNote, name: ChordNames, substituteRoot?: UnboundNote): UnboundChord {
+  public static forName(root: UnboundNote, name: ChordNames, substituteRoot?: UnboundNote, displayLabel?: string): UnboundChord {
     let intervals = ChordIntervals[name];
 
     if (substituteRoot) {
@@ -28,12 +28,12 @@ export class UnboundChord implements IChord<UnboundNote> {
       intervals = Object.freeze(newIntervals);
     }
 
-    return new UnboundChord(root, intervals);
+    return new UnboundChord(root, intervals, displayLabel);
   }
 
   public intervals: ReadonlyArray<Interval>;
 
-  constructor(public root: UnboundNote, intervals: Interval[] | ReadonlyArray<Interval>) {
+  constructor(public root: UnboundNote, intervals: Interval[] | ReadonlyArray<Interval>, private passedDisplayLabel?: string) {
     this.intervals = Object.freeze(intervals.slice(0).sort(Interval.sorter));
   }
 
@@ -45,6 +45,14 @@ export class UnboundChord implements IChord<UnboundNote> {
 
   public notesString(): string {
     return this.notes().map((note) => note.symbol).join(" ");
+  }
+
+  public displayLabel(): string {
+    if (this.passedDisplayLabel) {
+      return this.passedDisplayLabel;
+    } else {
+      return "Unknown";
+    }
   }
 
   public equivalent(other: IChord<any>): boolean {

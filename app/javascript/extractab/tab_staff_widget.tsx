@@ -1,12 +1,12 @@
 import * as React from "react";
 import { TabStaffSection } from "../guitar_tab";
-import { AbstractSectionWidget, ISectionWidgetProps } from "./abstract_section_widget";
+import { AbstractWidget, IWidgetProps } from "./abstract_widget";
 
-interface ITabStaffWidgetProps extends ISectionWidgetProps {
+interface ITabStaffWidgetProps extends IWidgetProps {
   section: TabStaffSection;
 }
 
-export class TabStaffWidget extends AbstractSectionWidget<ITabStaffWidgetProps, {}> {
+export class TabStaffWidget extends AbstractWidget<ITabStaffWidgetProps, {}> {
   public render() {
     return <div/>;
   }

@@ -4,10 +4,13 @@ import * as _ from "lodash";
 import { Controlled as ControlledCodeMirror } from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/elegant.css";
+import "codemirror/addon/fold/foldcode";
+import "codemirror/addon/fold/foldgutter";
+import "codemirror/addon/fold/foldgutter.css";
 import { TabParser, TabSection, ChordDefinitionSection, ChordChartSection, TabStaffSection, UnrecognizedSection } from "../guitar_tab";
 import { UnrecognizedWidget } from "./unrecognized_widget";
 import { ChordChartWidget } from "./chord_chart_widget";
-import { ChordDefinitionWidget } from "./chord_definition_widget";
+import { ChordDefinitionWidgets } from "./chord_definition_widgets";
 import { TabStaffWidget } from "./tab_staff_widget";
 import { DebugSections } from "./debug_sections";
 
@@ -54,7 +57,13 @@ export class Editor extends React.Component<IEditorProps, IEditorState> {
         <div className="container">
           <ControlledCodeMirror
             value={this.state.value}
-            options={{theme: "elegant"}}
+            options={{
+              theme: "elegant",
+              foldGutter: true,
+              lineNumbers: true,
+              gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+              viewportMargin: Infinity,
+            }}
             autoCursor={true}
             editorDidMount={(editor) => { this.codeMirrorInstance = editor; }}
             onBeforeChange={(editor, data, value) => {
@@ -73,16 +82,35 @@ export class Editor extends React.Component<IEditorProps, IEditorState> {
 
   public componentForSection = (section: TabSection) => {
     if (section instanceof TabStaffSection) {
-      return <TabStaffWidget key={section.source.startIdx} section={section} codemirror={this.codeMirrorInstance}/>;
+      return <TabStaffWidget
+        key={section.key()}
+        lineNumber={section.lineNumberForDisplay()}
+        section={section}
+        codemirror={this.codeMirrorInstance}
+      />;
     }
     if (section instanceof ChordChartSection) {
-      return <ChordChartWidget key={section.source.startIdx} section={section} codemirror={this.codeMirrorInstance}/>;
+      return <ChordChartWidget
+        lineNumber={section.lineNumberForDisplay()}
+        key={section.key()}
+        section={section}
+        codemirror={this.codeMirrorInstance}
+      />;
     }
     if (section instanceof ChordDefinitionSection) {
-      return <ChordDefinitionWidget key={section.source.startIdx} section={section} codemirror={this.codeMirrorInstance}/>;
+      return <ChordDefinitionWidgets
+        key={section.key()}
+        section={section}
+        codemirror={this.codeMirrorInstance}
+      />;
     }
     if (section instanceof UnrecognizedSection) {
-      return <UnrecognizedWidget key={section.source.startIdx} section={section} codemirror={this.codeMirrorInstance}/>;
+      return <UnrecognizedWidget
+        lineNumber={section.lineNumberForDisplay()}
+        key={section.key()}
+        section={section}
+        codemirror={this.codeMirrorInstance}
+      />;
     }
     throw new Error("Unrecognized tab section type!");
   }

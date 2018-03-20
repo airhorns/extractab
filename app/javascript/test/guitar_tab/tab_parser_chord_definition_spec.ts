@@ -1,5 +1,5 @@
 import Fixtures from "./fixtures";
-import { Grammar, Semantics, ChordDefinitionSection, ChordDefinition } from "../../guitar_tab";
+import { Grammar, Semantics, ChordDefinitionSection, ChordDefinition, ChordDefinitionSourceMap } from "../../guitar_tab";
 import { UnboundChord, UnboundNote, ChordNames } from "../../music";
 
 const parseChordDefinition = (str: string) => {
@@ -18,15 +18,15 @@ Amaj7   5x665x`);
 
     const expected = [
       new ChordDefinition(
-        UnboundChord.forName(UnboundNote.fromString("A"), ChordNames.MajorSixth),
+        UnboundChord.forName(UnboundNote.fromString("A"), ChordNames.MajorSixth, undefined, "A6"),
         [null, null, {fret: 7}, {fret: 6}, {fret: 7}, null],
       ),
       new ChordDefinition(
-        UnboundChord.forName(UnboundNote.fromString("A"), ChordNames.MajorSeventh),
+        UnboundChord.forName(UnboundNote.fromString("A"), ChordNames.MajorSeventh, undefined, "Amaj7"),
         [{fret: 5}, null, {fret: 6}, {fret: 6}, {fret: 5}, null],
       )];
 
-    expect(actual.definitions).toEqual(expected);
+    expect(actual.definitionMaps.map((map: ChordDefinitionSourceMap) => map.definition)).toEqual(expected);
   });
 
   it("parses dashed chord definitions with 6 string multi digit frets", () => {
@@ -36,19 +36,19 @@ F#7    x-9-9-9-9-x`);
 
     const expected = [
       new ChordDefinition(
-        UnboundChord.forName(UnboundNote.fromString("C#"), ChordNames.MinorSeventh),
+        UnboundChord.forName(UnboundNote.fromString("C#"), ChordNames.MinorSeventh, undefined, "C#m7"),
         [{fret: 9}, {fret: 11}, {fret: 9}, {fret: 9}, {fret: 9}, {fret: 9}],
       ),
       new ChordDefinition(
-        UnboundChord.forName(UnboundNote.fromString("F#"), ChordNames.DominantSeventh),
+        UnboundChord.forName(UnboundNote.fromString("F#"), ChordNames.DominantSeventh, undefined, "F#7"),
         [null, {fret: 9}, {fret: 9}, {fret: 9}, {fret: 9}, {fret: 11}],
       ),
       new ChordDefinition(
-        UnboundChord.forName(UnboundNote.fromString("F#"), ChordNames.DominantSeventh),
+        UnboundChord.forName(UnboundNote.fromString("F#"), ChordNames.DominantSeventh, undefined, "F#7"),
         [null, {fret: 9}, {fret: 9}, {fret: 9}, {fret: 9}, null],
       ),
     ];
 
-    expect(actual.definitions).toEqual(expected);
+    expect(actual.definitionMaps.map((map: ChordDefinitionSourceMap) => map.definition)).toEqual(expected);
   });
 });
