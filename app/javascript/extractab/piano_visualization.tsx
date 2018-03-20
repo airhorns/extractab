@@ -1,30 +1,83 @@
 import * as React from "react";
-import { BoundChord } from "../music";
+import * as _ from "lodash";
+import { UnboundNote, BoundChord } from "../music";
 
 export interface IPianoVisualizationProps {
   chord: BoundChord;
   showNoteLabels?: boolean;
+  whiteKeyWidth?: number;
+  whiteKeyHeight?: number;
+  blackKeyWidth?: number;
+  blackKeyHeight?: number;
+  blackKeyOffset?: number;
 }
 
 export class PianoVisualization extends React.Component<IPianoVisualizationProps, {}> {
   public static defaultProps: Partial<IPianoVisualizationProps> = {
-      showNoteLabels: true
+      showNoteLabels: true,
+      whiteKeyWidth: 20,
+      whiteKeyHeight: 80,
+      blackKeyWidth: 16,
+      blackKeyHeight: 50,
+      blackKeyOffset: 12,
   };
 
+  public static KeysMap: Array<[string, UnboundNote, number]> = [
+    ["white", UnboundNote.fromString("C"), 0],
+    ["white", UnboundNote.fromString("D"), 1],
+    ["white", UnboundNote.fromString("E"), 2],
+    ["white", UnboundNote.fromString("F"), 3],
+    ["white", UnboundNote.fromString("G"), 4],
+    ["white", UnboundNote.fromString("A"), 5],
+    ["white", UnboundNote.fromString("B"), 6],
+    ["black", UnboundNote.fromString("C#"), 0],
+    ["black", UnboundNote.fromString("D#"), 1],
+    ["black", UnboundNote.fromString("F#"), 3],
+    ["black", UnboundNote.fromString("G#"), 4],
+    ["black", UnboundNote.fromString("A#"), 5],
+  ];
+
   public render() {
-    return <svg>
-      <rect className="white c" width="20" height="80" x="${this.getCurrentX(0)}" y="0" />
-      <rect className="white d" width="20" height="80" x="${this.getCurrentX(20)}" y="0" />
-      <rect className="white e" width="20" height="80" x="${this.getCurrentX(40)}" y="0" />
-      <rect className="white f" width="20" height="80" x="${this.getCurrentX(60)}" y="0" />
-      <rect className="white g" width="20" height="80" x="${this.getCurrentX(80)}" y="0" />
-      <rect className="white a" width="20" height="80" x="${this.getCurrentX(100)}" y="0" />
-      <rect className="white b" width="20" height="80" x="${this.getCurrentX(120)}" y="0" />
-      <rect className="black cs" width="16" height="50" x="${this.getCurrentX(12)}" y="0" />
-      <rect className="black ds" width="16" height="50" x="${this.getCurrentX(32)}" y="0" />
-      <rect className="black fs" width="16" height="50" x="${this.getCurrentX(72)}" y="0" />
-      <rect className="black gs" width="16" height="50" x="${this.getCurrentX(92)}" y="0" />
-      <rect className="black as" width="16" height="50" x="${this.getCurrentX(112)}" y="0" />
-    </svg>
+    const octaves = this.props.chord.notes().map((note) => note.octave);
+    const startOctave = _.min(octaves) || 3;
+    const octaveWidth = this.props.whiteKeyWidth! * 7;
+    const pianoNodes = _.range(startOctave, _.max(octaves) || 4).reduce((nodes: JSX.Element[], octave, octaveOffset) => {
+      PianoVisualization.KeysMap.forEach(([className, note, keyOffset]) => {
+        const noteString = (note.symbol + octave);
+        if (className.includes("white")) {
+          nodes.push(<rect
+            className={className + " " + noteString}
+            key={noteString}
+            width={this.props.whiteKeyWidth}
+            height={this.props.whiteKeyHeight}
+            x={(octaveOffset * octaveWidth) + (this.props.whiteKeyWidth! * keyOffset)}
+            y="0"
+          />);
+          if (note.symbol === "C") {
+            nodes.push(<text
+              className="octave-label"
+              textAnchor="middle"
+              key={"label-" + noteString}
+              x={(octaveOffset * octaveWidth) + (this.props.whiteKeyWidth! * keyOffset) + (this.props.whiteKeyWidth! / 2)}
+              y={this.props.whiteKeyHeight! - 4}
+            >
+              {noteString}
+            </text>);
+          }
+        } else {
+          nodes.push(<rect
+            className={className + " " + noteString}
+            key={noteString}
+            width={this.props.blackKeyWidth}
+            height={this.props.blackKeyHeight}
+            x={(octaveOffset * octaveWidth) + (this.props.whiteKeyWidth! * keyOffset) + this.props.blackKeyOffset!  }
+            y="0"
+          />);
+        }
+      });
+      return nodes;
+    }, []);
+
+    return <svg className="piano"><g>{pianoNodes}</g></svg>;
   }
 }

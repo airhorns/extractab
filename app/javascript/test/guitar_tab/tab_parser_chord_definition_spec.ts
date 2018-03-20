@@ -51,4 +51,21 @@ F#7    x-9-9-9-9-x`);
 
     expect(actual.definitionMaps.map((map: ChordDefinitionSourceMap) => map.definition)).toEqual(expected);
   });
+
+  it("sets the display label on the chord to the same string found in the text", () => {
+    const actual = parseChordDefinition("C  x0x12x\nCmaj   x0x12x");
+
+    const expected = [
+      new ChordDefinition(
+        UnboundChord.forName(UnboundNote.fromString("C"), ChordNames.Major, undefined, "C"),
+        [null, {fret: 0}, null, {fret: 1}, {fret: 2}, null],
+      ),
+      new ChordDefinition(
+        UnboundChord.forName(UnboundNote.fromString("C"), ChordNames.Major, undefined, "Cmaj"),
+        [null, {fret: 0}, null, {fret: 1}, {fret: 2}, null],
+      )];
+
+    expect(actual.definitionMaps.map((map: ChordDefinitionSourceMap) => map.definition)).toEqual(expected);
+  });
+
 });

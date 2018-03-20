@@ -2,6 +2,7 @@ import * as ohm from "ohm-js";
 import * as _ from "lodash";
 import { TabParseResult } from "./tab_parse_result";
 import { TabSection } from "./tab_section";
+import { TabKnowledge } from "./tab_knowledge";
 import { UnrecognizedSection } from "./unrecognized_section";
 import { ChordSource, LyricLine, ChordChartSection } from "./chord_chart_section";
 import { ChordDefinition, ChordDefinitionSourceMap } from "./chord_definition";
@@ -132,10 +133,12 @@ export class TabParser {
   public parse(str: string) {
     const matchResult = Grammar.match(str + "\n");
     let sections;
+    let knowledge;
     if (matchResult.succeeded()) {
       sections = Semantics(matchResult).buildTab();
+      knowledge = TabKnowledge.infer(sections);
     }
-    return new TabParseResult(matchResult, sections);
+    return new TabParseResult(matchResult, sections, knowledge as any);
   }
 
   public parseChord(chordString: string) {

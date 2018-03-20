@@ -16,7 +16,6 @@ export abstract class AbstractWidget<T extends IWidgetProps, S> extends React.Co
       this.widgetElement = element;
       const line = this.props.lineNumber;
       const unmanagedElement = this.widgetElement.cloneNode(true) as HTMLElement;
-      console.log(`Adding line widget ${this.constructor} to ${line}`, unmanagedElement);
       this.widget = this.props.codemirror.addLineWidget(line, unmanagedElement);
     } else {
       if (this.widget) {

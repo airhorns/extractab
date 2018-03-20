@@ -37,10 +37,10 @@ export class UnboundChord implements IChord<UnboundNote> {
     this.intervals = Object.freeze(intervals.slice(0).sort(Interval.sorter));
   }
 
-  public notes(): UnboundNote[] {
+  public notes(): ReadonlyArray<UnboundNote> {
     const notes = this.intervals.map((interval) => this.root.applyInterval(interval));
     notes.unshift(this.root);
-    return notes;
+    return Object.freeze(notes);
   }
 
   public notesString(): string {
@@ -57,11 +57,18 @@ export class UnboundChord implements IChord<UnboundNote> {
 
   public equivalent(other: IChord<any>): boolean {
     // Get a unique'd, sorted list of notes for comparison
-    const normalize = (noteArray: INote[]) => _.uniqWith(noteArray.map((note) => note.unbind()), (a, b) => a.equivalent(b)).sort(UnboundNote.sorter);
+    const normalize = (noteArray: ReadonlyArray<INote>) => {
+      return _(noteArray)
+        .map((note) => note.unbind())
+        .uniqWith((a, b) => a.equivalent(b))
+        .sort(UnboundNote.sorter)
+        .value();
+    };
+
     const otherNotes = normalize(other.notes());
     const notes = normalize(this.notes());
 
-    return _.every(_.zip(notes, otherNotes), (pair) => {
+    return _(notes).zip(otherNotes).every((pair) => {
       const [a, b] = pair;
       if (a !== undefined && b !== undefined) {
         return a.equivalent(b);

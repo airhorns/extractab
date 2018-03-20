@@ -72,3 +72,21 @@ html, body {
 .debug_sections {
   font-family: monospace;
 }
+
+.piano {
+  .white {
+    fill: white;
+    stroke-width: 1;
+    stroke: grey
+  }
+  .black {
+    fill: black;
+    stroke-width: 1;
+    stroke: black
+  }
+  .octave-label {
+    fill: hsl(0, 0%, 60%);
+    font-weight: lighter;
+    font-size: 0.9rem;
+  }
+}

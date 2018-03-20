@@ -7,7 +7,7 @@ import "codemirror/theme/elegant.css";
 import "codemirror/addon/fold/foldcode";
 import "codemirror/addon/fold/foldgutter";
 import "codemirror/addon/fold/foldgutter.css";
-import { TabParser, TabSection, ChordDefinitionSection, ChordChartSection, TabStaffSection, UnrecognizedSection } from "../guitar_tab";
+import { TabParser, TabSection, TabKnowledge, ChordDefinitionSection, ChordChartSection, TabStaffSection, UnrecognizedSection } from "../guitar_tab";
 import { UnrecognizedWidget } from "./unrecognized_widget";
 import { ChordChartWidget } from "./chord_chart_widget";
 import { ChordDefinitionWidgets } from "./chord_definition_widgets";
@@ -22,6 +22,7 @@ interface IEditorProps {
 interface IEditorState {
   value: string;
   sections: TabSection[];
+  tabKnowledge: TabKnowledge;
 }
 
 export class Editor extends React.Component<IEditorProps, IEditorState> {
@@ -33,6 +34,7 @@ export class Editor extends React.Component<IEditorProps, IEditorState> {
     this.state = {
       value: props.startValue,
       sections: [],
+      tabKnowledge: TabKnowledge.Default,
     };
     this.parser = new TabParser();
     this.parseEditorContents = _.debounce(this.parseEditorContents, 100);
@@ -41,7 +43,7 @@ export class Editor extends React.Component<IEditorProps, IEditorState> {
   public parseEditorContents() {
     const parseResult = this.parser.parse(this.state.value);
     if (parseResult.succeeded) {
-      this.setState({sections: parseResult.sections});
+      this.setState({sections: parseResult.sections, tabKnowledge: parseResult.knowledge});
     }
   }
 
@@ -50,7 +52,7 @@ export class Editor extends React.Component<IEditorProps, IEditorState> {
   }
 
   public render() {
-    const sections = this.state.sections.map(this.componentForSection);
+    const sections = this.state.sections.map(this.componentForSection.bind(this));
 
     return <section id="editor">
       <div className="editor-container">
@@ -101,6 +103,7 @@ export class Editor extends React.Component<IEditorProps, IEditorState> {
       return <ChordDefinitionWidgets
         key={section.key()}
         section={section}
+        tabKnowledge={this.state.tabKnowledge}
         codemirror={this.codeMirrorInstance}
       />;
     }
