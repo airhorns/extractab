@@ -62,6 +62,24 @@ E|-----|`);
     expect(actual.staff).toEqual(expected);
   });
 
+  fit("parses hits with linkages between them and a dangling linkage at the start", () => {
+    const actual = parseStaffDefinition(
+`E|------|
+D|------|
+A|-/3/4/|
+E|------|`);
+
+    const expected = new TabStaff([
+      new TabString("E", []),
+      new TabString("D", []),
+      new TabString("A", [new TabHit({fret: 3}, 3, TabLinkage.Slide), new TabHit({fret: 4}, 6, TabLinkage.Slide)]),
+      new TabString("E", []),
+    ]);
+
+    expect(actual.staff).toEqual(expected);
+  });
+
+
   it("parses a C major scale across several strings", () => {
     const actual = parseStaffDefinition(
 `e|---------------------------------|

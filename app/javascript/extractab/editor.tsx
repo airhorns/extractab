@@ -44,7 +44,6 @@ export class Editor extends React.Component<IEditorProps, IEditorState> {
   }
 
   public parseEditorContents() {
-    console.trace()
     const parseResult = this.parser.parse(this.state.value);
     if (parseResult.succeeded) {
       this.setState({sections: parseResult.sections, tabKnowledge: parseResult.knowledge});

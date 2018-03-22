@@ -107,7 +107,7 @@ GuitarTab {
   tabBarSeparator = "|"
   tabStringTuning = "a".."g" | "A".."G"
   tabLinkage = "/" | "h" | "H" | "p" | "P" | "b" | "B" | "^"
-  tabHitComponent = digit digit? tabLinkage?
+  tabHitComponent = tabLinkage? digit digit? tabLinkage?
   tabHit = tabHitComponent tabHitComponent *
   tabRest = tabBarSeparator | "-" | " "
   tabStaffLine =

@@ -14,6 +14,9 @@ interface ITabStaffWidgetProps extends IWidgetProps {
 
 export class TabStaffWidget extends AbstractWidget<ITabStaffWidgetProps, {}> {
   public renderAbc(element: HTMLElement) {
+    if (this.props.section.staff.strings.length !== this.props.tabKnowledge.tuning.stringRoots.length) {
+      return;
+    }
     const abcString = new AbcConverter(this.props.tabKnowledge.tuning).toABC(this.props.section.staff);
     abcjs.renderAbc(element, abcString);
   }

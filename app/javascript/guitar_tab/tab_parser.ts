@@ -84,7 +84,7 @@ Semantics.addOperation("buildTab", {
   tabHit(component, components): TabHit[] {
     return [component.buildTab()].concat(components.buildTab());
   },
-  tabHitComponent(firstDigit, secondDigit, linkageNode): TabHit {
+  tabHitComponent(leadingLinkage, firstDigit, secondDigit, linkageNode): TabHit {
     let linkage: TabLinkage | undefined;
     switch (linkageNode.source.contents) {
       case "h":
