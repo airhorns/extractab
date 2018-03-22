@@ -38,15 +38,18 @@ export class PianoVisualization extends React.Component<IPianoVisualizationProps
   ];
 
   public render() {
+    const activeNotes = new Set(this.props.chord.notes().map((note) => note.sharpEquivalent().symbol.toString()));
     const octaves = this.props.chord.notes().map((note) => note.octave);
     const startOctave = _.min(octaves) || 3;
     const octaveWidth = this.props.whiteKeyWidth! * 7;
-    const pianoNodes = _.range(startOctave, _.max(octaves) || 4).reduce((nodes: JSX.Element[], octave, octaveOffset) => {
-      PianoVisualization.KeysMap.forEach(([className, note, keyOffset]) => {
+    const pianoNodes = _.range(startOctave, (_.max(octaves) || 4) + 1).reduce((nodes: JSX.Element[], octave, octaveOffset) => {
+      PianoVisualization.KeysMap.forEach(([keyClassName, note, keyOffset]) => {
         const noteString = (note.symbol + octave);
+        const active = activeNotes.has(noteString);
+        const className = keyClassName + " " + noteString + (active ? " active" : "");
         if (className.includes("white")) {
           nodes.push(<rect
-            className={className + " " + noteString}
+            className={className}
             key={noteString}
             width={this.props.whiteKeyWidth}
             height={this.props.whiteKeyHeight}
@@ -66,7 +69,7 @@ export class PianoVisualization extends React.Component<IPianoVisualizationProps
           }
         } else {
           nodes.push(<rect
-            className={className + " " + noteString}
+            className={className}
             key={noteString}
             width={this.props.blackKeyWidth}
             height={this.props.blackKeyHeight}

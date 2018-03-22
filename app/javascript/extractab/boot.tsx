@@ -2,6 +2,6 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { App } from "./app";
 
-export default () => {
+export const Boot = () => {
   ReactDOM.render(<App/>, document.getElementById("app_container"));
 };

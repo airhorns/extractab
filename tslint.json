@@ -8,6 +8,7 @@
       "ordered-imports": false,
       "object-literal-sort-keys": false,
       "max-classes-per-file": false,
+      "no-reference": false,
       "max-line-length": {
         "options": [180]
       }

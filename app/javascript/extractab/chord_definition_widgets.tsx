@@ -16,7 +16,7 @@ export class ChordDefinitionWidgets extends React.Component<IChordDefinitionWidg
       lineNumber={definitionMap.lineNumberForDisplay()}
       codemirror={this.props.codemirror}
       tabKnowledge={this.props.tabKnowledge}
-      key={index}
+      key={definitionMap.source.contents}
     />);
 
     return <React.Fragment>

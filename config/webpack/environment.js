@@ -12,4 +12,6 @@ environment.loaders.append('ohm', {
   ]
 })
 
+const fileLoader = environment.loaders.get('file');
+console.log(fileLoader);
 module.exports = environment

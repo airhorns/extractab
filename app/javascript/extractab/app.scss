@@ -2,11 +2,25 @@
 
 html, body {
   min-height: 100vh;
+  background-color: #f7f7f7;
 }
 
 #app_container {
   min-height: 100vh;
 }
+
+.navbar {
+  background-color: rgb(34, 34, 34);
+
+  a.navbar-item:hover {
+    background-color: black;
+  }
+}
+
+.footer {
+  background-color: white;
+}
+
 
 #editor {
   .widgets {
@@ -73,7 +87,24 @@ html, body {
   font-family: monospace;
 }
 
+.CodeMirror {
+  .CodeMirror-linewidget {
+    .box {
+      margin: 0rem 0.5rem 0.25rem;
+      padding: 0.5rem 1rem;
+      width: auto;
+    }
+  }
+
+  .cm-chord {
+    color: $cyan;
+  }
+}
+
 .piano {
+  width: 100%;
+  height: 90px;
+
   .white {
     fill: white;
     stroke-width: 1;
@@ -84,6 +115,11 @@ html, body {
     stroke-width: 1;
     stroke: black
   }
+
+  .active {
+    fill: rgb(221, 74, 222);
+  }
+
   .octave-label {
     fill: hsl(0, 0%, 60%);
     font-weight: lighter;

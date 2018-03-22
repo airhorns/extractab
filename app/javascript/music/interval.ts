@@ -41,6 +41,7 @@ export class Interval {
 }
 
 export const Intervals: { [s: string]: Interval } = {
+  Zeroth: new Interval(0),
   MinorSecond: new Interval(1),
   MajorSecond: new Interval(2),
   MinorThird: new Interval(3),

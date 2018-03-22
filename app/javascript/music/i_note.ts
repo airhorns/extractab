@@ -7,7 +7,9 @@ export interface INote {
   equivalent(note: INote): boolean;
   bound(): boolean;
   unbind(): UnboundNote;
-  applyInterval(interval: Interval): INote;
+  applyInterval(interval: Interval, forceFlat?: boolean, forceSharp?: boolean): INote;
+  sharpEquivalent(): INote;
+  flatEquivalent(): INote;
 }
 
 export interface INoteClass {

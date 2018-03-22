@@ -13,7 +13,7 @@ export class ChordDiagram extends AbstractWidget<IChordDiagramProps, {}> {
   public render() {
     const chord = this.props.chordDefinition.bindAtTuning(this.props.tabKnowledge.tuning);
     return <div className="box" ref={this.setWidgetElement}>
-      <p><b>{this.props.chordDefinition.definedChord.displayLabel()}</b>: {chord.notesString()}</p>;
+      <p><b>{this.props.chordDefinition.definedChord.displayLabel()}</b>: {chord.notesString()}</p>
       <PianoVisualization chord={chord} />
     </div>
   }

@@ -3,7 +3,7 @@
 // or all the frets on any string of a guitar that would play a C note. This is useful for representing chords
 // and scales and whatnot in the abstract before grounding them somewhere exactly on a staff.
 import { INote } from "./i_note";
-import { Interval } from "./interval";
+import { Interval, Intervals } from "./interval";
 
 export const NotesToSemitones: { [s: string]: number } = {
   "C": 0,
@@ -51,15 +51,25 @@ export class UnboundNote implements INote {
   public bound() { return true; }
   public unbind() { return this; }
 
-  public applyInterval(interval: Interval) {
+  public applyInterval(interval: Interval, forceFlat = false, forceSharp = false) {
     let positiveSemitones = (this.semitonesAboveC + interval.semitones) % 12;
     if ( positiveSemitones < 0 ) { positiveSemitones += 12; }
-    const newSymbol = this.symbol.includes("b") ? SemitonesToFlatNotes[positiveSemitones] : SemitonesToSharpNotes[positiveSemitones];
+    const newSymbol = (!forceSharp && this.symbol.includes("b") || forceFlat) ?
+      SemitonesToFlatNotes[positiveSemitones] :
+      SemitonesToSharpNotes[positiveSemitones];
 
     return new UnboundNote(newSymbol);
   }
 
   public equivalent(note: UnboundNote) {
     return note.semitonesAboveC === this.semitonesAboveC;
+  }
+
+  public sharpEquivalent(): UnboundNote {
+    return this.applyInterval(Intervals.Zeroth, false, true);
+  }
+
+  public flatEquivalent(): UnboundNote {
+    return this.applyInterval(Intervals.Zeroth, true, false);
   }
 }

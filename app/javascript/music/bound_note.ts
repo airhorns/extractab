@@ -3,7 +3,7 @@
 // as sheet music or a guitar tab or what have you.
 import { FrequencyConverter } from "./frequency_converter";
 import { INote } from "./i_note";
-import { Interval } from "./interval";
+import { Interval, Intervals } from "./interval";
 import { NoteSymbol } from "./note_symbol";
 import { UnboundNote, NotesToSemitones, SemitonesToFlatNotes, SemitonesToSharpNotes } from "./unbound_note";
 
@@ -42,12 +42,12 @@ export class BoundNote implements INote {
     return new UnboundNote(this.symbolWithoutOctave);
   }
 
-  public applyInterval(interval: Interval): BoundNote {
+  public applyInterval(interval: Interval, forceFlat = false, forceSharp = false): BoundNote {
     const totalSemitones = this.octave * 12 + this.semitonesAboveC + interval.semitones;
     const newOctave = Math.floor(totalSemitones / 12);
     const newLetterIndex = totalSemitones % 12;
 
-    const newSymbol = this.symbol.letter.includes("b") ?
+    const newSymbol = (!forceSharp && this.symbol.letter.includes("b") || forceFlat) ?
                         SemitonesToFlatNotes[newLetterIndex] :
                         SemitonesToSharpNotes[newLetterIndex];
     const symbol = new NoteSymbol(newSymbol, newOctave);
@@ -57,5 +57,13 @@ export class BoundNote implements INote {
 
   public equivalent(note: BoundNote) {
     return note.frequency === this.frequency;
+  }
+
+  public sharpEquivalent(): BoundNote {
+    return this.applyInterval(Intervals.Zeroth, false, true);
+  }
+
+  public flatEquivalent(): BoundNote {
+    return this.applyInterval(Intervals.Zeroth, true, false);
   }
 }

@@ -1,2 +1,2 @@
-import Boot from "../extractab/boot";
+import { Boot } from "../extractab";
 Boot();

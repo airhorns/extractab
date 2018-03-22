@@ -34,12 +34,37 @@ export const CommonNoteExamples = (notes: { [s: string]: INote}, klass: INoteCla
       expect(notes.aSharp).toEqual(notes.gSharp.applyInterval(Intervals.MajorSecond));
     });
 
+    it("applying an zeroth interval returns the same note", () => {
+      expect(notes.c).toEqual(notes.c.applyInterval(Intervals.Zeroth));
+    });
+
     it("can sort notes from lowest to highest with the sorter", () => {
       const sorted = Object.freeze([notes.c, notes.gFlat, notes.g, notes.gSharp]);
       expect(sorted.slice(0).sort(klass.sorter)).toEqual(sorted);
       expect(sorted.slice(0).reverse().sort(klass.sorter)).toEqual(sorted);
       expect([notes.g, notes.c, notes.gSharp, notes.gFlat].sort(klass.sorter)).toEqual(sorted);
       expect(sorted.slice(0).reverse()).not.toEqual(sorted);
+    });
+
+    it("sharp notes sharp equivalent is the same note", () => {
+      expect(notes.gSharp.sharpEquivalent()).toEqual(notes.gSharp);
+    });
+
+    it("flat notes sharp equivalent is the note lower down with a sharp", () => {
+      expect(notes.aFlat.sharpEquivalent()).toEqual(notes.gSharp);
+    });
+
+    it("flat notes flat equivalent is the same note", () => {
+      expect(notes.gFlat.flatEquivalent()).toEqual(notes.gFlat);
+    });
+
+    it("sharp notes flat equivalent is the note higher up with a flat", () => {
+      expect(notes.gSharp.flatEquivalent()).toEqual(notes.aFlat);
+    });
+
+    it("notes with no accidentals are the same as their sharp and flat equivalents", () => {
+      expect(notes.g.flatEquivalent()).toEqual(notes.g);
+      expect(notes.g.sharpEquivalent()).toEqual(notes.g);
     });
   });
 };

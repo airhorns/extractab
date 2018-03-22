@@ -13,6 +13,7 @@ import { ChordChartWidget } from "./chord_chart_widget";
 import { ChordDefinitionWidgets } from "./chord_definition_widgets";
 import { TabStaffWidget } from "./tab_staff_widget";
 import { DebugSections } from "./debug_sections";
+import "./codemirror_guitar_tab_mode";
 
 interface IEditorProps {
   startValue: string;
@@ -60,11 +61,13 @@ export class Editor extends React.Component<IEditorProps, IEditorState> {
           <ControlledCodeMirror
             value={this.state.value}
             options={{
+              mode: "guitar_tab",
               theme: "elegant",
               foldGutter: true,
               lineNumbers: true,
               gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
               viewportMargin: Infinity,
+              fixedGutter: false,
             }}
             autoCursor={true}
             editorDidMount={(editor) => { this.codeMirrorInstance = editor; }}
