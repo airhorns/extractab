@@ -9,7 +9,7 @@ import "codemirror/addon/fold/foldgutter";
 import "codemirror/addon/fold/foldgutter.css";
 import { TabParser, TabSection, TabKnowledge, ChordDefinitionSection, ChordChartSection, TabStaffSection, UnrecognizedSection } from "../guitar_tab";
 import { UnrecognizedWidget } from "./unrecognized_widget";
-import { ChordChartWidget } from "./chord_chart_widget";
+import { ChordChart } from "./chord_chart";
 import { ChordDefinitionWidgets } from "./chord_definition_widgets";
 import { TabStaffWidget } from "./tab_staff_widget";
 import { DebugSections } from "./debug_sections";
@@ -61,7 +61,6 @@ export class Editor extends React.Component<IEditorProps, IEditorState> {
           <ControlledCodeMirror
             value={this.state.value}
             options={{
-              mode: "guitar_tab",
               theme: "elegant",
               foldGutter: true,
               lineNumbers: true,
@@ -95,11 +94,11 @@ export class Editor extends React.Component<IEditorProps, IEditorState> {
       />;
     }
     if (section instanceof ChordChartSection) {
-      return <ChordChartWidget
-        lineNumber={section.lineNumberForDisplay()}
+      return <ChordChart
         key={section.key()}
         section={section}
         codemirror={this.codeMirrorInstance}
+        tabKnowledge={this.state.tabKnowledge}
       />;
     }
     if (section instanceof ChordDefinitionSection) {

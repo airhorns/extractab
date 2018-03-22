@@ -1,20 +1,19 @@
 import * as React from "react";
+import { BoundChord } from "../music";
 import { ChordDefinition, TabKnowledge } from "../guitar_tab";
-import { AbstractWidget, IWidgetProps } from "./abstract_widget";
 import { PianoVisualization } from "./piano_visualization";
 
-interface IChordDiagramProps extends IWidgetProps {
+interface IChordDiagramProps {
   tabKnowledge: TabKnowledge;
-  chordDefinition: ChordDefinition;
-  lineNumber: number;
+  chord: BoundChord;
 }
 
-export class ChordDiagram extends AbstractWidget<IChordDiagramProps, {}> {
+// Renders a box explaining a chord with controls for revoicing it
+export class ChordDiagram extends React.Component<IChordDiagramProps, {}> {
   public render() {
-    const chord = this.props.chordDefinition.bindAtTuning(this.props.tabKnowledge.tuning);
-    return <div className="box" ref={this.setWidgetElement}>
-      <p><b>{this.props.chordDefinition.definedChord.displayLabel()}</b>: {chord.notesString()}</p>
-      <PianoVisualization chord={chord} />
-    </div>
+    return <div className="box">
+      <p><b>{this.props.chord.displayLabel()}</b>: {this.props.chord.notesString()}</p>
+      <PianoVisualization chord={this.props.chord} />
+    </div>;
   }
 }

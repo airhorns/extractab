@@ -21,20 +21,25 @@ addChordParsingOperations(Semantics);
 
 Semantics.addOperation("buildTab", {
   contentDelimitedSection(__, sectionHeader, ___, selfDelimitedSectionContents, ____): TabSection {
-    return selfDelimitedSectionContents.buildTab();
+    const section: TabSection = selfDelimitedSectionContents.buildTab();
+    section.headerSource = sectionHeader.source;
+    return section;
   },
   lineDelimitedSection_header(__, sectionHeader, ___, chording, ____): TabSection {
-    return chording.buildTab();
+    const section: TabSection = chording.buildTab();
+    section.headerSource = sectionHeader.source;
+    return section;
   },
   lineDelimitedSection_headerless(__, chording, ___): TabSection {
     return chording.buildTab();
   },
+  unrecognizedSection_header(sectionHeader, __, lines, ___): TabSection {
+    const section = new UnrecognizedSection(lines.source);
+    section.headerSource = sectionHeader.source;
+    return section;
+  },
   unrecognizedSection_headerless(lines, __): TabSection {
     return new UnrecognizedSection(lines.source);
-  },
-  selfDelimitedSectionContents(node): TabSection {
-    // Wrong!
-    return node.buildTab();
   },
   chordDefinitionLines(line, lines): TabSection {
     const definitionMaps = [line.buildTab()].concat(lines.buildTab());

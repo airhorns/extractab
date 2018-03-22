@@ -14,6 +14,12 @@ export class BoundNote implements INote {
     return new BoundNote(frequency, symbol);
   }
 
+  public static fromUnboundNote(note: UnboundNote, octave: number) {
+    const symbol = new NoteSymbol(note.symbol, octave);
+    const frequency = FrequencyConverter.frequencyForSymbol(symbol);
+    return new BoundNote(frequency, symbol);
+  }
+
   public static sorter = (a: BoundNote, b: BoundNote) => a.frequency - b.frequency;
 
   public symbol: NoteSymbol;

@@ -2,6 +2,8 @@ import { UnboundNote } from "./unbound_note";
 import { Interval, ChordNames, ChordIntervals } from "./interval";
 import { INote } from "./i_note";
 import { IChord } from "./i_chord";
+import { BoundChord } from "./bound_chord";
+import { BoundNote } from "./bound_note";
 import * as _ from "lodash";
 
 // Represents a chord as a root plus a variable number of intervals (positive or negative). The chord isn't
@@ -74,5 +76,15 @@ export class UnboundChord implements IChord<UnboundNote> {
         return a.equivalent(b);
       }
     });
+  }
+
+  public bindAtRootOctave(octave: number): BoundChord {
+    const boundRoot = BoundNote.fromUnboundNote(this.root, octave);
+    const boundNotes = this.intervals.map((interval) => boundRoot.applyInterval(interval));
+    let label: string | undefined;
+    if (this.passedDisplayLabel) {
+      label = this.passedDisplayLabel + octave;
+    }
+    return new BoundChord(boundRoot, boundNotes, label);
   }
 }

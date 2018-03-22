@@ -1,8 +1,9 @@
 import * as _ from "lodash";
 import { TabSection } from "./tab_section";
 import { TabStaffSection } from "./tab_staff_section";
+import { ChordDefinition } from "./chord_definition";
 import { UnrecognizedSection } from "./unrecognized_section";
-import { GuitarTuning } from "../music";
+import { UnboundChord, BoundChord, GuitarTuning } from "../music";
 
 export class TabKnowledge {
   public static Default: TabKnowledge;
@@ -22,6 +23,15 @@ export class TabKnowledge {
   }
 
   constructor(public tuning: GuitarTuning) {}
+
+  public bindChord(chord: UnboundChord): BoundChord {
+    // TODO: Implement definition lookup for chords
+    return chord.bindAtRootOctave(3);
+  }
+
+  public bindDefinition(definition: ChordDefinition): BoundChord {
+    return definition.bindAtTuning(this.tuning);
+  }
 }
 
 TabKnowledge.Default = new TabKnowledge(GuitarTuning.Standard);

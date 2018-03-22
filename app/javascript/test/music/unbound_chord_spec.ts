@@ -1,4 +1,4 @@
-import { UnboundNote, UnboundChord, ChordNames, Interval, Intervals } from "../../music";
+import { UnboundNote, UnboundChord, BoundNote, BoundChord, ChordNames, Interval, Intervals } from "../../music";
 
 describe("UnboundChord", () => {
   const c = UnboundNote.fromString("C");
@@ -129,16 +129,22 @@ describe("UnboundChord", () => {
     expect(left.equivalent(right)).toEqual(true);
     expect(right.equivalent(left)).toEqual(true);
   });
+
+  it("should be bindable at an octave", () => {
+    let expected = new BoundChord(BoundNote.fromString("C3"), [BoundNote.fromString("E3"), BoundNote.fromString("G3")]);
+    expect(cMajor.bindAtRootOctave(3)).toEqual(expected);
+
+    expected = new BoundChord(BoundNote.fromString("C4"), [BoundNote.fromString("D#4"), BoundNote.fromString("G4")]);
+    expect(cMinor.bindAtRootOctave(4)).toEqual(expected);
+  });
+
+  it("should carry through the display label with an octave addded when bound at an octave", () => {
+    const cMajorWithLabel = UnboundChord.forName(c, ChordNames.Major, undefined, "Cmaj");
+    const expected = new BoundChord(BoundNote.fromString("C3"), [BoundNote.fromString("E3"), BoundNote.fromString("G3")], "Cmaj3");
+    let actual = cMajorWithLabel.bindAtRootOctave(3);
+    expect(actual).toEqual(expected);
+    expect(actual.displayLabel()).toEqual("Cmaj3");
+    actual = cMajorWithLabel.bindAtRootOctave(4);
+    expect(actual.displayLabel()).toEqual("Cmaj4");
+  });
 });
-/*
-
-    test "equivalent? returns true for chords with the same roots but where one chord has duplicates" do
-      @left = UnboundChord.new(@c, [Intervals::MAJOR_THIRD, Intervals::PERFECT_FIFTH])
-      @right = UnboundChord.new(@c, [Intervals::MAJOR_THIRD, Intervals::PERFECT_FIFTH, Intervals::OCTAVE + Intervals::MAJOR_THIRD])
-      assert @left.equivalent?(@right)
-      assert @right.equivalent?(@left)
-    end
-  end
-end
-
-*/

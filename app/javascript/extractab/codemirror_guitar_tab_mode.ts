@@ -33,11 +33,11 @@ declare module "codemirror" {
 }
 // tslint:enable:interface-name
 
-CodeMirror.defineSimpleMode("guitar_tab", {
-  start: [
-    {regex: /[a-gA-G][#b]?((maj)|(min)|m|M|-)?((add)?6|7|9|(11)|(13))?(sus(4|2)?)?(\/[a-gA-G][#b]?)?(?=\s|\n|$)/, token: "chord"},
-  ],
-  meta: {
-    lineComment: "//"
-  },
-})
+// CodeMirror.defineSimpleMode("guitar_tab", {
+//   start: [
+//     {regex: /[a-gA-G][#b]?((maj)|(min)|m|M|-)?((add)?6|7|9|(11)|(13))?(sus(4|2)?)?(\/[a-gA-G][#b]?)?(?=\s|\n|$)/, token: "chord"},
+//   ],
+//   meta: {
+//     lineComment: "//"
+//   },
+// })
