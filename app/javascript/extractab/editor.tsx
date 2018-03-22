@@ -1,3 +1,4 @@
+/// <reference path="./codemirror-extension"/>
 import * as React from "react";
 import * as CodeMirror from "codemirror";
 import * as _ from "lodash";
@@ -29,6 +30,7 @@ interface IEditorState {
 export class Editor extends React.Component<IEditorProps, IEditorState> {
   public codeMirrorInstance: CodeMirror.Editor;
   public parser: TabParser;
+  private ownedOperationId?: number;
 
   constructor(props: IEditorProps) {
     super(props);
@@ -42,6 +44,7 @@ export class Editor extends React.Component<IEditorProps, IEditorState> {
   }
 
   public parseEditorContents() {
+    console.trace()
     const parseResult = this.parser.parse(this.state.value);
     if (parseResult.succeeded) {
       this.setState({sections: parseResult.sections, tabKnowledge: parseResult.knowledge});
@@ -50,6 +53,20 @@ export class Editor extends React.Component<IEditorProps, IEditorState> {
 
   public componentDidMount() {
     this.parseEditorContents();
+  }
+
+  public componentWillUpdate() {
+    if (this.codeMirrorInstance && !(this.codeMirrorInstance as any).curOp) {
+      this.codeMirrorInstance.startOperation();
+      this.ownedOperationId = (this.codeMirrorInstance as any).curOp.id;
+    }
+  }
+
+  public componentDidUpdate() {
+    if (this.codeMirrorInstance && (this.codeMirrorInstance as any).curOp.id === this.ownedOperationId) {
+      this.codeMirrorInstance.endOperation();
+      this.ownedOperationId = undefined;
+    }
   }
 
   public render() {
