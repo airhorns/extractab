@@ -1,17 +1,14 @@
 import * as ohm from "ohm-js";
 import { ISomeFret } from "./i_fret";
 
-// Represents an individual pluck of a string shortened to a certain fret along a tab
 export enum TabLinkage {
   Bend = "Bend",
   Slide = "Slide",
   Slur = "Slur",
 }
 
+// Represents an individual pluck of a string shortened to a certain fret along a tab, optionally with a musical linkage
+// to the next note played via a bend or slur or what have you.
 export class TabHit {
-  constructor(public frets: ISomeFret[], public linkages: TabLinkage[], public sourceColumn: number) {
-    if (linkages.length > frets.length || linkages.length < (frets.length - 1)) {
-      throw new Error(`Mismatched size of linkages (${linkages.length}) vs frets (${frets.length}) for TabHit`);
-    }
-  }
+  constructor(public fret: ISomeFret, public sourceColumn: number, public linkage?: TabLinkage) {}
 }

@@ -76,21 +76,15 @@ Semantics.addOperation("buildTab", {
     return new TabStaffSection(lines.source, staff);
   },
   tabStaffLine(__, tabStringTuning, ___, hits, ____, _____) {
-    return new TabString(tabStringTuning.source.contents, _.compact(hits.buildTab()));
+    return new TabString(tabStringTuning.source.contents, _(hits.buildTab() as TabHit[][]).flatten().compact().value());
   },
   tabRest(__) {
     return;
   },
-  tabHit(hit, hits): TabHit {
-    // The last three arguments are all IterationNodes for the individual tokens in the a
-    const components = [hit.buildTab()].concat(hits.buildTab());
-    return new TabHit(
-      components.map((component) => ({fret: component.fret})),
-      _.dropRightWhile(components.map((component) => component.linkage), (value) => !value),
-      (ohm as any).util.getLineAndColumn(this.source.sourceString, this.source.startIdx).colNum - 1, // requires any cast because util isn't in the ts.d for ohm
-    );
+  tabHit(component, components): TabHit[] {
+    return [component.buildTab()].concat(components.buildTab());
   },
-  tabHitComponent(firstDigit, secondDigit, linkageNode) {
+  tabHitComponent(firstDigit, secondDigit, linkageNode): TabHit {
     let linkage: TabLinkage | undefined;
     switch (linkageNode.source.contents) {
       case "h":
@@ -109,10 +103,11 @@ Semantics.addOperation("buildTab", {
         break;
     }
 
-    return {
-      fret: parseInt(firstDigit.source.contents + secondDigit.source.contents, 10),
+    return new TabHit(
+      {fret: parseInt(firstDigit.source.contents + secondDigit.source.contents, 10)},
+      ohm.util.getLineAndColumn(this.source.sourceString, this.source.startIdx).colNum - 1,
       linkage,
-    };
+    );
   },
   chordChart(lines): TabSection {
     const chartLines = lines.buildTab();

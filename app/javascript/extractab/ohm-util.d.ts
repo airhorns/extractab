@@ -17,4 +17,4 @@ declare module "ohm-js" {
     function getLineAndColumn(str: string, offset: number): LineAndColumn;
   }
 }
-// tslint:enable:interface-name
+// tslint:enable:interface-name no-namespace no-internal-module

@@ -10,3 +10,4 @@ export * from "./tab_staff";
 export * from "./tab_staff_section";
 export * from "./chord_chart_section";
 export * from "./unrecognized_section";
+export * from "./abc_converter";

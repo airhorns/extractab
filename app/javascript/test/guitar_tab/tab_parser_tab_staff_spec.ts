@@ -10,7 +10,7 @@ const parseStaffDefinition = (str: string) => {
   }
 };
 
-describe("TabParser TabStaff Definion", () => {
+describe("TabParser TabStaff Definiton", () => {
   it("parses a simple hit on a fret at source position", () => {
     const actual = parseStaffDefinition(
 `E|----|
@@ -21,7 +21,7 @@ E|----|`);
     const expected = new TabStaff([
       new TabString("E", []),
       new TabString("D", []),
-      new TabString("A", [new TabHit([{fret: 3}], [], 4)]),
+      new TabString("A", [new TabHit({fret: 3}, 4)]),
       new TabString("E", []),
     ]);
 
@@ -38,7 +38,7 @@ E|----|`);
     const expected = new TabStaff([
       new TabString("E", []),
       new TabString("D", []),
-      new TabString("A", [new TabHit([{fret: 3}, {fret: 4}], [TabLinkage.Slide], 3)]),
+      new TabString("A", [new TabHit({fret: 3}, 3, TabLinkage.Slide), new TabHit({fret: 4}, 5)]),
       new TabString("E", []),
     ]);
 
@@ -55,7 +55,7 @@ E|-----|`);
     const expected = new TabStaff([
       new TabString("E", []),
       new TabString("D", []),
-      new TabString("A", [new TabHit([{fret: 3}, {fret: 4}], [TabLinkage.Slide, TabLinkage.Slide], 3)]),
+      new TabString("A", [new TabHit({fret: 3}, 3, TabLinkage.Slide), new TabHit({fret: 4}, 5, TabLinkage.Slide)]),
       new TabString("E", []),
     ]);
 
@@ -74,27 +74,27 @@ E|---------------------------------|`);
     const expected = new TabStaff([
       new TabString("e", []),
       new TabString("B", [
-        new TabHit([{fret: 0}], [], 16),
-        new TabHit([{fret: 1}], [], 18),
-        new TabHit([{fret: 0}], [], 20),
+        new TabHit({fret: 0}, 16),
+        new TabHit({fret: 1}, 18),
+        new TabHit({fret: 0}, 20),
       ]),
       new TabString("G", [
-        new TabHit([{fret: 0}], [], 12),
-        new TabHit([{fret: 2}], [], 14),
-        new TabHit([{fret: 2}], [], 22),
-        new TabHit([{fret: 0}], [], 24),
+        new TabHit({fret: 0}, 12),
+        new TabHit({fret: 2}, 14),
+        new TabHit({fret: 2}, 22),
+        new TabHit({fret: 0}, 24),
       ]),
       new TabString("D", [
-        new TabHit([{fret: 0}], [], 6),
-        new TabHit([{fret: 2}], [], 8),
-        new TabHit([{fret: 3}], [], 10),
-        new TabHit([{fret: 3}], [], 26),
-        new TabHit([{fret: 2}], [], 28),
-        new TabHit([{fret: 0}], [], 30),
+        new TabHit({fret: 0}, 6),
+        new TabHit({fret: 2}, 8),
+        new TabHit({fret: 3}, 10),
+        new TabHit({fret: 3}, 26),
+        new TabHit({fret: 2}, 28),
+        new TabHit({fret: 0}, 30),
       ]),
       new TabString("A", [
-        new TabHit([{fret: 3}], [], 4),
-        new TabHit([{fret: 3}], [], 32),
+        new TabHit({fret: 3}, 4),
+        new TabHit({fret: 3}, 32),
       ]),
       new TabString("E", []),
     ]);
@@ -114,19 +114,19 @@ E|---------------------------------|`);
     const expected = new TabStaff([
       new TabString("e", []),
       new TabString("B", [
-        new TabHit([{fret: 0}, {fret: 1}, {fret: 0}], [TabLinkage.Bend, TabLinkage.Bend], 16),
+        new TabHit({fret: 0}, 16, TabLinkage.Bend), new TabHit({fret: 1}, 18, TabLinkage.Bend), new TabHit({fret: 0}, 20),
       ]),
       new TabString("G", [
-        new TabHit([{fret: 0}, {fret: 2}], [TabLinkage.Slur], 12),
-        new TabHit([{fret: 2}, {fret: 0}], [TabLinkage.Slur], 22),
+        new TabHit({fret: 0}, 12, TabLinkage.Slur), new TabHit({fret: 2}, 14),
+        new TabHit({fret: 2}, 22, TabLinkage.Slur), new TabHit({fret: 0}, 24),
       ]),
       new TabString("D", [
-        new TabHit([{fret: 0}, {fret: 2}, {fret: 3}], [TabLinkage.Slide, TabLinkage.Slide], 6),
-        new TabHit([{fret: 3}, {fret: 2}, {fret: 0}], [TabLinkage.Slur, TabLinkage.Slide], 26),
+        new TabHit({fret: 0}, 6, TabLinkage.Slide), new TabHit({fret: 2}, 8, TabLinkage.Slide), new TabHit({fret: 3}, 10),
+        new TabHit({fret: 3}, 26, TabLinkage.Slur), new TabHit({fret: 2}, 28, TabLinkage.Slide), new TabHit({fret: 0}, 30),
       ]),
       new TabString("A", [
-        new TabHit([{fret: 3}], [], 4),
-        new TabHit([{fret: 3}], [], 32),
+        new TabHit({fret: 3}, 4),
+        new TabHit({fret: 3}, 32),
       ]),
       new TabString("E", []),
     ]);

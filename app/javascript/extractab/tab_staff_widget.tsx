@@ -1,5 +1,10 @@
+/// <reference path="./abcjs.d.ts"/>
+
 import * as React from "react";
-import { TabStaffSection, TabKnowledge } from "../guitar_tab";
+import "font-awesome/css/font-awesome.min.css";
+import "abcjs/abcjs-midi.css";
+import * as abcjs from "abcjs";
+import { TabStaffSection, TabKnowledge, AbcConverter } from "../guitar_tab";
 import { AbstractWidget, IWidgetProps } from "./abstract_widget";
 
 interface ITabStaffWidgetProps extends IWidgetProps {
@@ -8,7 +13,14 @@ interface ITabStaffWidgetProps extends IWidgetProps {
 }
 
 export class TabStaffWidget extends AbstractWidget<ITabStaffWidgetProps, {}> {
+  public renderAbc(element: HTMLElement) {
+    const abcString = new AbcConverter(this.props.tabKnowledge.tuning).toABC(this.props.section.staff);
+    abcjs.renderAbc(element, abcString);
+  }
+
   public render() {
-    return <div ref={this.setWidgetElement}><p>Fancy musical staff</p></div>;
+    return <div className="box" ref={this.setWidgetElement}>
+      <div className="abc-container" ref={(e) => e && this.renderAbc(e) }/>
+    </div>;
   }
 }

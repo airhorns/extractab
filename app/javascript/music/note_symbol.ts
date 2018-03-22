@@ -14,15 +14,24 @@ export class NoteSymbol {
   }
 
   private static NotePattern = /^([A-Ga-g][#b]?)([0-8]?)$/;
-
+  private static AccidentalPattern = /^([A-Ga-g])([#b])?$/;
   public letter: string;
+  public letterWithoutAccidental: string;
+  public accidental: string;
   public octave: number;
   constructor(letter: string, octave: number) {
     this.letter = letter;
     this.octave = octave;
+    const match = NoteSymbol.AccidentalPattern.exec(this.letter);
+    if (!match) {
+      throw new Error("Implementation error: letter couldn't be extracted from NoteSymbol string");
+    }
+    this.letterWithoutAccidental = match[1];
+    this.accidental = match[2];
   }
 
   public toString() {
     return `${this.letter}${this.octave}`;
   }
+
 }
