@@ -7,6 +7,6 @@ export abstract class TabSection {
     return this.source.contents;
   }
   public lineNumberForDisplay() {
-    return (ohm as any).util.getLineAndColumn((this.source as any).sourceString, this.source.startIdx).lineNum - 1;
+    return ohm.util.getLineAndColumn(this.source.sourceString, this.source.startIdx).lineNum - 1;
   }
 }

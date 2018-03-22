@@ -51,7 +51,7 @@ Semantics.addOperation("buildTab", {
     // Loop over the iteration node for the frets to get an IFret corresponding to the fret
     const frets: IFret[] = fretting.buildTab();
     const definition = new ChordDefinition(chord, frets);
-    return new ChordDefinitionSourceMap(this.source, definition);
+    return new ChordDefinitionSourceMap(this.source, chordNode.source, definition);
   },
   chordFretting(frets): IFret[] {
     return frets.children.map((child: ohm.Node) => {

@@ -6,4 +6,8 @@ export class TabStaffSection extends TabSection {
   constructor(public source: ohm.Interval, public staff: TabStaff) {
     super();
   }
+
+  public lineNumberForDisplay() {
+    return ohm.util.getLineAndColumn(this.source.sourceString, this.source.endIdx).lineNum - 2;
+  }
 }

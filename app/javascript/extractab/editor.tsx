@@ -11,7 +11,7 @@ import { TabParser, TabSection, TabKnowledge, ChordDefinitionSection, ChordChart
 import { UnrecognizedWidget } from "./unrecognized_widget";
 import { ChordChart } from "./chord_chart";
 import { ChordDefinitionWidgets } from "./chord_definition_widgets";
-import { TabStaffWidget } from "./tab_staff_widget";
+import { TabStaffWidgets } from "./tab_staff_widgets";
 import { DebugSections } from "./debug_sections";
 import "./codemirror_guitar_tab_mode";
 
@@ -86,11 +86,11 @@ export class Editor extends React.Component<IEditorProps, IEditorState> {
 
   public componentForSection = (section: TabSection) => {
     if (section instanceof TabStaffSection) {
-      return <TabStaffWidget
+      return <TabStaffWidgets
         key={section.key()}
-        lineNumber={section.lineNumberForDisplay()}
         section={section}
         codemirror={this.codeMirrorInstance}
+        tabKnowledge={this.state.tabKnowledge}
       />;
     }
     if (section instanceof ChordChartSection) {

@@ -5,7 +5,7 @@ import { IFret } from "./i_fret";
 
 // Represents a ChordDefinition found in a source text at a location
 export class ChordDefinitionSourceMap {
-  constructor(public source: ohm.Interval, public definition: ChordDefinition) {}
+  constructor(public source: ohm.Interval, public chordSource: ohm.Interval, public definition: ChordDefinition) {}
   public lineNumberForDisplay(): number {
     return (ohm as any).util.getLineAndColumn((this.source as any).sourceString, this.source.startIdx).lineNum - 1;
   }

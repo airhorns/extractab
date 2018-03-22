@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as CodeMirror from "codemirror";
 import { TabSection, TabKnowledge } from "../guitar_tab";
-import { CodeMirrorRangeHighlight } from "./codemirror_range_highlight";
+import { CodeMirrorRangeHighlight } from "./code_mirror_range_highlight";
 
 interface ISectionHeaderProps {
   section: TabSection;
