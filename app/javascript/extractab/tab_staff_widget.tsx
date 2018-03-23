@@ -18,6 +18,7 @@ export class TabStaffWidget extends AbstractWidget<ITabStaffWidgetProps, {}> {
       return;
     }
     const abcString = new AbcConverter(this.props.tabKnowledge.tuning).toABC(this.props.section.staff);
+    console.log(abcString);
     abcjs.renderAbc(element, abcString);
   }
 

@@ -9,7 +9,7 @@ export class App extends React.Component<{}, {}> {
   public render() {
       return <React.Fragment>
         <Header/>
-        <Editor startValue={Fixtures.stairway} debugEnabled={true}/>
+        <Editor startValue={Fixtures.crossfire} debugEnabled={true}/>
         <Footer/>
       </React.Fragment>;
   }

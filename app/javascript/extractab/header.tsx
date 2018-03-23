@@ -6,7 +6,7 @@ export class Header extends React.Component<{}, {}> {
     return <nav className="navbar">
       <div className="container">
         <a className="navbar-item" href="/">
-          <img src={logo} alt="Extractab" />
+          <img src={logo} className="logo" alt="Extractab" />
         </a>
       </div>
     </nav>;

@@ -109,7 +109,7 @@ GuitarTab {
   tabLinkage = "/" | "h" | "H" | "p" | "P" | "b" | "B" | "^"
   tabHitComponent = tabLinkage? digit digit? tabLinkage?
   tabHit = tabHitComponent tabHitComponent *
-  tabRest = tabBarSeparator | "-" | " "
+  tabRest = tabBarSeparator | "-" | "_" | " "
   tabStaffLine =
     spaceMaybe
     tabStringTuning
@@ -118,7 +118,7 @@ GuitarTab {
     spaceMaybe
     eol
 
-  tabStaffLines = tabStaffLine+
+  tabStaffLines = chordChartChordLine? tabStaffLine+
 
   // Musical notation
   note = ("a".."g" | "A".."G") ("#" | "b") ?

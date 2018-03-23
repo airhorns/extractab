@@ -15,6 +15,10 @@ html, body {
   a.navbar-item:hover {
     background-color: black;
   }
+
+  img.logo {
+    margin-top: -4px; // too lazy to figure out how to photoshop an SVG sorry everyone
+  }
 }
 
 .footer {

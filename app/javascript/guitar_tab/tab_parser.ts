@@ -9,6 +9,7 @@ import { ChordDefinition, ChordDefinitionSourceMap } from "./chord_definition";
 import { TabLinkage, TabHit } from "./tab_hit";
 import { TabString } from "./tab_string";
 import { TabStaff } from "./tab_staff";
+import { TabStaffBarLines } from "./tab_staff_bar_lines";
 import { TabStaffSection } from "./tab_staff_section";
 import { IFret } from "./i_fret";
 import { ChordDefinitionSection } from "./chord_definition_section";
@@ -71,8 +72,9 @@ Semantics.addOperation("buildTab", {
   dashedChordFret_digits(firstDigit, secondDigit): IFret {
     return {fret: parseInt(firstDigit.source.contents + secondDigit.source.contents, 10)};
   },
-  tabStaffLines(lines): TabSection {
-    const staff = new TabStaff(lines.buildTab());
+  tabStaffLines(chordChart, lines): TabSection {
+    const barLines = TabStaffBarLines.fromStaffLine(lines.children[0]);
+    const staff = new TabStaff(lines.buildTab(), barLines);
     return new TabStaffSection(lines.source, staff);
   },
   tabStaffLine(__, tabStringTuning, ___, hits, ____, _____) {
