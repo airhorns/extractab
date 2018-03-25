@@ -14,6 +14,8 @@
     "@types/lodash.uniq": "^4.5.3",
     "@types/react": "^16.0.34",
     "@types/react-dom": "^16.0.3",
+    "@types/jasmine": "^2.8.6",
+    "@types/karma-jasmine": "^0.0.29",
     "abcjs": "^4.0.0",
     "babel-plugin-module-resolver": "^3.1.0",
     "babel-preset-react": "^6.24.1",
@@ -32,8 +34,6 @@
     "webpack": "^3.0.0"
   },
   "devDependencies": {
-    "@types/jasmine": "^2.8.6",
-    "@types/karma-jasmine": "^0.0.29",
     "jasmine-core": "^3.1.0",
     "karma": "^2.0.0",
     "karma-chrome-launcher": "^2.2.0",
