@@ -71,3 +71,11 @@ Dmaj7    xxx779
  - Support MIDI input into the app to let people with USB keyboards confirm they are actually hitting the right notes, Guitar Hero style
  - Support editing tabs to correct a chord or something like that that sounds wrong, and save the edited version
  - Side-by-side views such that a guitar player and a piano player can look at the same screen and get the information each needs to play together (especially if there is a capo)
+
+#### Todo list
+
+ - Implement dynamic guitar tuning: figuring out the tuning for a tab staff, finding a capo declaration
+ - Implement chord diagram hovers for chord charts
+ - Implement chord revoicing so chords can actually be played by humans on a piano
+ - Implement saving and URLs for bookmarking
+ - Implement user accounts w/ server side listing of your tabs
