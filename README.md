@@ -1,18 +1,22 @@
 # Extractab
 
-App for friggen' around with guitar tabs
+App for friggen' around with guitar tabs.
 
 ### Developing
 
-To setup, run `bundle install`.
+Extractab is a Rails app that serves a client side app written in React with Typescript. Almost all the code is on the client side doing smart things with music, and the intention is that the Rails backend is a domain specific data API.
 
-To run the application, run `bin/rails server`. Nothing else really needed!
+To setup, run `bundle install` and `yarn`.
 
-To run the tests, run `bin/rails test`.
+To run the application, run `bin/rails server`. Nothing else really needed, but it's nice to have webpack compiling quickly in another process, so running `bin/webpack-dev-server` is helpful too.
+
+To run the tests, run `bin/rails test` for Ruby tests, or `RAILS_ENV=test karma start` for Javascript tests.
+
+There's also `bin/autolint` for automatically linting and fixing what can be fixed for the Typescript.
 
 #### Assets
 
-This app uses (webpacker)[https://github.com/rails/webpacker] as a handy way to build assets using modern tools. If things are slow or you want live-reload, run `bin/webpack-dev-server`
+This app uses (webpacker)[https://github.com/rails/webpacker] as a handy way to build assets using modern tools. If things are slow or you want live-reload, run `bin/webpack-dev-server`.
 
 ### User Stories
 

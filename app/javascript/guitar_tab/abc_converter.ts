@@ -11,7 +11,7 @@ class BoundTabHit {
 const allIndexesOf = (character: string, sourceString: string) => {
   const indices = [];
   for (let i = 0; i < sourceString.length; i++) {
-      if (sourceString[i] === character) { indices.push(i) }
+      if (sourceString[i] === character) { indices.push(i); }
   }
   return indices;
 };
@@ -69,7 +69,7 @@ export class AbcConverter {
       const slurEnds = slursByColumn.ends[index];
 
       if (slurStarts) {
-        slurStarts.forEach((_) => output.push("("));
+        slurStarts.forEach((__) => output.push("("));
       }
       if (hitList) {
         if (hitList.length > 1) {
@@ -82,7 +82,7 @@ export class AbcConverter {
       }
 
       if (slurEnds) {
-        slurEnds.forEach((_) => output.push(")"));
+        slurEnds.forEach((__) => output.push(")"));
       }
       if (barLinesByColumn.has(index)) {
         output.push("|");
