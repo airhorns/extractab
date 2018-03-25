@@ -2,11 +2,15 @@
 
 html, body {
   min-height: 100vh;
+  height: 100%;
   background-color: #f7f7f7;
 }
 
 #app_container {
+  height: 100%;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .navbar {
@@ -27,64 +31,27 @@ html, body {
 
 
 #editor {
-  .widgets {
-    display: none;
+  flex: 1 1 auto;
+
+  .container {
+    height: 100%;
+  }
+
+  .react-codemirror2 {
+    height: 100%;
   }
 
   .CodeMirror {
-    height: auto;
+    height: 100%;
+  }
+
+  .widgets {
+    display: none;
   }
 }
 
 .footer {
   padding: 1rem;
-}
-
-@include desktop {
-  body {
-    height: 100vh;
-  }
-
-  #app_container {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .nav {
-    flex-shrink: 0;
-  }
-
-  .footer {
-    padding: 1rem;
-    flex-shrink: 0;
-  }
-
-  #editor {
-    flex: 1 1 auto;
-    position: relative;
-
-    .editor-container {
-      position: absolute;
-      height: 100%;
-      width: 100%;
-    }
-
-    .container {
-      height: 100%;
-    }
-
-    .react-codemirror2 {
-      height: 100%;
-      width: 100%;
-    }
-
-    .CodeMirror {
-      height: 100%;
-      width: 100%;
-      // overflow: auto;
-    }
-  }
 }
 
 .debug_sections {
@@ -134,4 +101,15 @@ html, body {
     font-weight: lighter;
     font-size: 0.9rem;
   }
+}
+
+.abcjs-title {
+  display: none;
+}
+.item-break {
+  margin: 0 1rem;
+  color: $grey-lighter;
+}
+.footer svg {
+  margin-right: 0.25rem;
 }

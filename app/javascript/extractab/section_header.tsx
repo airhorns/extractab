@@ -11,8 +11,10 @@ interface ISectionHeaderProps {
 
 export class SectionHeader extends React.Component<ISectionHeaderProps, {}> {
   public render() {
-    if (this.props.section.headerSource) {
-      return <CodeMirrorRangeHighlight codemirror={this.props.codemirror} interval={this.props.section.headerSource} className="cm-section-header" />;
+    if (this.props.section.header) {
+      return <CodeMirrorRangeHighlight codemirror={this.props.codemirror} interval={this.props.section.header.source} className="cm-section-header" />;
+    } else {
+      return <span/>;
     }
   }
 }

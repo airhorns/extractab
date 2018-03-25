@@ -1,8 +1,9 @@
 import * as ohm from "ohm-js";
+import { SectionHeader } from "./section_header";
 
 export abstract class TabSection {
   public source: ohm.Interval;
-  public headerSource?: ohm.Interval;
+  public header?: SectionHeader;
   public key(): string {
     return this.source.startIdx.toString();
   }

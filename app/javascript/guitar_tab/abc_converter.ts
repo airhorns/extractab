@@ -19,7 +19,7 @@ const allIndexesOf = (character: string, sourceString: string) => {
 export class AbcConverter {
   constructor(public tuning: GuitarTuning) {}
   // Bind the various fretted hits along each string to the tuning, and then build an ABC notation string to send into abcjs
-  public toABC(tabStaff: TabStaff): string {
+  public toABC(tabStaff: TabStaff, title?: string): string {
     // Get bound notes for each hit along the string
     if (this.tuning.stringRoots.length !== tabStaff.strings.length) {
       throw new Error("Can't convert tabstaff with different sized tuning to ABC");
@@ -60,6 +60,7 @@ export class AbcConverter {
     const output: string[] = [];
     output.push("L:1/8\n"); // 8th note resolution
     output.push("K:C\n");   // no key for now
+    if (title) { output.push(`T:${title}\n`); }
     output.push("[|");    // start the music
 
     _.range(0, hitsByColumn.length).forEach((index) => {

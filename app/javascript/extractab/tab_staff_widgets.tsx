@@ -13,7 +13,7 @@ interface ITabStaffWidgetsProps {
 export class TabStaffWidgets extends React.Component<ITabStaffWidgetsProps, {}> {
   public render() {
     return <React.Fragment>
-      { this.props.section.headerSource && <SectionHeader section={this.props.section} codemirror={this.props.codemirror} tabKnowledge={this.props.tabKnowledge}/> }
+      { this.props.section.header && <SectionHeader section={this.props.section} codemirror={this.props.codemirror} tabKnowledge={this.props.tabKnowledge}/> }
       <TabStaffWidget
         lineNumber={this.props.section.lineNumberForDisplay()}
         section={this.props.section}

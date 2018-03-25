@@ -72,29 +72,27 @@ export class Editor extends React.Component<IEditorProps, IEditorState> {
     const sections = this.state.sections.map(this.componentForSection.bind(this));
 
     return <section id="editor">
-      <div className="editor-container">
-        <div className="container">
-          <ControlledCodeMirror
-            value={this.state.value}
-            options={{
-              theme: "elegant",
-              foldGutter: true,
-              lineNumbers: true,
-              gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-              viewportMargin: Infinity,
-              fixedGutter: false,
-            }}
-            autoCursor={true}
-            editorDidMount={(editor) => { this.codeMirrorInstance = editor; }}
-            onBeforeChange={(editor, data, value) => {
-              this.setState({value});
-              this.parseEditorContents();
-            }}
-            onChange={(editor, data, value) => true }
-          />
-          <div className="widgets">
-            {sections}
-          </div>
+      <div className="container">
+        <ControlledCodeMirror
+          value={this.state.value}
+          options={{
+            theme: "elegant",
+            foldGutter: true,
+            lineNumbers: true,
+            gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+            viewportMargin: Infinity,
+            fixedGutter: false,
+          }}
+          autoCursor={true}
+          editorDidMount={(editor) => { this.codeMirrorInstance = editor; }}
+          onBeforeChange={(editor, data, value) => {
+            this.setState({value});
+            this.parseEditorContents();
+          }}
+          onChange={(editor, data, value) => true }
+        />
+        <div className="widgets">
+          {sections}
         </div>
       </div>
     </section>;

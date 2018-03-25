@@ -45,7 +45,7 @@ export class ChordChart extends React.Component<IChordChartProps, {}> {
       .value();
 
     return <React.Fragment>
-      { this.props.section.headerSource && <SectionHeader section={this.props.section} codemirror={this.props.codemirror} tabKnowledge={this.props.tabKnowledge}/> }
+      { this.props.section.header && <SectionHeader section={this.props.section} codemirror={this.props.codemirror} tabKnowledge={this.props.tabKnowledge}/> }
       {chordDiagrams}
       {chordMarks}
     </React.Fragment>;

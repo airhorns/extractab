@@ -5,10 +5,12 @@
     "test": "NODE_ENV=test karma start"
   },
   "dependencies": {
+    "@fortawesome/fontawesome": "^1.2.0-2",
+    "@fortawesome/fontawesome-free-brands": "^5.0.8",
+    "@fortawesome/fontawesome-free-solid": "^5.0.8",
+    "@fortawesome/react-fontawesome": "0.1.0-1",
     "@rails/webpacker": "^3.3.0",
     "@types/codemirror": "^0.0.55",
-    "@types/jasmine": "^2.8.6",
-    "@types/karma-jasmine": "^0.0.29",
     "@types/lodash.uniq": "^4.5.3",
     "@types/react": "^16.0.34",
     "@types/react-dom": "^16.0.3",
@@ -16,13 +18,9 @@
     "babel-plugin-module-resolver": "^3.1.0",
     "babel-preset-react": "^6.24.1",
     "bulma": "^0.6.2",
+    "caniuse-lite": "^1.0.30000697",
     "codemirror": "^5.35.0",
     "font-awesome": "^4.7.0",
-    "jasmine-core": "^3.1.0",
-    "karma": "^2.0.0",
-    "karma-chrome-launcher": "^2.2.0",
-    "karma-jasmine": "^1.1.1",
-    "karma-webpack": "^2.0.13",
     "lodash": "^4.17.5",
     "ohm-js": "^0.14.0",
     "prop-types": "^15.6.1",
@@ -30,9 +28,19 @@
     "react-codemirror2": "^4.1.0",
     "react-dom": "^16.2.0",
     "ts-loader": "^3.2.0",
+    "typescript": "^2.6.2",
+    "webpack": "^3.0.0"
+  },
+  "devDependencies": {
+    "@types/jasmine": "^2.8.6",
+    "@types/karma-jasmine": "^0.0.29",
+    "jasmine-core": "^3.1.0",
+    "karma": "^2.0.0",
+    "karma-chrome-launcher": "^2.2.0",
+    "karma-jasmine": "^1.1.1",
+    "karma-webpack": "^2.0.13",
     "tslint": "^5.9.1",
     "tslint-defocus": "^2.0.3",
-    "typescript": "^2.6.2",
     "webpack-dev-server": "^2.11.2"
   }
 }

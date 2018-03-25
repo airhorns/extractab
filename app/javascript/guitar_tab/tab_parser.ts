@@ -2,6 +2,7 @@ import * as ohm from "ohm-js";
 import * as _ from "lodash";
 import { TabParseResult } from "./tab_parse_result";
 import { TabSection } from "./tab_section";
+import { SectionHeader } from "./section_header";
 import { TabKnowledge } from "./tab_knowledge";
 import { UnrecognizedSection } from "./unrecognized_section";
 import { ChordSource, LyricLine, ChordChartSection } from "./chord_chart_section";
@@ -23,24 +24,29 @@ addChordParsingOperations(Semantics);
 Semantics.addOperation("buildTab", {
   contentDelimitedSection(__, sectionHeader, ___, selfDelimitedSectionContents, ____): TabSection {
     const section: TabSection = selfDelimitedSectionContents.buildTab();
-    section.headerSource = sectionHeader.source;
+    if (sectionHeader.children[0]) {
+      section.header = sectionHeader.children[0].buildTab();
+    }
     return section;
   },
   lineDelimitedSection_header(__, sectionHeader, ___, chording, ____): TabSection {
     const section: TabSection = chording.buildTab();
-    section.headerSource = sectionHeader.source;
+    section.header = sectionHeader.buildTab();
+    return section;
+  },
+  unrecognizedSection_header(sectionHeader, __, lines, ___): TabSection {
+    const section = new UnrecognizedSection(lines.source);
+    section.header = sectionHeader.buildTab();
     return section;
   },
   lineDelimitedSection_headerless(__, chording, ___): TabSection {
     return chording.buildTab();
   },
-  unrecognizedSection_header(sectionHeader, __, lines, ___): TabSection {
-    const section = new UnrecognizedSection(lines.source);
-    section.headerSource = sectionHeader.source;
-    return section;
-  },
   unrecognizedSection_headerless(lines, __): TabSection {
     return new UnrecognizedSection(lines.source);
+  },
+  sectionHeader(__, chars, ___, ____, _____) {
+    return new SectionHeader(chars.source.contents, this.source);
   },
   chordDefinitionLines(line, lines): TabSection {
     const definitionMaps = [line.buildTab()].concat(lines.buildTab());
