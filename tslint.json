@@ -11,7 +11,8 @@
       "no-reference": false,
       "max-line-length": {
         "options": [180]
-      }
+      },
+      "ban": [true, "fdescribe","fit"]
     },
     "rulesDirectory": []
 }

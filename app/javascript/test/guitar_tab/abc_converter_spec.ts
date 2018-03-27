@@ -14,7 +14,7 @@ describe("AbcConverter", () => {
 
     const actual = `L:1/8
 K:C
-[|F|]`;
+[|C|]`;
     expect(converter.toABC(staff)).toEqual(actual);
   });
 
@@ -28,7 +28,7 @@ K:C
 
     const actual = `L:1/8
 K:C
-[|[CF]|]`;
+[|[FC]|]`;
     expect(converter.toABC(staff)).toEqual(actual);
   });
 
@@ -42,7 +42,7 @@ K:C
 
     const actual = `L:1/8
 K:C
-[|[ad][a''d'']|]`;
+[|[dA][d''a']|]`;
     expect(converter.toABC(staff)).toEqual(actual);
   });
 
@@ -56,7 +56,7 @@ K:C
 
     const actual = `L:1/8
 K:C
-[|^A|]`;
+[|^D|]`;
     expect(converter.toABC(staff)).toEqual(actual);
   });
 
@@ -70,7 +70,7 @@ K:C
 
     const actual = `L:1/8
 K:C
-[|(F^F)|]`;
+[|(C^C)|]`;
     expect(converter.toABC(staff)).toEqual(actual);
   });
 
@@ -84,7 +84,7 @@ K:C
 
     const actual = `L:1/8
 K:C
-[|(F^F)|]`;
+[|(C^C)|]`;
     expect(converter.toABC(staff)).toEqual(actual);
   });
 
@@ -105,7 +105,7 @@ K:C
 
     const actual = `L:1/8
 K:C
-[|(F^FG)(G^FF)|]`;
+[|(C^CD)(D^CC)|]`;
     expect(converter.toABC(staff)).toEqual(actual);
   });
 

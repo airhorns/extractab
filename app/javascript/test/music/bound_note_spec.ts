@@ -50,6 +50,11 @@ describe("BoundNote", () => {
     expect(notes.c.applyInterval(Intervals.Octave.add(Intervals.Octave))).toEqual(BoundNote.fromString("C6"));
   });
 
+  it("rolls the octave over to the next one when apply intervals", () => {
+    expect(notes.bFlat.applyInterval(Intervals.MajorThird)).toEqual(BoundNote.fromString("D5"));
+    expect(notes.bFlat.applyInterval(Intervals.MajorSecond)).toEqual(BoundNote.fromString("C5"));
+  });
+
   it("can be constructed from an unbound note and octave", () => {
     expect(BoundNote.fromUnboundNote(UnboundNote.fromString("C"), 4)).toEqual(notes.c);
     expect(BoundNote.fromUnboundNote(UnboundNote.fromString("G"), 4)).toEqual(notes.g);

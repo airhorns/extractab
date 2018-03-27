@@ -4,6 +4,7 @@
 // and scales and whatnot in the abstract before grounding them somewhere exactly on a staff.
 import { INote } from "./i_note";
 import { Interval, Intervals } from "./interval";
+import { BoundNote } from "./bound_note";
 
 export const NotesToSemitones: { [s: string]: number } = {
   "C": 0,
@@ -71,5 +72,9 @@ export class UnboundNote implements INote {
 
   public flatEquivalent(): UnboundNote {
     return this.applyInterval(Intervals.Zeroth, true, false);
+  }
+
+  public bindAtOctave(octave: number): BoundNote {
+    return BoundNote.fromUnboundNote(this, octave);
   }
 }

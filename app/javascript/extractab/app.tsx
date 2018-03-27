@@ -1,6 +1,8 @@
 import * as React from "react";
 import { Header } from "./header";
 import { Editor } from "./editor";
+import { DebugEditor } from "./debug_editor";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { Footer } from "./footer";
 import Fixtures from "../test/guitar_tab/fixtures";
 import "./app.scss";
@@ -27,10 +29,15 @@ Good luck making beautiful music!
 `;
 export class App extends React.Component<{}, {}> {
   public render() {
-      return <React.Fragment>
-        <Header/>
-        <Editor startValue={Tutorial} debugEnabled={true}/>
-        <Footer/>
-      </React.Fragment>;
+      return <Router>
+          <React.Fragment>
+            <Header/>
+            <Switch>
+              <Route exact path="/" render={() => <Editor startValue={Tutorial}/>} />
+              <Route path="/debug" render={() => <DebugEditor startValue={Fixtures.fallingInLove}/>} />
+            </Switch>
+            <Footer/>
+          </React.Fragment>
+      </Router>;
   }
 }

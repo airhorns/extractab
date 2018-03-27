@@ -20,26 +20,26 @@ export class GuitarTuning {
 }
 
 GuitarTuning.Standard = new GuitarTuning([
-  BoundNote.fromString("E2"),
-  BoundNote.fromString("A3"),
-  BoundNote.fromString("D3"),
-  BoundNote.fromString("G3"),
-  BoundNote.fromString("B4"),
   BoundNote.fromString("E4"),
+  BoundNote.fromString("B3"),
+  BoundNote.fromString("G3"),
+  BoundNote.fromString("D3"),
+  BoundNote.fromString("A2"),
+  BoundNote.fromString("E2"),
 ]);
 
 GuitarTuning.DropD = new GuitarTuning([
-  BoundNote.fromString("D2"),
-  BoundNote.fromString("A3"),
-  BoundNote.fromString("D3"),
-  BoundNote.fromString("G3"),
-  BoundNote.fromString("B4"),
   BoundNote.fromString("E4"),
+  BoundNote.fromString("B3"),
+  BoundNote.fromString("G3"),
+  BoundNote.fromString("D3"),
+  BoundNote.fromString("A2"),
+  BoundNote.fromString("D2"),
 ]);
 
 GuitarTuning.Bass = new GuitarTuning([
-  BoundNote.fromString("E1"),
-  BoundNote.fromString("A2"),
-  BoundNote.fromString("D2"),
   BoundNote.fromString("G2"),
+  BoundNote.fromString("D2"),
+  BoundNote.fromString("A1"),
+  BoundNote.fromString("E1"),
 ]);

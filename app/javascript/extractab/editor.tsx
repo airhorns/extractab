@@ -13,12 +13,10 @@ import { UnrecognizedWidget } from "./unrecognized_widget";
 import { ChordChart } from "./chord_chart";
 import { ChordDefinitionWidgets } from "./chord_definition_widgets";
 import { TabStaffWidgets } from "./tab_staff_widgets";
-import { DebugSections } from "./debug_sections";
 import "./codemirror_guitar_tab_mode";
 
 interface IEditorProps {
   startValue: string;
-  debugEnabled: boolean;
 }
 
 interface IEditorState {

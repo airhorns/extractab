@@ -113,3 +113,11 @@ html, body {
 .footer svg {
   margin-right: 0.25rem;
 }
+
+.debug-ast {
+  .ast-node {
+    border: 1px dashed grey;
+    margin: 0.5rem;
+    padding: 0.5rem;
+  }
+}
