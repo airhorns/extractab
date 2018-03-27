@@ -13,6 +13,7 @@ import { UnrecognizedWidget } from "./unrecognized_widget";
 import { ChordChart } from "./chord_chart";
 import { ChordDefinitionWidgets } from "./chord_definition_widgets";
 import { TabStaffWidgets } from "./tab_staff_widgets";
+import { EditorToolbar } from "./editor_toolbar";
 import "./codemirror_guitar_tab_mode";
 
 interface IEditorProps {
@@ -71,6 +72,7 @@ export class Editor extends React.Component<IEditorProps, IEditorState> {
 
     return <section id="editor">
       <div className="container">
+        <EditorToolbar tabKnowledge={this.state.tabKnowledge} updateKnowledge={(knowledge) => this.updateKnowledge(knowledge)}/>
         <ControlledCodeMirror
           value={this.state.value}
           options={{
@@ -96,7 +98,7 @@ export class Editor extends React.Component<IEditorProps, IEditorState> {
     </section>;
   }
 
-  public componentForSection = (section: TabSection) => {
+  private componentForSection = (section: TabSection) => {
     if (section instanceof TabStaffSection) {
       return <TabStaffWidgets
         key={section.key()}
@@ -130,5 +132,9 @@ export class Editor extends React.Component<IEditorProps, IEditorState> {
       />;
     }
     throw new Error("Unrecognized tab section type!");
+  }
+
+  private updateKnowledge(tabKnowledge: TabKnowledge) {
+    this.setState({tabKnowledge});
   }
 }

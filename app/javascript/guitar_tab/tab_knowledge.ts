@@ -5,10 +5,11 @@ import { ChordChartSection } from "./chord_chart_section";
 import { ChordDefinition } from "./chord_definition";
 import { TabStaff } from "./tab_staff";
 import { UnrecognizedSection } from "./unrecognized_section";
-import { UnboundNote, UnboundChord, BoundChord, GuitarTuning, Interval } from "../music";
+import { UnboundNote, UnboundChord, BoundChord, GuitarTuning, Interval, Intervals } from "../music";
 
 export interface ITuningGuess {
   tuning: GuitarTuning;
+  label?: string;
   confidence: number;
 }
 
@@ -25,8 +26,8 @@ export class TabKnowledge {
       }
     }).compact().value();
 
-    const tuningGuess: GuitarTuning = _(tuningGuesses).sortBy("confidence").map("tuning").last() || GuitarTuning.Standard;
-    return new TabKnowledge(tuningGuess);
+    const tuningGuess = _(tuningGuesses).sortBy("confidence").last() || {tuning: GuitarTuning.Standard, label: "default"};
+    return new TabKnowledge(tuningGuess.tuning, tuningGuess.label);
   }
 
   public static tuningFromTabStrings(staff: TabStaff): ITuningGuess {
@@ -51,19 +52,35 @@ export class TabKnowledge {
       return note.bindAtOctave(octave);
     });
 
-    return {tuning: new GuitarTuning(boundNotes), confidence: 0.5};
+    return {tuning: new GuitarTuning(boundNotes), label: "found in tab", confidence: 0.5};
   }
 
   public static tuningFromText(text: string): ITuningGuess | undefined {
     const match = text.match(/(?:[^\w]|^)Capo (\d+)/i) || text.match(/(\d+) Capo(?:[^\w]|$)/i);
     if (match) {
-      const capoInterval = new Interval(parseInt(match[1], 10));
-      const boundNotes = GuitarTuning.Standard.stringRoots.map((note) => note.applyInterval(capoInterval));
-      return {tuning: new GuitarTuning(boundNotes), confidence: 0.7};
+      const capoFretNumber = parseInt(match[1], 10);
+      const tuning = GuitarTuning.Standard.transpose(new Interval(capoFretNumber));
+      return {tuning, label: `Capo ${capoFretNumber}`, confidence: 0.7};
     }
   }
 
-  constructor(public tuning: GuitarTuning) {}
+  public tuningTranspose: Interval = Intervals.Zeroth;
+  public originalTuningLabel: string;
+
+  constructor(public tuning: GuitarTuning, public tuningLabel: string = "") {
+    this.originalTuningLabel = tuningLabel;
+  }
+
+  public transposeTuning(semitones: number) {
+    const newInterval = new Interval(this.tuningTranspose.semitones + semitones);
+    const label = newInterval.semitones === 0 ? this.originalTuningLabel : `${this.originalTuningLabel} transpose ${newInterval.semitones}`.trim();
+
+    return this.clone({
+      tuningTranspose: newInterval,
+      tuning: this.tuning.transpose(new Interval(semitones)),
+      tuningLabel: label,
+    });
+  }
 
   public bindChord(chord: UnboundChord): BoundChord {
     // TODO: Implement definition lookup for chords
@@ -74,6 +91,15 @@ export class TabKnowledge {
     return definition.bindAtTuning(this.tuning);
   }
 
+  private clone(properties: Partial<TabKnowledge>) {
+    const clone =  new TabKnowledge(
+      properties.tuning || this.tuning,
+      properties.tuningLabel || this.tuningLabel,
+    );
+    clone.tuningTranspose = properties.tuningTranspose || this.tuningTranspose;
+    clone.originalTuningLabel = properties.originalTuningLabel || this.originalTuningLabel;
+    return clone;
+  }
 }
 
 TabKnowledge.Default = new TabKnowledge(GuitarTuning.Standard);

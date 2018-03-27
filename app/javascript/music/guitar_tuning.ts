@@ -1,4 +1,5 @@
 import { BoundNote } from "./bound_note";
+import { Interval } from "./interval";
 
 // Represents a tuning for a guitar as the list of notes played by plucking the open strings.
 // Strings are 0-indexed from the top down of the tab
@@ -14,8 +15,14 @@ export class GuitarTuning {
   public static Bass: GuitarTuning;
 
   constructor(public stringRoots: BoundNote[]) {}
+
   public tuningString(): string {
     return this.stringRoots.map((root) => root.symbolWithoutOctave).join(" ");
+  }
+
+  public transpose(interval: Interval) {
+    const boundNotes = this.stringRoots.map((note) => note.applyInterval(interval));
+    return new GuitarTuning(boundNotes);
   }
 }
 

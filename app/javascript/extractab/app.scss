@@ -29,6 +29,11 @@ html, body {
   background-color: white;
 }
 
+#toolbar {
+  font-family: monospace;
+  background-color: $grey-lighter;
+  padding: 0.5rem;
+}
 
 #editor {
   flex: 1 1 auto;
