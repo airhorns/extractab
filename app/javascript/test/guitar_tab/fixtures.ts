@@ -1659,6 +1659,169 @@ We wish you a Merry Christmas...and a Hap-py..New..Year.
 
 A tradional carol from Kraziekhat.
 `,
+neon: `Well here is how I play "Neon" by John Mayer. Not the way I play it on electric.
+I mainly play this on acoustic. But it can be played on electric this way. I'm
+almost positive this is 100% right, then again I oculd be wrong. Either way enjoy!
+
+"Neon"
+
+tuning... drop low E waaaay down to a C
+
+
+(PART I)
+
+e|--------------------------------------------------------|
+B|---8-------------4--------------4-----------9-------8---|
+G|-----10--------3--------------3---3--------8-------7----|
+D|-------------3------5-6-----6-------------8------10-----|
+A|--------------------------------------------------------|
+C|-0---------3---------------5------------8------10-------|
+
+
+(PART II)
+
+e|-----------------|
+B|---6----6----4---|
+G|---5----5----3---|
+D|---8----8----6---|
+A|-----------------|
+C|---8----7----6---|
+
+
+(PART III)
+
+e|-----------------------------------|
+B|---6---6---4---6---6---4---6---4---|
+G|---5---5---3---5---5---3---5---5---|
+D|---8---8---6---8---8---6---8---6---|
+A|-----------------------------------|
+C|---8---7---6---8---7---5---7-------|
+
+
+(PART IV)
+
+e|--------------------|
+B|---4---6---4----4---|
+G|---3---5---3----3---|
+D|---6---8---5--3h5---|(2x)
+A|--------------------|
+C|---5---7---0--------|
+
+
+(PART V)
+
+e|------------------------|
+B|---4---6---4---11---9---|
+G|---3---5---3---10---8---|
+D|---6---8---5---10---8---|
+A|------------------------|
+C|---5---7---0---10---8---|
+
+
+(PART VI)
+
+e|---------------|
+B|---4-4-----4-4-|
+G|---5-5----5-5--|
+D|---6-6---6-----|
+A|---------------|
+C|---------------|
+
+
+(PART VII)
+
+e|------------------------------------------|
+B|---6---6---4------6---6---4---6---9---11--|
+G|---5---5---3------5---5---3---5---8---10--|
+D|---8---8---6------8---8---6---8---8---10--|
+A|------------------------------------------|
+C|---8---7---6------8---7---5---7---8---10--|
+
+
+(PART VIII)
+
+e|------------------------------|
+B|--4---6---7----9--------------|
+G|--5---7---8---10-----11--11/--|
+D|--6---8---9---11-----11--11/--|
+A|------------------------------|
+C|--5---7---8---10----------10--|
+
+
+(PART IX)
+
+e|-----------------------------------|
+B|-----------------------------------|
+G|-----8---------8--------------8----|
+D|-------------8-------------10------| (repeat)
+A|------------------(0)--------------|
+C|---0-----0h7-----------0h10--------|
+
+
+
+***********************
+|h        Hammer-on
+|/        Slide up
+***********************
+
+
+(I)
+When sky blue gets dark enough
+To see the colors of the city lights
+A trail of ruby red and diamond white
+Hits her like a sunrise
+
+(II)
+She comes and goes and comes and goes
+Like no one can
+
+(I)
+Tonight she's out to lose herself
+And find a high on Peachtree Street
+From mixed drinks to techno beats it's always
+Heavy into everything
+
+(III)
+She comes and goes and comes and goes
+Like no one can
+She comes and goes and no one knows
+She's slipping through my hands
+
+(IV)
+She's always buzzing just like
+Neon, neon
+Neon, neon
+(V)
+Who knows how long, how long, how long
+(VI)
+She can go before she burns away
+
+(I)
+I can't be her angel now
+You know it's not my place to hold her down
+And it's hard for me to take a stand
+When I would take her anyway I can
+
+(VII)
+She comes and goes and comes and goes
+Like no one can
+She comes and goes and no one knows
+She's slipping through my hands
+
+(IV)
+She's always buzzing just like
+Neon, neon
+Neon, neon
+(V)
+Who knows how long, how long, how long
+(VI)
+She can go before she burns away
+
+-then parts VIII and IX
+
+
+There ya go! I included the lyrics as well as what parts to play where.
+So i hope you have as much fun playin the song as I do!`,
 };
 
 export default Fixtures;

@@ -26,7 +26,7 @@ export class TabKnowledge {
       }
     }).compact().value();
 
-    const tuningGuess = _(tuningGuesses).sortBy("confidence").last() || {tuning: GuitarTuning.Standard, label: "default"};
+    const tuningGuess = _(tuningGuesses).sortBy("confidence").last() || {tuning: GuitarTuning.Standard, label: ""};
     return new TabKnowledge(tuningGuess.tuning, tuningGuess.label);
   }
 
@@ -52,7 +52,9 @@ export class TabKnowledge {
       return note.bindAtOctave(octave);
     });
 
-    return {tuning: new GuitarTuning(boundNotes), label: "found in tab", confidence: 0.5};
+    const tuning = new GuitarTuning(boundNotes);
+    const label = tuning.equivalent(GuitarTuning.Standard) ? "" : "found in tab";
+    return {tuning, label, confidence: 0.5};
   }
 
   public static tuningFromText(text: string): ITuningGuess | undefined {
@@ -73,7 +75,8 @@ export class TabKnowledge {
 
   public transposeTuning(semitones: number) {
     const newInterval = new Interval(this.tuningTranspose.semitones + semitones);
-    const label = newInterval.semitones === 0 ? this.originalTuningLabel : `${this.originalTuningLabel} transpose ${newInterval.semitones}`.trim();
+    const label = newInterval.semitones === 0 ? this.originalTuningLabel
+      : `${this.originalTuningLabel} transpose ${newInterval.semitones > 0 ? "+" : ""}${newInterval.semitones}`.trim();
 
     return this.clone({
       tuningTranspose: newInterval,

@@ -1,3 +1,4 @@
+import * as _ from "lodash";
 import { BoundNote } from "./bound_note";
 import { Interval } from "./interval";
 
@@ -23,6 +24,10 @@ export class GuitarTuning {
   public transpose(interval: Interval) {
     const boundNotes = this.stringRoots.map((note) => note.applyInterval(interval));
     return new GuitarTuning(boundNotes);
+  }
+
+  public equivalent(other: GuitarTuning) {
+    return ((other.stringRoots.length === this.stringRoots.length) && _(other.stringRoots).zip(this.stringRoots).every(([a, b]) => (a as BoundNote).equivalent((b as BoundNote))));
   }
 }
 

@@ -20,14 +20,14 @@ export class NoteSymbol {
   public accidental: string;
   public octave: number;
   constructor(letter: string, octave: number) {
-    this.letter = letter;
     this.octave = octave;
-    const match = NoteSymbol.AccidentalPattern.exec(this.letter);
+    const match = NoteSymbol.AccidentalPattern.exec(letter);
     if (!match) {
       throw new Error("Implementation error: letter couldn't be extracted from NoteSymbol string");
     }
-    this.letterWithoutAccidental = match[1];
+    this.letterWithoutAccidental = match[1].toUpperCase();
     this.accidental = match[2];
+    this.letter = this.accidental ? this.letterWithoutAccidental + this.accidental : this.letterWithoutAccidental;
   }
 
   public toString() {

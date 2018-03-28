@@ -1,4 +1,4 @@
-import { GuitarTuning, BoundNote } from "../../music";
+import { GuitarTuning, BoundNote, Interval } from "../../music";
 import { TabParser, TabStaff, TabStaffBarLines, TabString, TabKnowledge, ITuningGuess } from "../../guitar_tab";
 import Fixtures from "./fixtures";
 
@@ -95,7 +95,43 @@ describe("TabKnowledge", () => {
     expect(parseAndInfer(Fixtures.crossfire).tuning).toEqual(GuitarTuning.Standard);
   });
 
-  fit("correctly identifies fallingInLove.txt's tuning", () => {
+  it("correctly identifies fallingInLove.txt's tuning", () => {
     expect(parseAndInfer(Fixtures.fallingInLove).tuning).toEqual(capo2);
+  });
+
+  it("notes that the tuning is from the default if no tuning is found", () => {
+    expect(parseAndInfer("").tuningLabel).toEqual("");
+  });
+
+  it("notes that the tuning is from the tab if it is found from a tab and only if it is a nonstandard tuning", () => {
+    expect(parseAndInfer(Fixtures.crossfire).tuningLabel).toEqual("");
+    expect(parseAndInfer(Fixtures.neon).tuningLabel).toEqual("found in tab");
+  });
+
+  it("notes that the tuning is capo 2 when the tuning is found from a capo notation", () => {
+    expect(parseAndInfer(Fixtures.fallingInLove).tuningLabel).toEqual("Capo 2");
+  });
+
+  it("can be transposed such that the tuning changes up or down a number of semitones", () => {
+    const original = TabKnowledge.Default;
+    const originalFirstString = original.tuning.stringRoots[0].frequency;
+
+    const upTwo = original.transposeTuning(2);
+    expect(upTwo.tuning.stringRoots[0]).toEqual(original.tuning.stringRoots[0].applyInterval(new Interval(2)));
+    expect(upTwo.tuning.stringRoots[1]).toEqual(original.tuning.stringRoots[1].applyInterval(new Interval(2)));
+    expect(upTwo.tuning.stringRoots[2]).toEqual(original.tuning.stringRoots[2].applyInterval(new Interval(2)));
+
+    const downThree = original.transposeTuning(-3);
+    expect(downThree.tuning.stringRoots[0]).toEqual(original.tuning.stringRoots[0].applyInterval(new Interval(-3)));
+
+    expect(original.tuning.stringRoots[0].frequency).toEqual(originalFirstString);
+  });
+
+  it("changes the tuning label when transposed to include a note about being transposed", () => {
+    expect(TabKnowledge.Default.transposeTuning(2).tuningLabel).toEqual("transpose +2");
+    expect(TabKnowledge.Default.transposeTuning(-2).tuningLabel).toEqual("transpose -2");
+
+    expect(parseAndInfer(Fixtures.neon).transposeTuning(2).tuningLabel).toEqual("found in tab transpose +2");
+    expect(parseAndInfer(Fixtures.neon).transposeTuning(-2).tuningLabel).toEqual("found in tab transpose -2");
   });
 });
