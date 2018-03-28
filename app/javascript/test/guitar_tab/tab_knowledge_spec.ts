@@ -1,4 +1,4 @@
-import { GuitarTuning, BoundNote, Interval } from "../../music";
+import { GuitarTuning, UnboundNote, ChordNames, UnboundChord, BoundNote, Interval } from "../../music";
 import { TabParser, TabStaff, TabStaffBarLines, TabString, TabKnowledge, ITuningGuess } from "../../guitar_tab";
 import Fixtures from "./fixtures";
 
@@ -6,6 +6,11 @@ const parseAndInfer = (text: string) => {
   const result = (new TabParser()).parse(text);
   return TabKnowledge.infer(result.sections);
 };
+
+const c = UnboundNote.fromString("C");
+const a = UnboundNote.fromString("A");
+const cMajor = UnboundChord.forName(c, ChordNames.Major);
+const cMinor = UnboundChord.forName(c, ChordNames.Minor);
 
 const capo2 = new GuitarTuning([
   BoundNote.fromString("F#4"),
@@ -133,5 +138,9 @@ describe("TabKnowledge", () => {
 
     expect(parseAndInfer(Fixtures.neon).transposeTuning(2).tuningLabel).toEqual("found in tab transpose +2");
     expect(parseAndInfer(Fixtures.neon).transposeTuning(-2).tuningLabel).toEqual("found in tab transpose -2");
+  });
+
+  it("can bind chords not seen anywhere in the tab", () => {
+    expect(TabKnowledge.Default.bindChord(cMajor)).toEqual(cMajor.bindAtRootOctave(3));
   });
 });

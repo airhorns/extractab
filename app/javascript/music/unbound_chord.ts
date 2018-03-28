@@ -6,6 +6,7 @@ import { BoundChord } from "./bound_chord";
 import { BoundNote } from "./bound_note";
 import * as _ from "lodash";
 
+export type UnboundChordKey = string;
 // Represents a chord as a root plus a variable number of intervals (positive or negative). The chord isn't
 // bound to a particular octave or guitar tuning or anything, it's just floating in space relative to the root.
 // This is useful for representing chords in the abstract before dictating exactly how and where to play them on
@@ -47,6 +48,10 @@ export class UnboundChord implements IChord<UnboundNote> {
 
   public notesString(): string {
     return this.notes().map((note) => note.symbol).join(" ");
+  }
+
+  public key(): UnboundChordKey {
+    return this.notesString();
   }
 
   public displayLabel(): string {

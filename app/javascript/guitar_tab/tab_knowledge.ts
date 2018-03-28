@@ -2,10 +2,11 @@ import * as _ from "lodash";
 import { TabSection } from "./tab_section";
 import { TabStaffSection } from "./tab_staff_section";
 import { ChordChartSection } from "./chord_chart_section";
+import { ChordDefinitionSection } from "./chord_definition_section";
 import { ChordDefinition } from "./chord_definition";
 import { TabStaff } from "./tab_staff";
 import { UnrecognizedSection } from "./unrecognized_section";
-import { UnboundNote, UnboundChord, BoundChord, GuitarTuning, Interval, Intervals } from "../music";
+import { UnboundNote, UnboundChord, UnboundChordKey, BoundChord, GuitarTuning, Interval, Intervals } from "../music";
 
 export interface ITuningGuess {
   tuning: GuitarTuning;
@@ -13,6 +14,12 @@ export interface ITuningGuess {
   confidence: number;
 }
 
+export interface IChordDefinitionLookup {
+  [key: string]: ChordDefinition;
+}
+
+// Context storage for what we know about the tab and what the user has told us about the tab
+// Operated on by the toolbar and reflected throughout all the sections.
 export class TabKnowledge {
   public static Default: TabKnowledge;
 
@@ -27,7 +34,14 @@ export class TabKnowledge {
     }).compact().value();
 
     const tuningGuess = _(tuningGuesses).sortBy("confidence").last() || {tuning: GuitarTuning.Standard, label: ""};
-    return new TabKnowledge(tuningGuess.tuning, tuningGuess.label);
+
+    const definedChords = _(sections).map((section) => {
+      if (section instanceof ChordDefinitionSection) {
+        return section.definitionMaps.map((map) => map.definition);
+      }
+    }).compact().flatten().keyBy((definition) => definition.definedChord.key()).value();
+
+    return new TabKnowledge(definedChords, tuningGuess.tuning, tuningGuess.label);
   }
 
   public static tuningFromTabStrings(staff: TabStaff): ITuningGuess {
@@ -69,7 +83,7 @@ export class TabKnowledge {
   public tuningTranspose: Interval = Intervals.Zeroth;
   public originalTuningLabel: string;
 
-  constructor(public tuning: GuitarTuning, public tuningLabel: string = "") {
+  constructor(public definedChords: IChordDefinitionLookup, public tuning: GuitarTuning, public tuningLabel: string = "") {
     this.originalTuningLabel = tuningLabel;
   }
 
@@ -96,6 +110,7 @@ export class TabKnowledge {
 
   private clone(properties: Partial<TabKnowledge>) {
     const clone =  new TabKnowledge(
+      properties.definedChords || this.definedChords,
       properties.tuning || this.tuning,
       properties.tuningLabel || this.tuningLabel,
     );
@@ -105,4 +120,4 @@ export class TabKnowledge {
   }
 }
 
-TabKnowledge.Default = new TabKnowledge(GuitarTuning.Standard);
+TabKnowledge.Default = new TabKnowledge({}, GuitarTuning.Standard);
