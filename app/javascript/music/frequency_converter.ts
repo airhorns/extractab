@@ -21,7 +21,7 @@ export class FrequencyConverter {
 
   public static frequencyForSymbol(symbol: NoteSymbol): number {
     const semitonesAboveC = NotesToSemitones[symbol.letter];
-    const octavesAboveC4 = 4 - symbol.octave;
+    const octavesAboveC4 = symbol.octave - 4;
 
     const semitonesAboveA4 = (semitonesAboveC - 9) + (octavesAboveC4 * 12);
     // Compute twelfth root of two relative to A4 at 440hz

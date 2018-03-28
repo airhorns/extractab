@@ -25,6 +25,12 @@ describe("BoundNote", () => {
   it("can find notes using a symbol", () => {
     expect(BoundNote.fromString("C4").frequency).toEqual(261.626);
     expect(BoundNote.fromString("A4").frequency).toEqual(440);
+
+    expect(BoundNote.fromString("C3").frequency).toEqual(130.813);
+    expect(BoundNote.fromString("A3").frequency).toEqual(220);
+
+    expect(BoundNote.fromString("C5").frequency).toEqual(523.251);
+    expect(BoundNote.fromString("A5").frequency).toEqual(880);
   });
 
   it("can find notes using a lowercase symbol", () => {
@@ -32,6 +38,12 @@ describe("BoundNote", () => {
     expect(BoundNote.fromString("a4").frequency).toEqual(440);
     expect(BoundNote.fromString("e4").frequency).toEqual(329.628);
     expect(BoundNote.fromString("bb4").frequency).toEqual(466.164);
+
+    expect(BoundNote.fromString("c3").frequency).toEqual(130.813);
+    expect(BoundNote.fromString("a3").frequency).toEqual(220);
+
+    expect(BoundNote.fromString("c5").frequency).toEqual(523.251);
+    expect(BoundNote.fromString("a5").frequency).toEqual(880);
   });
 
   it("uppercases the letter of notes built from lowercase symbols", () => {

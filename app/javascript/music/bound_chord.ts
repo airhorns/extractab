@@ -37,14 +37,17 @@ export class BoundChord implements IChord<BoundNote> {
     // Get a unique'd, sorted list of notes for comparison
     const normalize = (noteArray: ReadonlyArray<INote>) => {
       return _(noteArray)
-        .map((note) => note.unbind())
         .uniqWith((a, b) => a.equivalent(b))
-        .sort(UnboundNote.sorter)
+        .sort(BoundNote.sorter)
         .value();
     };
 
     const otherNotes = normalize(other.notes());
     const notes = normalize(this.notes());
+
+    if (notes.length !== otherNotes.length) {
+      return false;
+    }
 
     return _(notes).zip(otherNotes).every((pair) => {
       const [a, b] = pair;
