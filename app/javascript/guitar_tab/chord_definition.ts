@@ -1,6 +1,6 @@
 import * as ohm from "ohm-js";
 import * as _ from "lodash";
-import { BoundChord, BoundNote, UnboundChord, GuitarTuning, Interval } from "../music";
+import { BoundChord, ChordBindingError, BoundNote, UnboundChord, GuitarTuning, Interval } from "../music";
 import { IFret } from "./i_fret";
 
 // Represents a ChordDefinition found in a source text at a location
@@ -21,6 +21,9 @@ export class ChordDefinition {
   public constructor(public definedChord: UnboundChord, public fretting: IFret[]) {}
 
   public bindAtTuning(tuning: GuitarTuning): BoundChord {
+    if (!(tuning.stringRoots.length >= this.fretting.length)) {
+      throw new ChordBindingError("Can't bind definition because tuning doesn't have enough strings to be bound")
+    }
     // Compute the bound note for each fret by adding an interval with the number of semitones equal to the fret number
     // to the open string. Example: 3rd fret on the E string is the note E + 3 semitones up, which in code would look
     // like `BoundNote.fromString("E4").applyInterval(new Interval(3))`;

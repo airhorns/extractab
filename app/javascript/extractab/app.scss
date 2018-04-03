@@ -49,10 +49,6 @@ html, body {
   .CodeMirror {
     height: 100%;
   }
-
-  .widgets {
-    display: none;
-  }
 }
 
 .footer {
@@ -125,4 +121,17 @@ html, body {
     margin: 0.5rem;
     padding: 0.5rem;
   }
+}
+.loading-indicator {
+  position: absolute;
+  z-index: 10;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  padding: 2rem;
+}
+
+.hover-widget {
+  position: absolute;
+  z-index: 9;
 }

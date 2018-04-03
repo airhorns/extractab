@@ -27,6 +27,7 @@
     "caniuse-lite": "^1.0.30000697",
     "codemirror": "^5.35.0",
     "enzyme-matchers": "^6.0.0",
+    "eventemitter3": "^3.0.1",
     "font-awesome": "^4.7.0",
     "lodash": "^4.17.5",
     "ohm-js": "https://github.com/harc/ohm.git#dec28460cc492db6014013cc2293c1051076572c",

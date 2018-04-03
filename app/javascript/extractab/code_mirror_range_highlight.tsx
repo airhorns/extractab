@@ -26,6 +26,6 @@ export class CodeMirrorRangeHighlight extends React.Component<IRangeHighlightPro
   }
 
   public render() {
-    return <span id={"range-highlight-" + this.props.interval.startIdx + "-" + this.props.interval.endIdx} />;
+    return null;
   }
 }

@@ -112,7 +112,7 @@ export class TabKnowledge {
     const clone =  new TabKnowledge(
       properties.definedChords || this.definedChords,
       properties.tuning || this.tuning,
-      properties.tuningLabel || this.tuningLabel,
+      _.isUndefined(properties.tuningLabel) ? this.tuningLabel : properties.tuningLabel,
     );
     clone.tuningTranspose = properties.tuningTranspose || this.tuningTranspose;
     clone.originalTuningLabel = properties.originalTuningLabel || this.originalTuningLabel;

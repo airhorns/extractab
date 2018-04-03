@@ -11,9 +11,9 @@ interface IChordDiagramProps {
 // Renders a box explaining a chord with controls for revoicing it
 export class ChordDiagram extends React.Component<IChordDiagramProps, {}> {
   public render() {
-    return <div className="box">
+    return <React.Fragment>
       <p><b>{this.props.chord.displayLabel()}</b>: {this.props.chord.notesString()}</p>
       <PianoVisualization chord={this.props.chord} />
-    </div>;
+    </React.Fragment>;
   }
 }

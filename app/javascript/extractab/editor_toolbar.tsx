@@ -13,18 +13,30 @@ export class EditorToolbar extends React.Component<IToolbarProps, {}> {
     return <section id="toolbar">
       <div className="level">
         <div className="level-item">
-          <p className="subtitle is-5">
-            Tuning: <strong>{this.props.tabKnowledge.tuning.tuningString()}</strong>
-            {this.props.tabKnowledge.tuningLabel && `(${this.props.tabKnowledge.tuningLabel})`}
-          </p>
-          <a className="button" onClick={(e) => this.transposeTuning(1)}>
-            <FontAwesomeIcon icon={faCaretSquareUp}/>
-            +1 ST
-          </a>
-          <a className="button" onClick={(e) => this.transposeTuning(-1)}>
-            <FontAwesomeIcon icon={faCaretSquareDown}/>
-            -1 ST
-          </a>
+          <div className="field has-addons">
+            <p className="control subtitle is-5">
+              <a className="button is-static">
+                Tuning: <strong>{this.props.tabKnowledge.tuning.tuningString()}</strong>
+                {this.props.tabKnowledge.tuningLabel && `(${this.props.tabKnowledge.tuningLabel})`}
+              </a>
+            </p>
+            <p className="control">
+              <a className="button" onClick={(e) => this.transposeTuning(1)}>
+                <span className="icon is-small">
+                  <FontAwesomeIcon icon={faCaretSquareUp}/>
+                </span>
+                <span>+1 ST</span>
+              </a>
+            </p>
+            <p className="control">
+              <a className="button" onClick={(e) => this.transposeTuning(-1)}>
+                <span className="icon is-small">
+                  <FontAwesomeIcon icon={faCaretSquareDown}/>
+                </span>
+                <span>-1 ST</span>
+              </a>
+            </p>
+          </div>
         </div>
       </div>
     </section>;

@@ -13,7 +13,7 @@ interface IChordDiagramProps extends IWidgetProps {
 // Renders a box explaining a chord with controls for revoicing it and knows how to attach it to CodeMirror at a line number
 export class ChordDiagramWidget extends AbstractWidget<IChordDiagramProps, {}> {
   public render() {
-    return <div ref={this.setWidgetElement}>
+    return <div ref={this.setWidgetElement} className="box">
       <ChordDiagram chord={this.props.chord} tabKnowledge={this.props.tabKnowledge} />
     </div>;
   }

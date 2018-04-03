@@ -5,6 +5,8 @@ import { INote } from "./i_note";
 import { IChord } from "./i_chord";
 import * as _ from "lodash";
 
+export class ChordBindingError extends Error {}
+
 // Represents a chord as a set of exact notes set at particular frequencies. Allows expression of particular voicings
 // of a given chord with duplicates / omissions / nonstandard extensions / whatever.
 // This is useful for representing chords in the concrete as voiced on a guitar or a piano.
@@ -14,6 +16,11 @@ export class BoundChord implements IChord<BoundNote> {
 
   constructor(public root: BoundNote, notes: BoundNote[], private passedDisplayLabel?: string) {
     const uniqAllNotes: BoundNote[] = _([root]).concat(notes).uniqWith((a, b) => a.equivalent(b)).sort(BoundNote.sorter).value();
+    if (!_.every(uniqAllNotes, (note) => note instanceof BoundNote)) {
+      console.log(root, notes) // tslint:disable-line
+      throw new ChordBindingError("BoundChord created with non-bound notes");
+    }
+
     this.noteList = Object.freeze(uniqAllNotes);
   }
 

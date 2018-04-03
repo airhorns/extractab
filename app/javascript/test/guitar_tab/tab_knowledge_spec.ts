@@ -140,6 +140,16 @@ describe("TabKnowledge", () => {
     expect(parseAndInfer(Fixtures.neon).transposeTuning(-2).tuningLabel).toEqual("found in tab transpose -2");
   });
 
+  it("changes the tuning label back to the original when untransposed transposed to include a note about being transposed", () => {
+    let up2 = TabKnowledge.Default.transposeTuning(2);
+    expect(up2.tuningLabel).toEqual("transpose +2");
+    expect(up2.transposeTuning(-2).tuningLabel).toEqual("");
+
+    up2 = parseAndInfer(Fixtures.neon).transposeTuning(2);
+    expect(up2.tuningLabel).toEqual("found in tab transpose +2");
+    expect(up2.transposeTuning(-2).tuningLabel).toEqual("found in tab");
+  });
+
   it("can bind chords not seen anywhere in the tab", () => {
     expect(TabKnowledge.Default.bindChord(cMajor)).toEqual(cMajor.bindAtRootOctave(3));
   });
