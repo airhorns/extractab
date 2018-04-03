@@ -20,7 +20,7 @@ export class EditorToolbar extends React.Component<IToolbarProps, {}> {
                 {this.props.tabKnowledge.tuningLabel && `(${this.props.tabKnowledge.tuningLabel})`}
               </a>
             </p>
-            <p className="control">
+            {/* <p className="control">
               <a className="button" onClick={(e) => this.transposeTuning(1)}>
                 <span className="icon is-small">
                   <FontAwesomeIcon icon={faCaretSquareUp}/>
@@ -35,14 +35,14 @@ export class EditorToolbar extends React.Component<IToolbarProps, {}> {
                 </span>
                 <span>-1 ST</span>
               </a>
-            </p>
+            </p> */}
           </div>
         </div>
       </div>
     </section>;
   }
 
-  private transposeTuning(semitones: number) {
-    this.props.updateKnowledge(this.props.tabKnowledge.transposeTuning(semitones));
-  }
+  // private transposeTuning(semitones: number) {
+  //   this.props.updateKnowledge(this.props.tabKnowledge.transposeTuning(semitones));
+  // }
 }
