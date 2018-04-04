@@ -16,12 +16,12 @@ import { ChordDefinitionWidgets } from "./chord_definition_widgets";
 import { TabStaffWidgets } from "./tab_staff_widgets";
 import { EditorToolbar } from "./editor_toolbar";
 import { LoadingEditorIndicator } from "./loading_editor_indicator";
-import { TabId, API } from "./api";
+import { TabHandle, API } from "./api";
 import "./codemirror_guitar_tab_mode";
 
 interface IEditorProps {
   startValue?: string;
-  tabId?: TabId;
+  TabHandle?: TabHandle;
 }
 
 interface IEditorState {
@@ -71,8 +71,8 @@ export class Editor extends React.Component<IEditorProps, IEditorState> {
       this.setState({value: this.props.startValue}, () => this.parseEditorContents());
     }
 
-    if (this.props.tabId) {
-      const tabContents = await this.api.fetchTab(this.props.tabId);
+    if (this.props.TabHandle) {
+      const tabContents = await this.api.fetchTab(this.props.TabHandle);
       this.setState({enabled: true, value: tabContents.contents}, () => this.parseEditorContents());
     } else {
       this.setState({enabled: true});

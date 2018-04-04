@@ -3,25 +3,25 @@ export interface ITabResponse {
 }
 
 export interface ITabSaveResponse {
-  tabId: TabId;
+  TabHandle: TabHandle;
 }
 
-export type TabId = string;
+export type TabHandle = string;
 
 export class API {
   constructor(public root = "") {}
 
-  public async fetchTab(tabId: TabId): Promise<ITabResponse> {
-    const res = await fetch(`${this.root}/api/tabs/${tabId}`);
+  public async fetchTab(TabHandle: TabHandle): Promise<ITabResponse> {
+    const res = await fetch(`${this.root}/api/tabs/${TabHandle}`);
     const json = await res.json();
     return json as ITabResponse;
   }
 
-  public async saveTab(contents: string, tabId?: TabId): Promise<ITabSaveResponse> {
-    const url = tabId ? `${this.root}/api/tabs/${tabId}` : `${this.root}/api/tabs`;
+  public async saveTab(contents: string, TabHandle?: TabHandle): Promise<ITabSaveResponse> {
+    const url = TabHandle ? `${this.root}/api/tabs/${TabHandle}` : `${this.root}/api/tabs`;
     const res = await fetch(url, {
       body: JSON.stringify({contents}),
-      method: tabId ? "PATCH" : "PUT",
+      method: TabHandle ? "PATCH" : "POST",
     });
     const json = await res.json();
     return json as ITabSaveResponse;

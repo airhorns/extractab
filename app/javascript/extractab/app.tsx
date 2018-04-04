@@ -34,7 +34,7 @@ export class App extends React.Component<{}, {}> {
             <Header/>
             <Switch>
               <Route exact path="/" render={() => <Editor startValue={Fixtures.crossfire}/>} />
-              <Route exact path="/t/:id" render={({match}) => <Editor tabId={match.params.id}/>} />
+              <Route exact path="/t/:id" render={({match}) => <Editor TabHandle={match.params.id}/>} />
               <Route path="/debug" render={() => <DebugEditor startValue={Fixtures.fallingInLove}/>} />
             </Switch>
             <Footer/>

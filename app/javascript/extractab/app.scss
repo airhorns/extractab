@@ -13,13 +13,11 @@ html, body {
   flex-direction: column;
 }
 
+.navbar-container {
+  background-color: #363636;
+}
+
 .navbar {
-  background-color: rgb(34, 34, 34);
-
-  a.navbar-item:hover {
-    background-color: black;
-  }
-
   img.logo {
     margin-top: -4px; // too lazy to figure out how to photoshop an SVG sorry everyone
   }
