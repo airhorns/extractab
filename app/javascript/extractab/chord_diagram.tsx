@@ -2,6 +2,7 @@ import * as React from "react";
 import { BoundChord } from "../music";
 import { ChordDefinition, TabKnowledge } from "../guitar_tab";
 import { PianoVisualization } from "./piano_visualization";
+import { DomainAwarePureComponent } from "./util";
 
 interface IChordDiagramProps {
   tabKnowledge: TabKnowledge;
@@ -9,7 +10,7 @@ interface IChordDiagramProps {
 }
 
 // Renders a box explaining a chord with controls for revoicing it
-export class ChordDiagram extends React.Component<IChordDiagramProps, {}> {
+export class ChordDiagram extends DomainAwarePureComponent<IChordDiagramProps, {}> {
   public render() {
     return <React.Fragment>
       <p><b>{this.props.chord.displayLabel()}</b>: {this.props.chord.notesString()}</p>

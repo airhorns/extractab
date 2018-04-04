@@ -9,12 +9,12 @@ interface IRangeHighlightProps {
   className: string;
 }
 
-export class CodeMirrorRangeHighlight extends React.Component<IRangeHighlightProps, {}> {
+export class CodeMirrorRangeHighlight extends React.PureComponent<IRangeHighlightProps, {}> {
   protected textMarker: CodeMirror.TextMarker;
 
   public componentDidMount() {
     const range = util.intervalToCodemirrorMark(this.props.interval);
-    this.textMarker = this.props.codemirror.getDoc().markText(range[0], range[1],   {
+    this.textMarker = this.props.codemirror.getDoc().markText(range[0], range[1], {
       className: this.props.className,
     });
   }

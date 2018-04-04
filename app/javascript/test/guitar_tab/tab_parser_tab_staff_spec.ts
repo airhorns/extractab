@@ -1,10 +1,25 @@
 import Fixtures from "./fixtures";
-import { Grammar, Semantics, TabStaff, TabStaffBarLines, TabString, TabHit, TabLinkage } from "../../guitar_tab";
+import { Grammar, Semantics, TabStaff, TabStaffSection, TabStaffBarLines, TabString, TabHit, TabLinkage } from "../../guitar_tab";
 
 const parseStaffDefinition = (str: string) => {
   const matchResult = Grammar.match(str   + "\n", "tabStaffLines");
   if (matchResult.succeeded()) {
     return Semantics(matchResult).buildTab();
+  } else {
+    throw new Error(matchResult.message);
+  }
+};
+
+const parseStaffSection = (str: string) => {
+  const matchResult = Grammar.match(str   + "\n");
+  if (matchResult.succeeded()) {
+    const sections = Semantics(matchResult).buildTab();
+    for (const section of sections ) {
+      if (section instanceof TabStaffSection) {
+        return section;
+      }
+    }
+    throw new Error("No TabStaffSections returned");
   } else {
     throw new Error(matchResult.message);
   }
@@ -175,5 +190,67 @@ B|---------------8-10-------|---10-8----8-10------------8-5---|
 G|--------------------------|--------10-----------79-------7--|
 D|--------------------------|---------------------------------|
 A|--------------------------|---------------------------------|`);
+  });
+
+  it("is not equivalent to a tabstaff parsed from a different source input", () => {
+    const expected = parseStaffSection(
+`E|----|
+D|----|
+A|-3/4|
+E|----|`);
+
+    let actual = parseStaffSection(
+`E|----|
+D|----|
+A|-3/5|
+E|----|`);
+
+    expect(expected.equivalent(actual)).toEqual(false);
+
+    actual = parseStaffSection(
+`E|----|
+D|----|
+G|-3/4|
+E|----|`);
+
+    expect(expected.equivalent(actual)).toEqual(false);
+  });
+
+  it("is equivalent to a tabstaff parsed from the same input but with other stuff before or after", () => {
+    const expected = parseStaffSection(
+`E|----|
+D|----|
+A|-3/4|
+E|----|`);
+
+    let actual = parseStaffSection(
+`E|----|
+D|----|
+A|-3/4|
+E|----|`);
+
+    expect(expected.equivalent(actual)).toEqual(true);
+
+    actual = parseStaffSection(
+`[Foobar]
+hello
+
+E|----|
+D|----|
+A|-3/4|
+E|----|`);
+
+    expect(expected.equivalent(actual)).toEqual(true);
+
+    actual = parseStaffSection(
+`E|----|
+D|----|
+A|-3/4|
+E|----|
+[Foobar]
+byebeye
+`);
+
+    expect(expected.equivalent(actual)).toEqual(true);
   });
 });

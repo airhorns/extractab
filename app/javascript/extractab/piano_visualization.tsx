@@ -1,6 +1,7 @@
 import * as React from "react";
 import * as _ from "lodash";
 import { UnboundNote, BoundChord } from "../music";
+import { DomainAwarePureComponent, domainObjectAwareShallowEqual } from "./util";
 
 export interface IPianoVisualizationProps {
   chord: BoundChord;
@@ -12,7 +13,7 @@ export interface IPianoVisualizationProps {
   blackKeyOffset?: number;
 }
 
-export class PianoVisualization extends React.Component<IPianoVisualizationProps, {}> {
+export class PianoVisualization extends DomainAwarePureComponent<IPianoVisualizationProps, {}> {
   public static defaultProps: Partial<IPianoVisualizationProps> = {
       showNoteLabels: true,
       whiteKeyWidth: 20,

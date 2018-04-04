@@ -80,7 +80,6 @@ export class HoverChordDiagram extends React.Component<IHoverChordDiagramProps, 
     }
 
     if (afterStart && beforeEnd) {
-      console.log(event);
       if (!this.state.visible) { this.setState({visible: true}) }
     } else {
       if (this.state.visible) { this.setState({visible: false}) }

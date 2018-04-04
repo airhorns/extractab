@@ -10,4 +10,7 @@ export abstract class TabSection {
   public lineNumberForDisplay() {
     return ohm.util.getLineAndColumn(this.source.sourceString, this.source.startIdx).lineNum - 1;
   }
+  public equivalent(section: TabSection) {
+    return this.source.contents === section.source.contents;
+  }
 }

@@ -108,6 +108,10 @@ export class TabKnowledge {
     return definition.bindAtTuning(this.tuning);
   }
 
+  public equivalent(other: TabKnowledge): boolean {
+    return this.tuningLabel === other.tuningLabel && other.tuning.equivalent(this.tuning);
+  }
+
   private clone(properties: Partial<TabKnowledge>) {
     const clone =  new TabKnowledge(
       properties.definedChords || this.definedChords,

@@ -16,11 +16,12 @@ import { ChordDefinitionWidgets } from "./chord_definition_widgets";
 import { TabStaffWidgets } from "./tab_staff_widgets";
 import { EditorToolbar } from "./editor_toolbar";
 import { LoadingEditorIndicator } from "./loading_editor_indicator";
+import { TabId, API } from "./api";
 import "./codemirror_guitar_tab_mode";
 
 interface IEditorProps {
   startValue?: string;
-  tabId?: string;
+  tabId?: TabId;
 }
 
 interface IEditorState {
@@ -33,26 +34,24 @@ interface IEditorState {
 export class Editor extends React.Component<IEditorProps, IEditorState> {
   public codeMirrorInstance: CodeMirror.Editor;
   public parser: TabParser;
-  private ownedOperationId?: number;
+  public state =  {
+    enabled: false,
+    value: "\n\n\n\n\n\n\n\n",
+    sections: [],
+    tabKnowledge: TabKnowledge.Default,
+  };
+  private api: API;
   private hoverEvents: EventEmitter;
+  private ownedOperationId?: number;
+  private throttledParseEditorContents: () => void;
 
   constructor(props: IEditorProps) {
     super(props);
-    const newState = {
-      enabled: false,
-      value: "\n\n\n\n\n\n\n\n",
-      sections: [],
-      tabKnowledge: TabKnowledge.Default,
-    };
     this.parser = new TabParser();
     this.hoverEvents = new EventEmitter();
-    this.parseEditorContents = _.debounce(this.parseEditorContents, 100);
+    this.throttledParseEditorContents = _.throttle(this.parseEditorContents, 100);
     this.throttledEmitHoverEvent = _.throttle(this.throttledEmitHoverEvent, 50);
-    if (this.props.startValue !== undefined && this.props.startValue !== "") {
-      newState.enabled = true;
-      newState.value = this.props.startValue;
-    }
-    this.state = newState;
+    this.api = new API();
   }
 
   public parseEditorContents() {
@@ -68,28 +67,34 @@ export class Editor extends React.Component<IEditorProps, IEditorState> {
   }
 
   public async componentDidMount() {
-    this.parseEditorContents();
+    if (this.props.startValue) {
+      this.setState({value: this.props.startValue}, () => this.parseEditorContents());
+    }
 
     if (this.props.tabId) {
-      // const res = await fetch(`/api/tabs/${this.props.tabId}`);
-      // const json = res.json();
-      // this.setState({
-      //   enabled: true,
-      //   value: (json as {contents: string}).contents,
-      // });
+      const tabContents = await this.api.fetchTab(this.props.tabId);
+      this.setState({enabled: true, value: tabContents.contents}, () => this.parseEditorContents());
+    } else {
+      this.setState({enabled: true});
     }
   }
 
-  public componentWillUpdate() {
+  public UNSAFE_componentWillUpdate() {
     if (this.codeMirrorInstance && !(this.codeMirrorInstance as any).curOp) {
       this.codeMirrorInstance.startOperation();
       this.ownedOperationId = (this.codeMirrorInstance as any).curOp.id;
+      window.performance.mark(`CodeMirror Render Start (opid ${this.ownedOperationId})`);
     }
   }
 
   public componentDidUpdate() {
     if (this.codeMirrorInstance && (this.codeMirrorInstance as any).curOp.id === this.ownedOperationId) {
       this.codeMirrorInstance.endOperation();
+      window.performance.mark(`CodeMirror Render End (opid ${this.ownedOperationId})`);
+      window.performance.measure(`🎸 CodeMirror Render (opid ${this.ownedOperationId})`,
+        `CodeMirror Render Start (opid ${this.ownedOperationId})`,
+        `CodeMirror Render End (opid ${this.ownedOperationId})`);
+
       this.ownedOperationId = undefined;
     }
   }
@@ -117,7 +122,7 @@ export class Editor extends React.Component<IEditorProps, IEditorState> {
             onBeforeChange={(editor, data, value) => {
               if (this.state.enabled) {
                 this.setState({value});
-                this.parseEditorContents();
+                this.throttledParseEditorContents();
               }
             }}
             onChange={(editor, data, value) => true }
