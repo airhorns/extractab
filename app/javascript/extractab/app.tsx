@@ -33,8 +33,8 @@ export class App extends React.Component<{}, {}> {
           <React.Fragment>
             <Header/>
             <Switch>
-              <Route exact path="/" render={() => <Editor startValue={Fixtures.crossfire}/>} />
-              <Route exact path="/t/:id" render={({match}) => <Editor TabHandle={match.params.id}/>} />
+              <Route exact path="/" render={() => <Editor startValue={Tutorial}/>} />
+              <Route exact path="/t/:id" render={({match}) => <Editor tabHandle={match.params.id}/>} />
               <Route path="/debug" render={() => <DebugEditor startValue={Fixtures.fallingInLove}/>} />
             </Switch>
             <Footer/>

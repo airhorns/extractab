@@ -21,7 +21,7 @@ import "./codemirror_guitar_tab_mode";
 
 interface IEditorProps {
   startValue?: string;
-  TabHandle?: TabHandle;
+  tabHandle?: TabHandle;
 }
 
 interface IEditorState {
@@ -71,8 +71,8 @@ export class Editor extends React.Component<IEditorProps, IEditorState> {
       this.setState({value: this.props.startValue}, () => this.parseEditorContents());
     }
 
-    if (this.props.TabHandle) {
-      const tabContents = await this.api.fetchTab(this.props.TabHandle);
+    if (this.props.tabHandle) {
+      const tabContents = await this.api.fetchTab(this.props.tabHandle);
       this.setState({enabled: true, value: tabContents.contents}, () => this.parseEditorContents());
     } else {
       this.setState({enabled: true});
