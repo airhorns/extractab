@@ -25,6 +25,9 @@ export class HoverChordDiagram extends React.Component<IHoverChordDiagramProps, 
   constructor(props: IHoverChordDiagramProps) {
     super(props);
     this.state = {visible: false};
+    if (this.props.chord.displayLabel() === "F#133") {
+      this.state = {visible: true};
+    }
     this.mark = intervalToCodemirrorMark(this.props.hoverInterval);
     this.hoverListener = this.hoverListener.bind(this);
   }
@@ -39,8 +42,8 @@ export class HoverChordDiagram extends React.Component<IHoverChordDiagramProps, 
 
   public render() {
     if (this.state.visible) {
-      const {top, left} = this.props.codemirror.charCoords(this.mark[0]);
-      return <div className="box hover-widget" style={{top, left}}>
+      const {top, left} = this.props.codemirror.charCoords(this.mark[0], "local");
+      return <div className="box hover-widget" style={{top: top + 80, left: left + 80}}>
         <ChordDiagram chord={this.props.chord} tabKnowledge={this.props.tabKnowledge} />
       </div>;
     } else {
@@ -80,9 +83,9 @@ export class HoverChordDiagram extends React.Component<IHoverChordDiagramProps, 
     }
 
     if (afterStart && beforeEnd) {
-      if (!this.state.visible) { this.setState({visible: true}) }
+      if (!this.state.visible) { this.setState({visible: true}); }
     } else {
-      if (this.state.visible) { this.setState({visible: false}) }
+      if (this.state.visible) { this.setState({visible: false}); }
     }
   }
 }

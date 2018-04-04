@@ -42,8 +42,9 @@ export class PianoVisualization extends DomainAwarePureComponent<IPianoVisualiza
     const activeNotes = new Set(this.props.chord.notes().map((note) => note.sharpEquivalent().symbol.toString()));
     const octaves = this.props.chord.notes().map((note) => note.octave);
     const startOctave = _.min(octaves) || 3;
+    const endOctave = (_.max(octaves) || 4) + 1;
     const octaveWidth = this.props.whiteKeyWidth! * 7;
-    const pianoNodes = _.range(startOctave, (_.max(octaves) || 4) + 1).reduce((nodes: JSX.Element[], octave, octaveOffset) => {
+    const pianoNodes = _.range(startOctave, endOctave).reduce((nodes: JSX.Element[], octave, octaveOffset) => {
       PianoVisualization.KeysMap.forEach(([keyClassName, note, keyOffset]) => {
         const noteString = (note.symbol + octave);
         const active = activeNotes.has(noteString);
@@ -82,6 +83,6 @@ export class PianoVisualization extends DomainAwarePureComponent<IPianoVisualiza
       return nodes;
     }, []);
 
-    return <svg className="piano"><g>{pianoNodes}</g></svg>;
+    return <svg className="piano" style={{width: ((endOctave - startOctave) * octaveWidth)}}><g>{pianoNodes}</g></svg>;
   }
 }

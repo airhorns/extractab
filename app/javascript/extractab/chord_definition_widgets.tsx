@@ -22,7 +22,7 @@ export class ChordDefinitionWidgets extends React.Component<IChordDefinitionWidg
           lineNumber={definitionMap.lineNumberForDisplay()}
           codemirror={this.props.codemirror}
           tabKnowledge={this.props.tabKnowledge}
-          key={definitionMap.source.startIdx} />
+          key={definitionMap.source.startIdx} />;
       } catch (error) {
         if (error instanceof ChordBindingError) {
           return undefined;

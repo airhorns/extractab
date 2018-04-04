@@ -63,8 +63,7 @@ html, body {
   .CodeMirror-linewidget {
     .box {
       margin: 0rem 0.5rem 0.25rem;
-      padding: 0.5rem 1rem;
-      width: auto;
+      display: inline-block;
     }
   }
 
@@ -78,8 +77,7 @@ html, body {
 
 }
 
-.piano {
-  width: 100%;
+svg.piano {
   height: 90px;
 
   .white {
@@ -134,4 +132,5 @@ html, body {
 .hover-widget {
   position: absolute;
   z-index: 9;
+  width: auto;
 }

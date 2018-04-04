@@ -22,7 +22,7 @@ export class ChordDefinition {
 
   public bindAtTuning(tuning: GuitarTuning): BoundChord {
     if (!(tuning.stringRoots.length >= this.fretting.length)) {
-      throw new ChordBindingError("Can't bind definition because tuning doesn't have enough strings to be bound")
+      throw new ChordBindingError("Can't bind definition because tuning doesn't have enough strings to be bound");
     }
     // Compute the bound note for each fret by adding an interval with the number of semitones equal to the fret number
     // to the open string. Example: 3rd fret on the E string is the note E + 3 semitones up, which in code would look
