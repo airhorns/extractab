@@ -57,6 +57,7 @@ export class DebugEditor extends React.Component<IDebugProps, IDebugState> {
 
   public render() {
     return <section id="editor">
+      <h1>Debug</h1>
       <div className="container">
         <ControlledCodeMirror
           value={this.state.value}

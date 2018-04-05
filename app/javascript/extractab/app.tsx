@@ -2,6 +2,7 @@ import * as React from "react";
 import { Header } from "./header";
 import { Editor } from "./editor";
 import { DebugEditor } from "./debug_editor";
+import { NotFound } from "./not_found";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { Footer } from "./footer";
 import Fixtures from "../test/guitar_tab/fixtures";
@@ -48,6 +49,7 @@ export class App extends React.Component<{}, {}> {
               <Route exact path="/" render={() => <Editor startValue={Tutorial}/>} />
               <Route exact path="/t/:id" render={({match}) => <Editor tabHandle={match.params.id}/>} />
               <Route path="/debug" render={() => <DebugEditor startValue={Fixtures.fallingInLove}/>} />
+              <Route component={NotFound} />
             </Switch>
             <Footer/>
           </React.Fragment>
