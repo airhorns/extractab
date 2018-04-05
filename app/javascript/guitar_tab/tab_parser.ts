@@ -121,7 +121,7 @@ Semantics.addOperation("buildTab", {
     const chartLines = lines.buildTab();
     return new ChordChartSection(this.source, chartLines);
   },
-  chordChartChordLine(__, chordNodes, ___, repetitionIndicator, ____): ChordSource[] {
+  chordChartChordLine(__, openBracketNodes, chordNodes, closeBracketNodes, ___, repetitionIndicator, ____): ChordSource[] {
     return chordNodes.children.map((chordNode) => {
       return {
         chord: chordNode.buildChord(),

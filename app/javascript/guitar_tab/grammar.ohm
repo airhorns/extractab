@@ -91,8 +91,9 @@ GuitarTab {
                         digit digit? spaceMaybe
                         ( "]" | ")" | "\\" ) ? spaceMaybe
 
+  chordBracket = ("[" | "(" | ")" | "]")
   chordChartLyricLine = (~sectionHeaderSignal) (~tabStaffLine) lineChar+ eol
-  chordChartChordLine = (spaceMaybe chord spaceMaybe)+ repetitionIndicator? eol
+  chordChartChordLine = (spaceMaybe chordBracket? chord chordBracket? spaceMaybe)+ repetitionIndicator? eol
   chordChart = (chordChartChordLine | chordChartLyricLine)+
 
 
