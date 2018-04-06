@@ -39,6 +39,15 @@ In the land of submarines
 
 Good luck making beautiful music!
 `;
+
+const NewTab = `
+
+
+Paste a tab in here ...
+
+
+`;
+
 export class App extends React.Component<{}, {}> {
   public render() {
       return <Router>
@@ -46,6 +55,7 @@ export class App extends React.Component<{}, {}> {
             <Header/>
             <Switch>
               <Route exact path="/" render={() => <Editor startValue={Tutorial}/>} />
+              <Route exact path="/t/new" render={({match}) => <Editor startValue={NewTab}/>} />
               <Route exact path="/t/:id" render={({match}) => <Editor tabHandle={match.params.id}/>} />
               <Route path="/debug" render={() => <DebugEditor/>} />
               <Route component={NotFound} />

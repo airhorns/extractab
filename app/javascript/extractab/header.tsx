@@ -1,6 +1,9 @@
 import * as React from "react";
 import * as _ from "lodash";
 import * as logo from "images/color_logo_transparent.svg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus } from "@fortawesome/fontawesome-free-solid";
+
 import { TabHandle } from "./api";
 
 interface IServerSideFeatureData {
@@ -36,6 +39,19 @@ export class Header extends React.Component<{}, {}> {
             </div>
 
             <div className="navbar-end">
+              <div className="navbar-item">
+                <div className="field is-grouped">
+                  <p className="control">
+                    <a className="button is-warning" href="/t/new">
+                      <span className="icon">
+                        <FontAwesomeIcon icon={faPlus} />
+                      </span>
+                      <span>New Tab</span>
+                    </a>
+                  </p>
+                </div>
+              </div>
+
               <div className="navbar-item has-dropdown is-hoverable">
                 <a className="navbar-link">
                   Featured Tabs
