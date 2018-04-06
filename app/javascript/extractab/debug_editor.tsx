@@ -9,10 +9,6 @@ import { toAST } from "../guitar_tab/to_ast";
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/elegant.css";
 
-interface IDebugProps {
-  startValue: string;
-}
-
 interface IDebugState {
   value: string;
   sections: TabSection[];
@@ -26,15 +22,16 @@ type OhmASTNode = string | null | undefined | number | {
   [key: string]: OhmASTNode | OhmASTNode[];
 };
 
-export class DebugEditor extends React.Component<IDebugProps, IDebugState> {
+export class DebugEditor extends React.Component<{}, IDebugState> {
   public codeMirrorInstance: CodeMirror.Editor;
   public parser: TabParser;
   private ownedOperationId?: number;
 
-  constructor(props: IDebugProps) {
+  constructor(props: {}) {
     super(props);
+    const params = new URLSearchParams(location.search);
     this.state = {
-      value: this.props.startValue,
+      value: params.get("text") || "Paste in debug text",
       sections: [],
       ast: undefined,
       tabKnowledge: TabKnowledge.Default,
@@ -47,7 +44,11 @@ export class DebugEditor extends React.Component<IDebugProps, IDebugState> {
     const parseResult = this.parser.parse(this.state.value);
     if (parseResult.succeeded) {
       const ast = toAST(parseResult.matchResult) as OhmASTNode;
-      this.setState({sections: parseResult.sections, tabKnowledge: parseResult.knowledge, ast});
+      this.setState({sections: parseResult.sections, tabKnowledge: parseResult.knowledge, ast}, () => {
+        const params = new URLSearchParams(location.search);
+        params.set("text", this.state.value);
+        window.history.replaceState({}, "", `${location.pathname}?${params}`);
+      });
     }
   }
 
@@ -57,8 +58,8 @@ export class DebugEditor extends React.Component<IDebugProps, IDebugState> {
 
   public render() {
     return <section id="editor">
-      <h1>Debug</h1>
       <div className="container">
+        <h1 className="title is-1">Debug</h1>
         <ControlledCodeMirror
           value={this.state.value}
           options={{
@@ -82,29 +83,32 @@ export class DebugEditor extends React.Component<IDebugProps, IDebugState> {
     </section>;
   }
 
-  public renderASTNode = (node: OhmASTNode | OhmASTNode[]): JSX.Element | string => {
+  public renderASTNode = (node: OhmASTNode | OhmASTNode[], key: number | string = 0): JSX.Element | string => {
     if (_.isString(node) || _.isNumber(node) || _.isNull(node) || _.isUndefined(node)) {
       return _.toString(node);
     }
     if (_.isArray(node)) {
-      return <React.Fragment>{node.map((innerNode, index) => <span key={index}>{this.renderASTNode(innerNode)}</span>)}</React.Fragment>;
+      return <React.Fragment>{node.map((innerNode, index) => this.renderASTNode(innerNode, index))}</React.Fragment>;
     }
-
     if (node.type === "any" || node.type === "lineSpace") {
       return node.contents;
     }
 
-    const members = _.reduce(node, (result, value, key) => {
-      if (key !== "type" && key !== "contents") {
-        result.push(<span key={key}><b>{key}:</b>{this.renderASTNode(value)}</span>);
+    const members = _.reduce(node, (result, value, innerKey) => {
+      if (innerKey !== "type" && innerKey !== "contents") {
+        result.push(<div className={"" + innerKey} key={innerKey}>{this.renderASTNode(value, innerKey)}</div>);
       }
       return result;
     }, [] as JSX.Element[]);
 
-    return <div className="ast-node">
-      <h3>{node.type}</h3>
-      <div><code>{node.contents}</code></div>
+    return <div key={key} className={`ast-node ${members.length && "has-children"}`}>
+      <h3><b>{node.type}</b> (parent index {key})</h3>
+      <div><code>{this.renderRawContents(node.contents)}</code></div>
       {members}
     </div>;
+  }
+
+  public renderRawContents(str: string) {
+    return _.flatten(str.split("\n").map((line) => [line, <br/>]));
   }
 }

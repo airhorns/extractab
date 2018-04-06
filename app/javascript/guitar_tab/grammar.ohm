@@ -105,17 +105,20 @@ GuitarTab {
   // A|------|---9------------9-----------|---9-------5/7-4-4-4-------|
   // E|-5/6/-|-7--------5/6/7--------5/6/-|-7---------------4-4--5/6/-|
 
+
   tabBarSeparator = "|"
   tabStringTuning = "a".."g" | "A".."G"
-  tabLinkage = "/" | "h" | "H" | "p" | "P" | "b" | "B" | "^"
+  tabLinkage = "/" | "h" | "H" | "p" | "P" | "b" | "B" | "^" | "~"
   tabHitComponent = tabLinkage? digit digit? tabLinkage?
   tabHit = tabHitComponent tabHitComponent *
-  tabRest = tabBarSeparator | "-" | "_" | " "
+  tabRest = tabBarSeparator | "-" | "_"
   tabStaffLine =
     spaceMaybe
+    leadingRiffRaff
     tabStringTuning
     tabBarSeparator
     (tabHit | tabRest) +
+    trailingRiffRaff
     spaceMaybe
     eol
 
@@ -132,6 +135,10 @@ GuitarTab {
 
 
   // Utilities
+  riffRaffChar = (alnum | lineSpace | "(" | ")" | "[" | "]")
+  leadingRiffRaff = (riffRaffChar+ lineSpace+)*
+  trailingRiffRaff = (lineSpace* riffRaffChar+)*
+
   eol = "\r" ? "\n"
   spaceMaybe = lineSpace *
   emptyLine = lineSpace * eol

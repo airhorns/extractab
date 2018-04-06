@@ -120,6 +120,16 @@ svg.piano {
     border: 1px dashed grey;
     margin: 0.5rem;
     padding: 0.5rem;
+    float: left;
+  }
+  .ast-node:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+
+  .ast-node.has-children {
+    float: none;
   }
 }
 .loading-indicator {

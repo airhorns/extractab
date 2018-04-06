@@ -83,7 +83,7 @@ Semantics.addOperation("buildTab", {
     const staff = new TabStaff(lines.buildTab(), barLines);
     return new TabStaffSection(lines.source, staff);
   },
-  tabStaffLine(__, tabStringTuning, ___, hits, ____, _____) {
+  tabStaffLine(space, leadingRiffRaff, tabStringTuning, separator, hits, trailingRiffRaff, spaceTwo, eol) {
     return new TabString(tabStringTuning.source.contents, _(hits.buildTab() as TabHit[][]).flatten().compact().value());
   },
   tabRest(__) {

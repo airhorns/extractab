@@ -43,6 +43,41 @@ E|----|`);
     expect(actual.staff).toEqual(expected);
   });
 
+  it("parses a simple hit on a fret at source position with riffraff on the lines before the tab", () => {
+    const actual = parseStaffDefinition(
+`             E|----|
+              D|----|
+  (this one)  A|--3-|
+              E|----|`);
+
+    const expected = new TabStaff([
+      new TabString("E", []),
+      new TabString("D", []),
+      new TabString("A", [new TabHit({fret: 3}, 4)]),
+      new TabString("E", []),
+    ], new TabStaffBarLines([]));
+
+    expect(actual.staff).toEqual(expected);
+  });
+
+  it("parses a simple hit on a fret at source position with riffraff on the lines after the tab", () => {
+      const actual = parseStaffDefinition(
+  `E|----|
+  D|----|   (x2) then the other
+  A|--3-|   (x4)
+  E|----|`);
+
+      const expected = new TabStaff([
+        new TabString("E", []),
+        new TabString("D", []),
+        new TabString("A", [new TabHit({fret: 3}, 4)]),
+        new TabString("E", []),
+      ], new TabStaffBarLines([]));
+
+      expect(actual.staff).toEqual(expected);
+    });
+
+
   it("parses a simple hit on a fret at source position with bar lines inbetween", () => {
     const actual = parseStaffDefinition(
 `E|----|----|

@@ -5,7 +5,6 @@ import { DebugEditor } from "./debug_editor";
 import { NotFound } from "./not_found";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { Footer } from "./footer";
-import Fixtures from "../test/guitar_tab/fixtures";
 import "./app.scss";
 
 const Tutorial = `
@@ -48,7 +47,7 @@ export class App extends React.Component<{}, {}> {
             <Switch>
               <Route exact path="/" render={() => <Editor startValue={Tutorial}/>} />
               <Route exact path="/t/:id" render={({match}) => <Editor tabHandle={match.params.id}/>} />
-              <Route path="/debug" render={() => <DebugEditor startValue={Fixtures.fallingInLove}/>} />
+              <Route path="/debug" render={() => <DebugEditor/>} />
               <Route component={NotFound} />
             </Switch>
             <Footer/>
