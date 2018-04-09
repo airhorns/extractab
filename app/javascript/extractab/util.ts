@@ -1,7 +1,7 @@
 /// <reference path="./ohm-util"/>
+import * as React from "react";
 import * as ohm from "ohm-js";
 import * as CodeMirror from "codemirror";
-import * as React from "react";
 
 export const intervalToCodemirrorMark = (source: ohm.Interval): [CodeMirror.Position, CodeMirror.Position] => {
   const start = ohm.util.getLineAndColumn(source.sourceString, source.startIdx);

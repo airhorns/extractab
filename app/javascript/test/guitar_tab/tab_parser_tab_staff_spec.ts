@@ -2,10 +2,11 @@ import Fixtures from "./fixtures";
 import { Grammar, Semantics, TabStaff, TabStaffSection, TabStaffBarLines, TabString, TabHit, TabLinkage } from "../../guitar_tab";
 
 const parseStaffDefinition = (str: string) => {
-  const matchResult = Grammar.match(str   + "\n", "tabStaffLines");
+  const matchResult = Grammar.match(str + "\n", "tabStaffLines");
   if (matchResult.succeeded()) {
     return Semantics(matchResult).buildTab();
   } else {
+    console.log(Grammar.trace(str + "\n", "tabStaffLines").toString());
     throw new Error(matchResult.message);
   }
 };
@@ -53,7 +54,7 @@ E|----|`);
     const expected = new TabStaff([
       new TabString("E", []),
       new TabString("D", []),
-      new TabString("A", [new TabHit({fret: 3}, 4)]),
+      new TabString("A", [new TabHit({fret: 3}, 18)]),
       new TabString("E", []),
     ], new TabStaffBarLines([]));
 
@@ -62,10 +63,10 @@ E|----|`);
 
   it("parses a simple hit on a fret at source position with riffraff on the lines after the tab", () => {
       const actual = parseStaffDefinition(
-  `E|----|
-  D|----|   (x2) then the other
-  A|--3-|   (x4)
-  E|----|`);
+`E|----|
+D|----|   (x2) then the other
+A|--3-|   (x4)
+E|----|`);
 
       const expected = new TabStaff([
         new TabString("E", []),
@@ -76,7 +77,6 @@ E|----|`);
 
       expect(actual.staff).toEqual(expected);
     });
-
 
   it("parses a simple hit on a fret at source position with bar lines inbetween", () => {
     const actual = parseStaffDefinition(
@@ -106,6 +106,51 @@ E|----|`);
       new TabString("E", []),
       new TabString("D", []),
       new TabString("A", [new TabHit({fret: 3}, 3, TabLinkage.Slide), new TabHit({fret: 4}, 5)]),
+      new TabString("E", []),
+    ], new TabStaffBarLines([]));
+
+    expect(actual.staff).toEqual(expected);
+  });
+
+  it("parses a single hit with a dangling linkage after it", () => {
+    let actual = parseStaffDefinition(
+`E|----|
+D|----|
+A|-3/-|
+E|----|`);
+
+    let expected = new TabStaff([
+      new TabString("E", []),
+      new TabString("D", []),
+      new TabString("A", [new TabHit({fret: 3}, 3, TabLinkage.Slide)]),
+      new TabString("E", []),
+    ], new TabStaffBarLines([]));
+
+    expect(actual.staff).toEqual(expected);
+
+    actual = parseStaffDefinition(
+`e|------|
+B|-------|
+G|--2\\--|`);
+
+    expected = new TabStaff([
+      new TabString("e", []),
+      new TabString("B", []),
+      new TabString("G", [new TabHit({fret: 2}, 4, TabLinkage.Slide)]),
+    ], new TabStaffBarLines([]));
+
+    expect(actual.staff).toEqual(expected);
+
+    actual = parseStaffDefinition(
+`E|-----|
+D|------|
+A|-3-3/-|
+E|------|`);
+
+    expected = new TabStaff([
+      new TabString("E", []),
+      new TabString("D", []),
+      new TabString("A", [new TabHit({fret: 3}, 3), new TabHit({fret: 3}, 5, TabLinkage.Slide)]),
       new TabString("E", []),
     ], new TabStaffBarLines([]));
 

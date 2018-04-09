@@ -108,7 +108,7 @@ GuitarTab {
 
   tabBarSeparator = "|"
   tabStringTuning = "a".."g" | "A".."G"
-  tabLinkage = "/" | "h" | "H" | "p" | "P" | "b" | "B" | "^" | "~"
+  tabLinkage = "/" | "\\" | "h" | "H" | "p" | "P" | "b" | "B" | "^" | "~"
   tabHitComponent = tabLinkage? digit digit? tabLinkage?
   tabHit = tabHitComponent tabHitComponent *
   tabRest = tabBarSeparator | "-" | "_"
@@ -135,7 +135,7 @@ GuitarTab {
 
 
   // Utilities
-  riffRaffChar = (alnum | lineSpace | "(" | ")" | "[" | "]")
+  riffRaffChar = (alnum | lineSpace | "(" | ")" | "[" | "]") ~(tabStringTuning tabBarSeparator)
   leadingRiffRaff = (riffRaffChar+ lineSpace+)*
   trailingRiffRaff = (lineSpace* riffRaffChar+)*
 

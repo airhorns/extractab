@@ -103,6 +103,7 @@ Semantics.addOperation("buildTab", {
         linkage = TabLinkage.Slur;
         break;
       case "/":
+      case "\\":
         linkage = TabLinkage.Slide;
         break;
       case "b":

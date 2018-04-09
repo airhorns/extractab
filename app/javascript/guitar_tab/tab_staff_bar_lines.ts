@@ -6,13 +6,14 @@ export class TabStaffBarLines {
     const indexes: number[] = [];
     const contents = line.source.contents;
     contents.replace(/\|/g, (match, index) => {
-      // Ignore any barlines at the start or end
-      if (index > 3 && index < (contents.length - 2)) {
+      // Ignore a barline at the end of the line
+      if (index < (contents.length - 2)) {
         indexes.push(index);
       }
       return match;
     });
 
+    indexes.shift(); // remove the first barline that comes alongside the tuning
     return new TabStaffBarLines(indexes);
   }
 
