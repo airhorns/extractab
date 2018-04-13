@@ -1,0 +1,50 @@
+version: 2
+jobs:
+  build:
+    docker:
+       - image: circleci/ruby:2.4.1-node-browsers
+       - image: circleci/postgres:9.4
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "Gemfile.lock" }}-{{ checksum "package.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+
+      - run:
+          name: install ruby dependencies
+          command: |
+            bundle install --jobs=4 --retry=3 --path vendor/bundle
+
+      - run:
+          name: install javascript dependencies
+          command: |
+            yarn install --cache-folder ~/.cache/yarn
+
+      - save_cache:
+          paths:
+            - ./vendor/bundle
+            - ~/.cache/yarn
+          key: v1-dependencies-{{ checksum "Gemfile.lock" }}-{{ checksum "package.json" }}
+
+      - run:
+          name: Wait for DB
+          command: dockerize -wait tcp://localhost:5432 -timeout 1m
+
+      # Database setup
+      - run: bundle exec rake db:create
+      - run: bundle exec rake db:schema:load
+
+      - run:
+          name: run ruby tests
+          command: bundle exec rake test
+
+      - run:
+          name: run javascript tests
+          command: yarn test
