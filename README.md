@@ -16,7 +16,7 @@ There's also `bin/autolint` for automatically linting and fixing what can be fix
 
 #### Assets
 
-This app uses (webpacker)[https://github.com/rails/webpacker] as a handy way to build assets using modern tools. If things are slow or you want live-reload, run `bin/webpack-dev-server`.
+This app uses [webpacker](https://github.com/rails/webpacker) as a handy way to build assets using modern tools. If things are slow or you want live-reload, run `bin/webpack-dev-server`.
 
 ### User Stories
 
