@@ -1,11 +1,6 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  contents: MyString
-  handle: MyString
-  owner_session_key: MyString
-
-two:
-  contents: MyString
-  handle: MyString
-  owner_session_key: MyString
+  contents: "Capo 5\n"
+  title: ""
+  owner_session_key: "system"

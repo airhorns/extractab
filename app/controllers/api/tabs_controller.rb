@@ -7,11 +7,11 @@ class Api::TabsController < ApplicationController
 
   # POST /api/tabs.json
   def create
-    @tab = Api::Tab.new(tab_params)
+    @tab = Tab.new(tab_params)
     @tab.owner_session_key = session[:user_identifier]
 
     if @tab.save
-      render status: :created, location: @tab
+      render :show, status: :created, location: api_tab_path(@tab)
     else
       render status: :unprocessable_entity, json: @tab.errors
     end
@@ -20,10 +20,10 @@ class Api::TabsController < ApplicationController
   # PATCH/PUT /api/tabs/foobar.json
   def update
     if !session_is_owner(@tab)
-      render status: :unauthorized
+      render status: :unauthorized, json: {error: "Can't update tab you don't own"}
     else
       if @tab.update(tab_params)
-        render status: :ok, location: @tab
+        render :show, status: :ok, location: api_tab_path(@tab)
       else
         render status: :unprocessable_entity, json: @tab.errors
       end
@@ -40,6 +40,6 @@ class Api::TabsController < ApplicationController
     end
 
     def tab_params
-      params.fetch(:tab, {})
+      params.require(:tab).permit(:contents, :title)
     end
 end

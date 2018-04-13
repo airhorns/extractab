@@ -2,47 +2,45 @@ require 'test_helper'
 
 class Api::TabsControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @api_tab = api_tabs(:one)
-  end
-
-  test "should get index" do
-    get api_tabs_url
-    assert_response :success
-  end
-
-  test "should get new" do
-    get new_api_tab_url
-    assert_response :success
+    @tab = tabs(:one)
   end
 
   test "should create api_tab" do
-    assert_difference('Api::Tab.count') do
-      post api_tabs_url, params: { api_tab: {  } }
+    assert_difference('Tab.count') do
+      post api_tabs_url, params: { tab: { contents: "foobar", title: "" } }
     end
 
-    assert_redirected_to api_tab_url(Api::Tab.last)
+    assert_response :created
   end
 
   test "should show api_tab" do
-    get api_tab_url(@api_tab)
+    get api_tab_url(handle: @tab)
     assert_response :success
   end
 
-  test "should get edit" do
-    get edit_api_tab_url(@api_tab)
+  test "should allow update if the session is the creator" do
+    post api_tabs_url, params: { tab: { contents: "foobar", title: "" } }
+    assert_response :created
+    handle = JSON.parse(@response.body)["handle"]
+
+    patch api_tab_url(handle: handle), params: { tab: { contents: "foobar", title: "baz" } }
     assert_response :success
+    assert Tab.find_by_handle(handle).title == "baz"
   end
 
-  test "should update api_tab" do
-    patch api_tab_url(@api_tab), params: { api_tab: {  } }
-    assert_redirected_to api_tab_url(@api_tab)
-  end
+  test "should not allow update if the session is not the creator" do
+    userA = open_session
+    userB = open_session
 
-  test "should destroy api_tab" do
-    assert_difference('Api::Tab.count', -1) do
-      delete api_tab_url(@api_tab)
-    end
+    userA.post api_tabs_url, params: { tab: { contents: "foobar", title: "" } }
+    assert_equal 201, userA.response.response_code
 
-    assert_redirected_to api_tabs_url
+    handle = JSON.parse(userA.response.body)["handle"]
+
+    userA.patch api_tab_url(handle: handle), params: { tab: { contents: "foobar", title: "baz" } }
+    assert_equal 200, userA.response.response_code
+    userB.patch api_tab_url(handle: handle), params: { tab: { contents: "foobar", title: "qux" } }
+    assert_equal 401, userB.response.response_code
+    assert Tab.find_by_handle(handle).title == "baz"
   end
 end
