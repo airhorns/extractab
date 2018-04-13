@@ -18,7 +18,7 @@ export class GuitarTuning {
   constructor(public stringRoots: BoundNote[]) {}
 
   public tuningString(): string {
-    return this.stringRoots.map((root) => root.symbolWithoutOctave).join(" ");
+    return this.stringRoots.map((root) => root.symbolWithoutOctave).reverse().join(" ");
   }
 
   public transpose(interval: Interval) {

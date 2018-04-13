@@ -37,4 +37,9 @@ describe("GuitarTuning", () => {
     expect(GuitarTuning.Standard.transpose(new Interval(2))).toEqual(capo2);
     expect(GuitarTuning.Standard.stringRoots[0].equivalent(BoundNote.fromString("E4"))).toEqual(true);
   });
+
+  it("should have a string representation that matches convention of looking down at a guitar, starting with the lowest string going to the highest", () => {
+    expect(GuitarTuning.Standard.tuningString()).toEqual("E A D G B E");
+    expect(GuitarTuning.DropD.tuningString()).toEqual("D A D G B E");
+  });
 });
